@@ -13,7 +13,7 @@ class ModelCatalogCategory extends Model {
             ->setTableName('category_description')
             ->setType('LEFT')
             ->setKey('category_id');
-        $this->addDefaultJoins( $j );
+      //  $this->addDefaultJoins( $j );
 
     }
 

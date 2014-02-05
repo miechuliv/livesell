@@ -42,6 +42,8 @@ class Customer {
 			}
   		}
 	}
+
+
 		
   	public function login($email, $password, $override = false) {
 		if ($override) {

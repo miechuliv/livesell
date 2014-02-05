@@ -61,6 +61,41 @@ abstract class Model {
 
     }
 
+    public function getOneBy($findBy , $value , $type = 'int', $select = false)
+    {
+        $sql = 'SELECT ';
+
+        if($select)
+        {
+            $sql .= $select;
+        }
+        else
+        {
+            $sql .= ' * ';
+        }
+
+        $sql .= ' FROM '.DB_PREFIX.$this->tableName;
+
+        if($type == 'int')
+        {
+            $sql .= " WHERE `".$findBy."` = '".(int)$value."' ";
+        }
+        if($type == 'float')
+        {
+            $sql .= " WHERE `".$findBy."` = '".(float)$value."' ";
+        }
+        if($type == 'string')
+        {
+            $sql .= " WHERE `".$findBy."` = '".$this->db->escape($value)."' ";
+        }
+
+
+
+        $q = $this->db->query($sql);
+
+        return $q->rows;
+    }
+
 
 
     public function getMany(DbQBuilder $q)

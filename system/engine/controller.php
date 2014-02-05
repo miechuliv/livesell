@@ -1,5 +1,5 @@
 <?php
-abstract class Controller {
+class Controller {
 	protected $registry;	
 	protected $id;
 	protected $layout;
@@ -237,18 +237,29 @@ abstract class Controller {
 
     }
 
-    protected function setFields($fields,$data,$request_type = 'post')
+    protected function setFields($fields,$data = array(),$request_type = 'post')
     {
+
+
+
         foreach($fields as $field)
         {
-            if (isset($this->request->$request_type[$field])) {
-                $this->data[$field] = $this->request->$request_type[$field];
-            } elseif (!empty($data)) {
+
+
+            if (isset($this->request->{$request_type}[$field])) {
+
+                $this->data[$field] = $this->request->{$request_type}[$field];
+            } elseif (!empty($data) AND isset($data[$field])) {
+
                 $this->data[$field] = $data[$field];
             } else {
+
                 $this->data[$field] = '';
             }
+
+
         }
+
     }
 
 

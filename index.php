@@ -77,6 +77,7 @@ require_once($vqmod->modCheck(DIR_SYSTEM . 'library/logger.php'));
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/timing.php'));
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/storage.php'));
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/browser.php'));
+require_once($vqmod->modCheck(DIR_SYSTEM . 'library/author.php'));
 
 
 
@@ -321,6 +322,8 @@ $registry->set('document', new Document());
 
 // Customer
 $registry->set('customer', new Customer($registry));
+
+$registry->set('author', new Author($registry));
 
 // Affiliate
 $registry->set('affiliate', new Affiliate($registry));
