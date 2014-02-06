@@ -237,7 +237,7 @@ class Controller {
 
     }
 
-    protected function setFields($fields,$data = array(),$request_type = 'post')
+    public function setFields($fields,$data = array(),$request_type = 'post')
     {
 
 

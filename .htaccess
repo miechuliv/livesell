@@ -26,7 +26,7 @@ Options -Indexes
 RewriteEngine On
 # If your opencart installation does not run on the main web folder make sure you folder it does run in ie. / becomes /shop/ 
 
-RewriteBase /nowy/
+RewriteBase /livesell/
 RewriteCond %{QUERY_STRING} ^route=common/home$
 RewriteCond %{REQUEST_METHOD} !^POST$
 RewriteRule ^index\.php$ http://%{HTTP_HOST}? [R=301,L]

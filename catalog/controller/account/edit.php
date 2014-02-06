@@ -48,10 +48,11 @@ class ControllerAccountEdit extends Controller {
 		$this->data['text_your_details'] = $this->language->get('text_your_details');
 
 		$this->data['entry_firstname'] = $this->language->get('entry_firstname');
-		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
+		//$this->data['entry_lastname'] = $this->language->get('entry_lastname');
 		$this->data['entry_email'] = $this->language->get('entry_email');
-		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');
+		/*$this->data['entry_telephone'] = $this->language->get('entry_telephone');
+		$this->data['entry_fax'] = $this->language->get('entry_fax');*/
+        $this->data['entry_about'] = $this->language->get('entry_about');
 
 		$this->data['button_continue'] = $this->language->get('button_continue');
 		$this->data['button_back'] = $this->language->get('button_back');
@@ -68,23 +69,29 @@ class ControllerAccountEdit extends Controller {
 			$this->data['error_firstname'] = '';
 		}
 
-		if (isset($this->error['lastname'])) {
+		/*if (isset($this->error['lastname'])) {
 			$this->data['error_lastname'] = $this->error['lastname'];
 		} else {
 			$this->data['error_lastname'] = '';
-		}
+		}*/
 		
 		if (isset($this->error['email'])) {
 			$this->data['error_email'] = $this->error['email'];
 		} else {
 			$this->data['error_email'] = '';
-		}	
-		
-		if (isset($this->error['telephone'])) {
-			$this->data['error_telephone'] = $this->error['telephone'];
-		} else {
-			$this->data['error_telephone'] = '';
-		}	
+		}
+
+        if (isset($this->error['about'])) {
+            $this->data['error_about'] = $this->error['about'];
+        } else {
+            $this->data['error_about'] = '';
+        }
+
+        /*if (isset($this->error['telephone'])) {
+            $this->data['error_telephone'] = $this->error['telephone'];
+        } else {
+            $this->data['error_telephone'] = '';
+        }	*/
 
 		$this->data['action'] = $this->url->link('account/edit', '', 'SSL');
 
@@ -100,13 +107,13 @@ class ControllerAccountEdit extends Controller {
 			$this->data['firstname'] = '';
 		}
 
-		if (isset($this->request->post['lastname'])) {
+		/*if (isset($this->request->post['lastname'])) {
 			$this->data['lastname'] = $this->request->post['lastname'];
 		} elseif (isset($customer_info)) {
 			$this->data['lastname'] = $customer_info['lastname'];
 		} else {
 			$this->data['lastname'] = '';
-		}
+		}*/
 
 		if (isset($this->request->post['email'])) {
 			$this->data['email'] = $this->request->post['email'];
@@ -116,7 +123,15 @@ class ControllerAccountEdit extends Controller {
 			$this->data['email'] = '';
 		}
 
-		if (isset($this->request->post['telephone'])) {
+        if (isset($this->request->post['about'])) {
+            $this->data['about'] = $this->request->post['about'];
+        } elseif (isset($customer_info)) {
+            $this->data['about'] = $customer_info['about'];
+        } else {
+            $this->data['about'] = '';
+        }
+
+		/*if (isset($this->request->post['telephone'])) {
 			$this->data['telephone'] = $this->request->post['telephone'];
 		} elseif (isset($customer_info)) {
 			$this->data['telephone'] = $customer_info['telephone'];
@@ -130,7 +145,7 @@ class ControllerAccountEdit extends Controller {
 			$this->data['fax'] = $customer_info['fax'];
 		} else {
 			$this->data['fax'] = '';
-		}
+		}*/
 
 		$this->data['back'] = $this->url->link('account/account', '', 'SSL');
 
@@ -157,9 +172,13 @@ class ControllerAccountEdit extends Controller {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
 
-		if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
+        if ((utf8_strlen($this->request->post['about']) < 1) || (utf8_strlen($this->request->post['about']) > 32)) {
+            $this->error['about'] = $this->language->get('error_about');
+        }
+
+		/*if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
 			$this->error['lastname'] = $this->language->get('error_lastname');
-		}
+		}*/
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])) {
 			$this->error['email'] = $this->language->get('error_email');
@@ -169,9 +188,9 @@ class ControllerAccountEdit extends Controller {
 			$this->error['warning'] = $this->language->get('error_exists');
 		}
 
-		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+		/*if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
 			$this->error['telephone'] = $this->language->get('error_telephone');
-		}
+		}*/
 
 		if (!$this->error) {
 			return true;

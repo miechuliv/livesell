@@ -22,13 +22,13 @@
             <span class="error"><?php echo $error_firstname; ?></span>
             <?php } ?></td>
         </tr>
-        <tr>
+     <?php /*   <tr>
           <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
           <td><input type="text" name="lastname" value="<?php echo $lastname; ?>" />
             <?php if ($error_lastname) { ?>
             <span class="error"><?php echo $error_lastname; ?></span>
             <?php } ?></td>
-        </tr>
+        </tr>  */ ?>
         <tr>
           <td><span class="required">*</span> <?php echo $entry_email; ?></td>
           <td><input type="text" name="email" value="<?php echo $email; ?>" />
@@ -36,7 +36,7 @@
             <span class="error"><?php echo $error_email; ?></span>
             <?php } ?></td>
         </tr>
-        <tr>
+          <?php /*    <tr>
           <td><span class="required">*</span> <?php echo $entry_telephone; ?></td>
           <td><input type="text" name="telephone" value="<?php echo $telephone; ?>" />
             <?php if ($error_telephone) { ?>
@@ -46,10 +46,10 @@
         <tr>
           <td><?php echo $entry_fax; ?></td>
           <td><input type="text" name="fax" value="<?php echo $fax; ?>" /></td>
-        </tr>
+        </tr> */ ?>
       </table>
     </div>
-    <h2><?php echo $text_your_address; ?></h2>
+   <?php /* <h2><?php echo $text_your_address; ?></h2>
     <div class="content">
       <table class="form">
         <tr>
@@ -134,7 +134,7 @@
             <?php } ?></td>
         </tr>
       </table>
-    </div>
+    </div> */ ?>
     <h2><?php echo $text_your_password; ?></h2>
     <div class="content">
       <table class="form">
@@ -233,7 +233,8 @@ $('input[name=\'customer_group_id\']:checked').live('change', function() {
 });
 
 $('input[name=\'customer_group_id\']:checked').trigger('change');
-//--></script> 
+//--></script>
+<?php /*
 <script type="text/javascript"><!--
 $('select[name=\'country_id\']').bind('change', function() {
 	$.ajax({
@@ -277,7 +278,9 @@ $('select[name=\'country_id\']').bind('change', function() {
 });
 
 $('select[name=\'country_id\']').trigger('change');
-//--></script> 
+//--></script>
+
+*/ ?>
 <script type="text/javascript"><!--
 $(document).ready(function() {
 	$('.colorbox').colorbox({

@@ -21,13 +21,20 @@
             <span class="error"><?php echo $error_firstname; ?></span>
             <?php } ?></td>
         </tr>
-        <tr>
+          <tr>
+              <td><span class="required">*</span> <?php echo $entry_about; ?></td>
+              <td><textarea name="about"  ><?php echo $about; ?></textarea>
+                  <?php if ($error_about) { ?>
+                  <span class="error"><?php echo $error_about; ?></span>
+                  <?php } ?></td>
+          </tr>
+       <?php /* <tr>
           <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
           <td><input type="text" name="lastname" value="<?php echo $lastname; ?>" />
             <?php if ($error_lastname) { ?>
             <span class="error"><?php echo $error_lastname; ?></span>
             <?php } ?></td>
-        </tr>
+        </tr> */ ?>
         <tr>
           <td><span class="required">*</span> <?php echo $entry_email; ?></td>
           <td><input type="text" name="email" value="<?php echo $email; ?>" />
@@ -35,7 +42,7 @@
             <span class="error"><?php echo $error_email; ?></span>
             <?php } ?></td>
         </tr>
-        <tr>
+      <?php /* <tr>
           <td><span class="required">*</span> <?php echo $entry_telephone; ?></td>
           <td><input type="text" name="telephone" value="<?php echo $telephone; ?>" />
             <?php if ($error_telephone) { ?>
@@ -45,7 +52,7 @@
         <tr>
           <td><?php echo $entry_fax; ?></td>
           <td><input type="text" name="fax" value="<?php echo $fax; ?>" /></td>
-        </tr>
+        </tr> */ ?>
       </table>
     </div>
     <div class="buttons">

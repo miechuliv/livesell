@@ -35,6 +35,25 @@ spl_autoload_register(
 
 );
 
+// miechu ladowanie repozytoriów
+spl_autoload_register(
+    function ($name) {
+        $pieces = preg_split('/(?=[A-Z])/',$name);
+        $dir =  DIR_APPLICATION . 'model/'.strtolower($pieces[1]).'/'.strtolower($pieces[2].$pieces[3]).'.php';
+
+        if(file_exists($dir))
+        {
+            require_once($dir);
+        }
+        else
+        {
+            //  throw new Exception('Nie udało się załądować klasy: '. $name .' w: '. $dir );
+        }
+
+    }
+
+);
+
 
 // vQmod
 require_once('../vqmod/vqmod.php');

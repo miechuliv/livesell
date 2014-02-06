@@ -49,19 +49,19 @@ function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultV
 
 
 
-            $html .= '<option value="'.$key.'" ';
+            $html .= '<option value="'.$value.'" ';
 
             if($optionClass)
             {
                 $html .= ' class="'.$optionClass.'" ';
             }
 
-            if($defaultValue AND $key==$defaultValue)
+            if($defaultValue AND $value==$defaultValue)
             {
                 $html .= ' selected="selected" ';
             }
 
-            if($currentValue AND ((!is_array($currentValue) AND $key==$defaultValue) OR (is_array($currentValue) AND in_array($key,$currentValue))) )
+            if($currentValue AND ((!is_array($currentValue) AND $value==$defaultValue) OR (is_array($currentValue) AND in_array($value,$currentValue))) )
             {
                 $html .= ' selected="selected" ';
             }
@@ -88,16 +88,18 @@ function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultV
 
         if(!$textKey)
         {
-            $html .= ' >'.$key.'</option>';
+            $html .= ' >'.$value.'</option>';
         }
-        elseif(isset($dataList[$textKey]))
+        elseif(isset($value[$textKey]))
         {
-            $html .= ' >'.$dataList[$textKey].'</option>';
+            $html .= ' >'.$value[$textKey].'</option>';
         }
 
-        $html .= '</select>';
 
-        return $html;
 
     }
+
+    $html .= '</select>';
+
+    return $html;
 }
