@@ -249,9 +249,12 @@ class Controller {
             if (isset($this->request->{$request_type}[$field])) {
 
                 $this->data[$field] = $this->request->{$request_type}[$field];
-            } elseif (!empty($data) AND isset($data[$field])) {
+            } elseif (is_array($data) AND !empty($data) AND isset($data[$field])) {
 
                 $this->data[$field] = $data[$field];
+            } elseif (is_object($data) AND isset($data->$field)) {
+
+                $this->data[$field] = $data->$field;
             } else {
 
                 $this->data[$field] = '';
@@ -259,6 +262,23 @@ class Controller {
 
 
         }
+
+    }
+
+    public function remainGet($fields)
+    {
+        $url = '';
+
+        foreach($this->request->get as $key => $value)
+        {
+            if(isset($fields[$value]))
+            {
+                $url .= '&'.$key.'='.$value;
+             }
+        }
+
+        return $url;
+
 
     }
 

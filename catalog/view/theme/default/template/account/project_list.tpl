@@ -3,9 +3,7 @@
 <?php echo $column_left; ?><?php echo $column_right; ?>
 <div id="content"><?php echo $content_top; ?>
 
-    <div><a class="button" href="<?php echo $add; ?>" ><?php echo $this->language->get('text_submit'); ?></a></div>
-
-    <table>
+    <table style="display:inline-block">
         <tr>
             <td><?php echo $this->language->get('text_title'); ?></td>
 
@@ -40,7 +38,7 @@
         <div class="buttons">
             <div class="left"><a href="<?php echo $back; ?>" class="button"><?php echo $button_back; ?></a></div>
             <div class="right">
-                <input type="submit" value="<?php echo $button_continue; ?>" class="button" />
+              <a class="button action" href="<?php echo $add; ?>" ><?php echo $this->language->get('text_submit'); ?></a>
             </div>
         </div>
 

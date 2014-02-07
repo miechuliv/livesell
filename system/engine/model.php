@@ -7,6 +7,7 @@ abstract class Model {
     protected $defaultSort;
     protected $defaultJoins;
     protected $tableAlias;
+    protected $defaultWheres;
 
 
     public function setTableAlias($tableAlias)
@@ -37,9 +38,17 @@ abstract class Model {
 		$this->registry->set($key, $value);
 	}
 
-    public function getOne($id,$select = false)
+    public function getOne($id,$select = false, $delete = false)
     {
-        $sql = 'SELECT ';
+        if($delete)
+        {
+            $sql = 'DELETE ';
+        }
+        else
+        {
+            $sql = 'SELECT ';
+        }
+
 
         if($select)
         {
@@ -100,16 +109,16 @@ abstract class Model {
 
     public function getMany(DbQBuilder $q)
     {
-        $sql = 'SELECT * ';
+        $sql = 'SELECT  ';
 
-       /* if($q->)
+        if($q->select)
         {
-            $sql .= $select;
+            $sql .= $q->select;
         }
         else
         {
             $sql .= ' * ';
-        } */
+        }
 
         $sql .= ' FROM '.DB_PREFIX.'`'.$this->tableName.'` '.$this->tableAlias;
 
@@ -125,14 +134,25 @@ abstract class Model {
         {
             foreach($q->joins as $join)
             {
-                $sql .= ' '.$join->type.' JOIN `'.$join->tableName.'` '.$join->alias.' ON('.$this->tableAlias.'.'.$join->key.'='.$join->alias.'.'.$join->key.') ';
+                $sql .= ' '.$join->type.' JOIN `'.$join->tableName.'` '.$join->alias.' ON('.$this->tableAlias.'.'.$join->keyLeft.'='.$join->alias.'.'.$join->key.') ';
             }
+        }
+
+        if($this->defaultWheres)
+        {
+            foreach($this->defaultWheres as $where)
+            {
+                $q->addWhere(clone $where);
+            }
+
         }
 
         if(!empty($q->wheres))
         {
             foreach($q->wheres as $key => $param)
             {
+
+
                 if($key === 0)
                 {
                     $sql .= ' WHERE ';
@@ -228,10 +248,11 @@ abstract class Model {
     {
         $resp = array();
 
-        if($row->ID==false)
+        if($row->ID!=false)
         {
             $resp = $this->getOne($row->ID);
         }
+
 
 
         if(!empty($resp))
@@ -304,6 +325,8 @@ abstract class Model {
 
         $this->db->query($sql);
 
+
+
         $id = $this->db->getLastId();
 
         /* foreach($fields as $field)
@@ -332,6 +355,11 @@ abstract class Model {
     public function addDefaultJoins($defaultJoins)
     {
         $this->defaultJoins[] = $defaultJoins;
+    }
+
+    public function addDefaultWheres($defaultWheres)
+    {
+        $this->defaultWheres[] = $defaultWheres;
     }
 
 

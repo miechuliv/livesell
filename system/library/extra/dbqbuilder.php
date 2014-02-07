@@ -13,6 +13,7 @@ class DbQBuilder {
     public $joins;
     public $sorts;
     public $limit;
+    public $select;
 
     public function addWhere(DbWhere $where)
     {
@@ -22,6 +23,11 @@ class DbQBuilder {
     public function addJoin(DbJoin $join)
     {
         $this->joins[] = $join;
+    }
+
+    public function setSelect($select)
+    {
+        $this->select = $select;
     }
 
     public function addSorts(DbSort $sort)

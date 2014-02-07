@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultValue = false,$currentValue = false,$name = false,$id = false,$class = false, $optionClass = false)
+function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultValue = false,$currentValue = false,$name = false,$emptyFirst = false,$id = false,$class = false, $optionClass = false)
 {
     $html = '';
 
@@ -41,6 +41,11 @@ function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultV
 
     $html .= ' >';
 
+    if($emptyFirst)
+    {
+        $html .= '<option ></option>';
+    }
+
     foreach($dataList as $key => $value)
     {
 
@@ -61,7 +66,8 @@ function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultV
                 $html .= ' selected="selected" ';
             }
 
-            if($currentValue AND ((!is_array($currentValue) AND $value==$defaultValue) OR (is_array($currentValue) AND in_array($value,$currentValue))) )
+
+            if($currentValue AND ((!is_array($currentValue) AND $value==$currentValue) OR (is_array($currentValue) AND in_array($value,$currentValue))) )
             {
                 $html .= ' selected="selected" ';
             }
@@ -80,7 +86,7 @@ function generateDropDown($dataList,$valueKey = false,$textKey = false,$defaultV
                 $html .= ' selected="selected" ';
             }
 
-            if($currentValue AND ((!is_array($currentValue) AND $value[$valueKey]==$defaultValue) OR (is_array($currentValue) AND in_array($value[$valueKey],$currentValue))) )
+            if($currentValue AND ((!is_array($currentValue) AND $value[$valueKey]==$currentValue) OR (is_array($currentValue) AND in_array($value[$valueKey],$currentValue))) )
             {
                 $html .= ' selected="selected" ';
             }

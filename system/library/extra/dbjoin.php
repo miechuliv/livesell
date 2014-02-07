@@ -13,6 +13,7 @@ class DbJoin {
     public $tableName;
     public $alias;
     public $key;
+    public $keyLeft;
 
     public function setAlias($alias)
     {
@@ -23,6 +24,13 @@ class DbJoin {
     public function setKey($key)
     {
         $this->key = $key;
+        $this->keyLeft = $key;
+        return $this;
+    }
+
+    public function setKeyLeft($keyLeft)
+    {
+        $this->keyLeft = $keyLeft;
         return $this;
     }
 

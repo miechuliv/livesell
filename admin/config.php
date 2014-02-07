@@ -8,6 +8,8 @@ define('HTTP_IMAGE', 'http://demo.stronazen.pl/livesell/image/');
 define('HTTPS_SERVER', 'http://demo.stronazen.pl/livesell/admin/');
 define('HTTPS_IMAGE', 'http://demo.stronazen.pl/livesell/image/');
 
+define('HTTP_SUB', 'livesell/');
+
 // DIR
 define('DIR_APPLICATION', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/admin/');
 define('DIR_SYSTEM', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/system/');

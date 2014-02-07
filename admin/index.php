@@ -220,6 +220,7 @@ $registry->set('cache', $cache);
 
 // Session
 $session = new Session();
+
 $registry->set('session', $session);
 
 $debugger->setSession($session);
