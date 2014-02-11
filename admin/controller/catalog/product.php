@@ -1394,6 +1394,8 @@ class ControllerCatalogProduct extends Controller {
 		}			
 		
 		$this->data['product_options'] = array();
+
+        $this->load->model('tool/image');
 			
 		foreach ($product_options as $product_option) {
 			if ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') {
@@ -1410,7 +1412,9 @@ class ControllerCatalogProduct extends Controller {
 						'points'                  => $product_option_value['points'],
 						'points_prefix'           => $product_option_value['points_prefix'],						
 						'weight'                  => $product_option_value['weight'],
-						'weight_prefix'           => $product_option_value['weight_prefix']	
+						'weight_prefix'           => $product_option_value['weight_prefix'],
+                        'image'           => $product_option_value['image'],
+                        'thumb'                   => $this->model_tool_image->resize($product_option_value['image'],200,200),
 					);
 				}
 				
@@ -1433,6 +1437,8 @@ class ControllerCatalogProduct extends Controller {
 				);				
 			}
 		}
+
+
 		
 		$this->data['option_values'] = array();
 		
@@ -1443,6 +1449,8 @@ class ControllerCatalogProduct extends Controller {
 				}
 			}
 		}
+
+
 		
 		$this->load->model('sale/customer_group');
 		

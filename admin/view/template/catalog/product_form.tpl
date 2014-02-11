@@ -550,6 +550,7 @@
                   <td class="right"><?php echo $entry_price; ?></td>
                   <td class="right"><?php echo $entry_option_points; ?></td>
                   <td class="right"><?php echo $entry_weight; ?></td>
+                    <td class="right"><?php echo $entry_image; ?></td>
                   <td></td>
                 </tr>
               </thead>
@@ -618,7 +619,16 @@
                       <?php } ?>
                     </select>
                     <input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" size="5" /></td>
-                  <td class="left"><a onclick="$('#option-value-row<?php echo $option_value_row; ?>').remove();" class="button"><?php echo $button_remove; ?></a></td>
+                    <td>
+
+
+                    <div class="image"><img src="<?php echo $product_option_value['thumb']; ?>" alt="" id="thumb_option_<?php echo $option_value_row; ?>" /><br />
+
+                            <input type="hidden" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][image]" value="<?php echo $product_option_value['image']; ?>" id="image_option_<?php echo $option_value_row; ?>" />
+                            <a onclick="image_upload('image_option_<?php echo $option_value_row; ?>', 'thumb_option_<?php echo $option_value_row; ?>');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$('#thumb_option_<?php echo $option_value_row; ?>').attr('src', '<?php echo $no_image; ?>'); $('#image_option_<?php echo $option_value_row; ?>').attr('value', '');"><?php echo $text_clear; ?></a></div>
+
+                    </td>
+                    <td class="left"><a onclick="$('#option-value-row<?php echo $option_value_row; ?>').remove();" class="button"><?php echo $button_remove; ?></a></td>
                 </tr>
               </tbody>
               <?php $option_value_row++; ?>
@@ -1339,8 +1349,24 @@ function addOptionValue(option_row) {
 	html += '      <option value="-">-</option>';
 	html += '    </select>';
 	html += '    <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight]" value="" size="5" /></td>';
-	html += '    <td class="left"><a onclick="$(\'#option-value-row' + option_value_row + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
-	html += '  </tr>';
+
+    html += '<td>';
+
+
+    html += '<div class="image"><img src="" alt="" id="thumb_option_'+option_value_row+'" /><br />';
+
+    html += '<input type="hidden" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][image]" value="" id="image_option_'+option_value_row+'" />';
+    html += '<a onclick="image_upload(\'image_option_'+option_value_row+'\', \'thumb_option_'+option_value_row+'\');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$(\'#thumb_option_'+option_value_row+'\').attr(\'src\', \'<?php echo $no_image; ?>\'); $(\'#image_option_'+option_value_row+'\').attr(\'value\', \'\');"><?php echo $text_clear; ?></a></div>';
+
+    html += '</td>';
+
+
+
+    html += '    <td class="left"><a onclick="$(\'#option-value-row' + option_value_row + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
+
+
+
+    html += '  </tr>';
 	html += '</tbody>';
 	
 	$('#option-value' + option_row + ' tfoot').before(html);
