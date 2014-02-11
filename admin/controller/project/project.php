@@ -19,7 +19,8 @@ class ControllerProjectProject extends Controller{
             'date_start',
             'date_end',
             'author',
-            'status'
+            'status',
+
 
         ));
 
@@ -75,7 +76,7 @@ class ControllerProjectProject extends Controller{
 
         }
 
-        $this->data['action'] = $this->url->link('project/project/submit',$this->url);
+        $this->data['action'] = $this->url->link('project/project/submit',$this->baseUrl);
 
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/project/project_submit.tpl')) {
             $this->template = $this->config->get('config_template') . '/template/project/project_submit.tpl';
@@ -274,6 +275,7 @@ class ControllerProjectProject extends Controller{
             'error_prev_release',
             'error_portfolio',
             'error_confirm',
+            'error_status'
 
         ));
 
@@ -343,9 +345,9 @@ class ControllerProjectProject extends Controller{
 
             $this->model_project_project->save($project);
 
-            //$this->session->data['success'] = $this->language->get('text_success');
+            $this->session->data['success'] = $this->language->get('text_success');
 
-           // $this->redirect($this->url->link('project/project/showList', $this->baseUrl.'&token='.$this->session->data['token'], 'SSL'));
+            $this->redirect($this->url->link('project/project/showList', $this->baseUrl.'&token='.$this->session->data['token'], 'SSL'));
 
 
         }
@@ -353,7 +355,7 @@ class ControllerProjectProject extends Controller{
 
 
 
-
+        $this->data['action'] =  $this->url->link('project/project/show',$this->baseUrl.'&token='.$this->session->data['token'].'&project_id='.$this->request->get['project_id'], 'SSL');
 
 
         $this->load->model('project/status');

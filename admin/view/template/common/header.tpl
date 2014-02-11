@@ -108,7 +108,7 @@ function hidedesc(divid) {
 </head>
 <body>
 <div id="container">
-
+<?/*
 
     <div id="mychat"><a href="http://www.phpfreechat.net">Creating chat rooms everywhere - phpFreeChat</a></div>
 
@@ -116,7 +116,7 @@ function hidedesc(divid) {
    <script type="text/javascript">
         $('#mychat').phpfreechat({ serverUrl: '/phpfreechat-2.1.0/server', isAdmin: 1, show_powered_by: 0 });
     </script>
-
+*/?>
     <div id="header">
 
   <div class="div1">
@@ -133,6 +133,9 @@ function hidedesc(divid) {
         <ul>
           <li><a href="<?php echo $category; ?>"><?php echo $text_category; ?></a></li>
           <li><a href="<?php echo $product; ?>"><?php echo $text_product; ?></a></li>
+
+            <li><a href="<?php echo $project; ?>"><?php echo $this->language->get('text_project'); ?></a></li>
+            <li><a href="<?php echo $campaign; ?>"><?php echo $this->language->get('text_campaign'); ?></a></li>
         <!--  <li><a href="<?php echo $filter; ?>"><?php echo $text_filter; ?></a></li> -->
           <li><a class="parent"><?php echo $text_attribute; ?></a>
             <ul>

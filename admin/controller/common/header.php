@@ -150,6 +150,8 @@ class ControllerCommonHeader extends Controller {
             $this->data['retailer'] = $this->url->link('catalog/retailer', 'token=' . $this->session->data['token'], 'SSL');
             $this->data['mail'] = $this->url->link('design/email', 'token=' . $this->session->data['token'], 'SSL');
 
+            $this->data['project'] = $this->url->link('project/project/showList', 'token=' . $this->session->data['token'], 'SSL');
+            $this->data['campaign'] = $this->url->link('project/campaign/showList', 'token=' . $this->session->data['token'], 'SSL');
 
 			$this->data['module'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['option'] = $this->url->link('catalog/option', 'token=' . $this->session->data['token'], 'SSL');

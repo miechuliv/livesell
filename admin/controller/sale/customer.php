@@ -859,6 +859,14 @@ class ControllerSaleCustomer extends Controller {
 		} else {
       		$this->data['newsletter'] = '';
     	}
+
+        if (isset($this->request->post['about'])) {
+            $this->data['about'] = $this->request->post['about'];
+        } elseif (!empty($customer_info)) {
+            $this->data['about'] = $customer_info['about'];
+        } else {
+            $this->data['about'] = '';
+        }
 		
 		$this->load->model('sale/customer_group');
 			
@@ -948,9 +956,10 @@ class ControllerSaleCustomer extends Controller {
       		$this->error['firstname'] = $this->language->get('error_firstname');
     	}
 
-    	if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
+
+    	/* if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
       		$this->error['lastname'] = $this->language->get('error_lastname');
-    	}
+    	}*/
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])) {
       		$this->error['email'] = $this->language->get('error_email');
@@ -968,9 +977,9 @@ class ControllerSaleCustomer extends Controller {
 			}
 		}
 		
-    	if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+    	/* if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
       		$this->error['telephone'] = $this->language->get('error_telephone');
-    	}
+    	} */
 
     	if ($this->request->post['password'] || (!isset($this->request->get['customer_id']))) {
       		if ((utf8_strlen($this->request->post['password']) < 4) || (utf8_strlen($this->request->post['password']) > 20)) {
@@ -988,21 +997,21 @@ class ControllerSaleCustomer extends Controller {
 					$this->error['address_firstname'][$key] = $this->language->get('error_firstname');
 				}
 				
-				if ((utf8_strlen($value['lastname']) < 1) || (utf8_strlen($value['lastname']) > 32)) {
+				 if ((utf8_strlen($value['lastname']) < 1) || (utf8_strlen($value['lastname']) > 32)) {
 					$this->error['address_lastname'][$key] = $this->language->get('error_lastname');
-				}	
+				}
 				
-				if ((utf8_strlen($value['address_1']) < 3) || (utf8_strlen($value['address_1']) > 128)) {
+				 if ((utf8_strlen($value['address_1']) < 3) || (utf8_strlen($value['address_1']) > 128)) {
 					$this->error['address_address_1'][$key] = $this->language->get('error_address_1');
 				}
 			
 				if ((utf8_strlen($value['city']) < 2) || (utf8_strlen($value['city']) > 128)) {
 					$this->error['address_city'][$key] = $this->language->get('error_city');
-				} 
+				}
 	
 				$this->load->model('localisation/country');
 				
-				$country_info = $this->model_localisation_country->getCountry($value['country_id']);
+				 $country_info = $this->model_localisation_country->getCountry($value['country_id']);
 						
 				if ($country_info) {
 					if ($country_info['postcode_required'] && (utf8_strlen($value['postcode']) < 2) || (utf8_strlen($value['postcode']) > 10)) {
@@ -1017,13 +1026,13 @@ class ControllerSaleCustomer extends Controller {
 					}
 				}
 			
-				if ($value['country_id'] == '') {
+				 if ($value['country_id'] == '') {
 					$this->error['address_country'][$key] = $this->language->get('error_country');
 				}
 				
 				if (!isset($value['zone_id']) || $value['zone_id'] == '') {
 					$this->error['address_zone'][$key] = $this->language->get('error_zone');
-				}	
+                }
 			}
 		}
 		

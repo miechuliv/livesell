@@ -23,7 +23,7 @@ define('DIR_DOWNLOAD', '/home/demostrona/domains/demo.stronazen.pl/public_html/l
 define('DIR_LOGS', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/system/logs/');
 define('DIR_CATALOG', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/catalog/');
 
-define('ENV', 'DEVELOPMENT');
+define('ENV', 'TESTING');
 
 // DB
 define('DB_DRIVER', 'mysql');

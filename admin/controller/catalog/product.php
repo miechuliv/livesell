@@ -248,6 +248,8 @@ class ControllerCatalogProduct extends Controller {
 
 
         // miechu masowa edycja
+        $this->load->model('sale/customer_group');
+        $this->data['customer_groups'] = $this->model_sale_customer_group->getCustomerGroups();
 
         if (isset($this->request->get['mass_price'])) {
             $mass_price = $this->request->get['mass_price'];
@@ -908,6 +910,8 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
 		$this->data['tab_design'] = $this->language->get('tab_design');
 
+
+
 		 
  		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -1050,11 +1054,27 @@ class ControllerCatalogProduct extends Controller {
 
         );
 
-        $this->setFields($fields,$product_info);
+
+        $this->setFields($fields,(isset($product_info)?$product_info:array()) );
 
 		$this->load->model('setting/store');
 		
 		$this->data['stores'] = $this->model_setting_store->getStores();
+
+
+        // pełny czy skrócony
+        if(isset($this->request->get['full']))
+        {
+            $this->data['full'] = true;
+        }
+        elseif(isset($product_info['parent_product']) AND $product_info['parent_product'] != 0)
+        {
+            $this->data['full'] = true;
+        }
+        else
+        {
+            $this->data['full'] = false;
+        }
 		
 		if (isset($this->request->post['product_store'])) {
 			$this->data['product_store'] = $this->request->post['product_store'];
@@ -1302,12 +1322,60 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
+
+
+        // pobieramy waluty
+        $this->load->model('localisation/currency');
+
+        $this->data['currencies'] = $this->model_localisation_currency->getCurrencies();
+
+        // ceny produktu
+        if(isset($this->request->get['product_id']))
+        {
+            $this->data['product_prices'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],false);
+        }
+        else
+        {
+            $this->data['product_prices'] = array();
+            foreach($this->data['currencies'] as $currency)
+            {
+                $this->data['product_prices'][$currency['currency_id']] = false;
+            }
+
+
+        }
+
+        if(isset($this->request->get['product_id']))
+        {
+            $this->data['product_prices_last_chance'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],true);
+        }
+        else
+        {
+            $this->data['product_prices_last_chance'] = array();
+
+            foreach($this->data['currencies'] as $currency)
+            {
+                $this->data['product_prices_last_chance'][$currency['currency_id']] = false;
+            }
+
+
+        }
+
+
         // retailers
         $this->load->model('catalog/retailer');
 
         $this->data['retailers'] = $this->model_catalog_retailer->getretailers();
 
-		$this->data['product_retailers'] = $this->model_catalog_product->getProductRetailers($this->request->get['product_id']);
+        if(isset($this->request->get['product_id']))
+        {
+            $this->data['product_retailers'] = $this->model_catalog_product->getProductRetailers($this->request->get['product_id']);
+        }
+        else
+        {
+            $this->data['product_retailers'] = array();
+        }
+
 
 
 		// Options
@@ -1485,6 +1553,7 @@ class ControllerCatalogProduct extends Controller {
 		} else {
 			$this->data['product_layout'] = array();
 		}
+
 
 
 

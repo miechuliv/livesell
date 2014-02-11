@@ -33,6 +33,7 @@ class ControllerCommonHome extends Controller {
 			'common/content_bottom',
 			'common/footer',
 			'common/header',
+            'module/campaign',
 
 		);
 										

@@ -1,6 +1,89 @@
 <?php
 class ModelCatalogProduct extends Model {
 
+    public function setProductsParent($product_id,$parent_id)
+    {
+
+
+        $this->db->query("UPDATE ".DB_PREFIX."product SET parent_product = '".(int)$parent_id."'
+         WHERE product_id = '".(int)$product_id."' ");
+    }
+
+    public function getProductsPrices($product_id , $last_chance = false)
+    {
+        $sql = "SELECT * FROM ".DB_PREFIX."product_price
+          WHERE product_id = '".(int)$product_id."' ";
+
+        if($last_chance)
+        {
+            $sql .= " AND last_chance = '1' ";
+        }
+        else
+        {
+            $sql .= " AND last_chance = '0' ";
+        }
+
+
+        $q = $this->db->query($sql);
+
+        $data = array();
+
+        foreach($q->rows as $row)
+        {
+            $data[$row['currency_id']] = $row['price'];
+        }
+
+        return $data;
+    }
+
+    public function getProductsPrice($product_id,$currency_id)
+    {
+        $q = $this->db->query("SELECT * FROM ".DB_PREFIX."product_price
+          WHERE product_id = '".(int)$product_id."'
+           AND currency_id = '".(int)$currency_id."' ");
+
+        return $q->row;
+    }
+
+    private function deleteProductPrices($product_id)
+    {
+        $this->db->query("DELETE FROM ".DB_PREFIX."product_price WHERE product_id = '".(int)$product_id."'
+                 ");
+    }
+
+    public function saveProductPrices($product_id,$data ,$last_chance = false)
+    {
+
+
+
+
+        if(!empty($data))
+        {
+            foreach($data as $currency_id => $price)
+            {
+                if($last_chance)
+                {
+                    $this->db->query("INSERT INTO ".DB_PREFIX."product_price SET
+                 product_id = '".(int)$product_id."',
+                 currency_id = '".(int)$currency_id."',
+                 price = '".(float)$price."',
+                  last_chance = 1 ");
+                }
+                else
+                {
+                    $this->db->query("INSERT INTO ".DB_PREFIX."product_price SET
+                 product_id = '".(int)$product_id."',
+                 currency_id = '".(int)$currency_id."',
+                 price = '".(float)$price."',
+                  last_chance = 0 ");
+                }
+
+            }
+        }
+
+
+    }
+
     public function massSave($ids,$data)
     {
 
@@ -212,7 +295,7 @@ class ModelCatalogProduct extends Model {
 		  date_available = '" . $this->db->escape($data['date_available']) . "',
 		  manufacturer_id = '" . (int)$data['manufacturer_id'] . "',
 		  shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "',
-		  points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "',
+		   weight = '" . (float)$data['weight'] . "',
 		  weight_class_id = '" . (int)$data['weight_class_id'] . "',
 		  length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "',
 		  height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "',
@@ -231,6 +314,13 @@ class ModelCatalogProduct extends Model {
 
 		
 		$product_id = $this->db->getLastId();
+
+        $this->deleteProductPrices($product_id);
+        // ceny wg currency
+        $this->saveProductPrices($product_id,$data['product_prices'],false);
+        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],true);
+
+
 
         if($data['google_merchant'])
         {
@@ -392,7 +482,7 @@ class ModelCatalogProduct extends Model {
 		   date_available = '" . $this->db->escape($data['date_available']) . "',
 		   manufacturer_id = '" . (int)$data['manufacturer_id'] . "',
 		   shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "',
-		   points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "',
+		    weight = '" . (float)$data['weight'] . "',
 		   weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "',
 		    width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "',
 		    length_class_id = '" . (int)$data['length_class_id'] . "',
@@ -405,6 +495,11 @@ class ModelCatalogProduct extends Model {
 
 
 		    WHERE product_id = '" . (int)$product_id . "'");
+
+        $this->deleteProductPrices($product_id);
+        // ceny wg currency
+        $this->saveProductPrices($product_id,$data['product_prices'],false);
+        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],true);
 
         if($data['google_merchant'])
         {
@@ -601,7 +696,7 @@ class ModelCatalogProduct extends Model {
 			$data['upc'] = '';
 			$data['viewed'] = '0';
 			$data['keyword'] = $this->getProductKeywords($product_id);
-			$data['status'] = '0';
+			$data['status'] = '1';
 						
 			$data = array_merge($data, array('product_attribute' => $this->getProductAttributes($product_id)));
 			$data = array_merge($data, array('product_description' => $this->getProductDescriptions($product_id)));			
@@ -616,11 +711,11 @@ class ModelCatalogProduct extends Model {
 			$data = array_merge($data, array('product_download' => $this->getProductDownloads($product_id)));
 			$data = array_merge($data, array('product_layout' => $this->getProductLayouts($product_id)));
 			$data = array_merge($data, array('product_store' => $this->getProductStores($product_id)));
+            $data = array_merge($data, array('product_prices' => $this->getProductsPrices($product_id,false)));
+            $data = array_merge($data, array('product_prices_last_chance' => $this->getProductsPrices($product_id,true)));
 
 			
 			$id =  $this->addProduct($data);
-
-
 
             return $id;
 		}
@@ -646,6 +741,8 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_to_layout WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_to_store WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "review WHERE product_id = '" . (int)$product_id . "'");
+
+
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id. "'");
 		
@@ -693,6 +790,16 @@ class ModelCatalogProduct extends Model {
         // filtr po kategorii
         if (!empty($data['filter_category_id'])) {
             $sql .= " AND p2c.category_id = '" . (int)$data['filter_category_id'] . "'";
+        }
+
+        // filtr po kampanii
+        if (!empty($data['filter_campaign_id'])) {
+            $sql .= " AND p.campaign_id = '" . (int)$data['filter_campaign_id'] . "'";
+        }
+
+        // filtr po wzorcu
+        if (isset($data['filter_parent_id'])) {
+            $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
         }
 
         // miechu options
@@ -1009,6 +1116,16 @@ class ModelCatalogProduct extends Model {
         // filtr po kategorii
         if (!empty($data['filter_category_id'])) {
             $sql .= " AND p2c.category_id = '" . (int)$data['filter_category_id'] . "'";
+        }
+
+        // filtr po kampanii
+        if (!empty($data['filter_campaign_id'])) {
+            $sql .= " AND p.campaign_id = '" . (int)$data['filter_campaign_id'] . "'";
+        }
+
+        // filtr po wzorcu
+        if (isset($data['filter_parent_id'])) {
+            $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
         }
 
         // miechu options

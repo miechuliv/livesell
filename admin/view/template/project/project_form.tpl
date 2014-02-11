@@ -4,7 +4,7 @@
     <div class="box">
         <div class="heading">
             <h1><img src="view/image/product.png" alt="" /> <?php echo $this->language->get('heading_title'); ?></h1>
-            <a class="button" href="<?php echo $campaign($project->ID); ?>" ><?php echo $this->language->get('text_campaign'); ?></a>
+            <a class="button" target="_blank" href="<?php echo $campaign($project->ID); ?>" ><?php echo $this->language->get('text_campaign'); ?></a>
         </div>
         <div class="content">
 

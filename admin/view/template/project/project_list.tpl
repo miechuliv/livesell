@@ -26,9 +26,11 @@
             <td>
 
             </td>
-            <td><input type="text" name="date_start" value="<?php echo $date_start; ?>" placeholder="<?php echo $this->language->get('text_date_start'); ?>" /> </td>
+            <td> </td>
 
-            <td><input type="text" name="date_start" value="<?php echo $date_end; ?>" placeholder="<?php echo $this->language->get('text_date_end'); ?>" /></td>
+            <td>
+                <input type="text" name="date_start" value="<?php echo $date_start; ?>" placeholder="<?php echo $this->language->get('text_date_start'); ?>" />
+                <input type="text" name="date_end" value="<?php echo $date_end; ?>" placeholder="<?php echo $this->language->get('text_date_end'); ?>" /></td>
 
 
 
@@ -41,6 +43,7 @@
         </thead>
         <tbody>
 
+        <?php if(!empty($projects)){ ?>
         <?php foreach($projects as $project){ ?>
         <tr>
             <td><?php echo $project->title; ?></td>
@@ -60,9 +63,10 @@
             <td>
                 <a href="<?php echo $edit($project->ID); ?>" ><?php echo $this->language->get('text_edit'); ?></a><br/>
                 <a href="<?php echo $delete($project->ID); ?>" ><?php echo $this->language->get('text_delete'); ?></a><br/>
-                <a href="<?php echo $campaign($project->ID); ?>" ><?php echo $this->language->get('text_create_campaign'); ?></a>
+                <a target="_blank" href="<?php echo $campaign($project->ID); ?>" ><?php echo $this->language->get('text_create_campaign'); ?></a>
             </td>
         </tr>
+        <?php } ?>
         <?php } ?>
         </tbody>
 

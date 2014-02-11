@@ -60,7 +60,8 @@ require_once('../vqmod/vqmod.php');
 $vqmod = new VQMod();
 
 // VQMODDED Startup
-require_once($vqmod->modCheck(DIR_SYSTEM . 'startup.php'));
+//require_once($vqmod->modCheck(DIR_SYSTEM . 'startup.php'));
+require_once(DIR_SYSTEM . 'startup.php');
 
 // Application Classes
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/currency.php'));

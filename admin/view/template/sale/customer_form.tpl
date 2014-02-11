@@ -16,7 +16,9 @@
     <div class="content">
       <div id="htabs" class="htabs"><a href="#tab-general"><?php echo $tab_general; ?></a>
         <?php if ($customer_id) { ?>
-        <a href="#tab-history"><?php echo $tab_history; ?></a><a href="#tab-transaction"><?php echo $tab_transaction; ?></a><a href="#tab-reward"><?php echo $tab_reward; ?></a>
+        <a href="#tab-history"><?php echo $tab_history; ?></a><a href="#tab-transaction"><?php echo $tab_transaction; ?></a>
+          <a href="#tab-reward"><?php echo $tab_reward; ?></a>
+          <a href="#tab-author"><?php echo $this->language->get('text_author'); ?></a>
         <?php } ?>
         <a href="#tab-ip"><?php echo $tab_ip; ?></a></div>
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -37,7 +39,7 @@
                   <span class="error"><?php echo $error_firstname; ?></span>
                   <?php } ?></td>
               </tr>
-              <tr>
+              <tr style="display: none;">
                 <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
                 <td><input type="text" name="lastname" value="<?php echo $lastname; ?>" />
                   <?php if ($error_lastname) { ?>
@@ -51,7 +53,7 @@
                   <span class="error"><?php echo $error_email; ?></span>
                   <?php  } ?></td>
               </tr>
-              <tr>
+              <tr style="display: none;">
                 <td><span class="required">*</span> <?php echo $entry_telephone; ?></td>
                 <td><input type="text" name="telephone" value="<?php echo $telephone; ?>" />
                   <?php if ($error_telephone) { ?>
@@ -286,11 +288,41 @@
             </tbody>
           </table>
         </div>
+        <div id="tab-author">
+            <table class="list">
+
+                <tbody>
+                 <tr>
+                     <td>
+                         <?php echo $this->language->get('text_about'); ?>
+                     </td>
+                     <td>
+                         <textarea name="about" id="about"  >
+
+                             <?php echo $about; ?>
+                             </textarea>
+                     </td>
+                 </tr>
+                </tbody>
+            </table>
+        </div>
       </form>
     </div>
   </div>
 </div>
+<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
 <script type="text/javascript"><!--
+
+        CKEDITOR.replace('about', {
+            filebrowserBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+            filebrowserImageBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+            filebrowserFlashBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+            filebrowserUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+            filebrowserImageUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+            filebrowserFlashUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>'
+        });
+
+
 $('select[name=\'customer_group_id\']').live('change', function() {
 	var customer_group = [];
 	

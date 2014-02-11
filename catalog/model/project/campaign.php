@@ -9,102 +9,39 @@
 
 class ModelProjectCampaign extends Model{
 
-    public function delete($campaign_id)
+
+    public function showActualCampaign($language_id)
     {
-        $this->deleteImages($campaign_id);
+        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about FROM ".DB_PREFIX.".campaign  c
+         LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
+         LEFT JOIN project pro ON(c.project_id = pro.project_id)
+         LEFT JOIN customer cu ON(pro.author_id = cu.customer_id)
+          WHERE c.date_start <= SYSDATE()
+          AND DATE_ADD(c.date_start,INTERVAL 1 DAY) >= SYSDATE()
+           AND des.language_id = '".(int)$language_id."' ";
 
-        $this->deleteDescription($campaign_id);
 
-        $this->deleteCampaignProducts($campaign_id);
+        $res = $this->db->query($sql);
 
-        $this->db->query("DELETE FROM ".DB_PREFIX."campaign WHERE campaign_id = '".(int)$campaign_id."' ");
+        return $res->row;
     }
 
-
-    public function insert($data)
+    public function showLastChanceCampaign($language_id)
     {
-        error_reporting(E_ALL);
-        ini_set('display_errors', '1');
+        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about FROM ".DB_PREFIX.".campaign  c
+         LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
+         LEFT JOIN project pro ON(c.project_id = pro.project_id)
+         LEFT JOIN customer cu ON(pro.author_id = cu.customer_id)
+          WHERE DATE_ADD(c.date_start,INTERVAL 1 DAY) <= SYSDATE()
+          AND DATE_ADD(c.date_start,INTERVAL 2 DAY) >= SYSDATE()
+           AND des.language_id = '".(int)$language_id."' ";
 
 
-        $sql = "INSERT INTO ".DB_PREFIX.".campaign SET
-        project_id = '".(int)$data['project_id']."',
-        date_start = '".$this->db->escape($data['date_start'])."',
-        show_archiwe = '".(int)$data['show_archiwe']."',
-         vote = '0' ";
+        $res = $this->db->query($sql);
 
-        $this->db->query($sql);
-
-
-        $campaign_id = $this->db->getLastId();
-
-
-        $this->saveDescription($campaign_id,$data['campaign_description']);
-
-
-
-        if(isset($data['campaign_image']))
-        {
-            $this->saveImages($campaign_id,$data['campaign_image']);
-        }
-
-
-        /*if(isset($data['campaign_tags']))
-        {
-            $this->saveTags($campaign_id,$data['campaign_tags']);
-        }*/
-
-
-
-
-        if(isset($data['campaign_products']))
-        {
-            $this->saveCampaignProducts($campaign_id,$data['campaign_products']);
-        }
-
-
-
-        return $campaign_id;
-
-        //
+        return $res->row;
     }
 
-    public function update($data,$campaign_id)
-    {
-        $sql = "UPDATE ".DB_PREFIX.".campaign SET
-
-        show_archiwe = '".(int)$data['show_archiwe']."',
-        date_start = '".$this->db->escape($data['date_start'])."'
-
-        WHERE campaign_id = '".(int)$campaign_id."' ";
-
-        $this->db->query($sql);
-
-
-
-        $this->saveDescription($campaign_id,$data['campaign_description']);
-
-        if(isset($data['campaign_image']))
-        {
-            $this->saveImages($campaign_id,$data['campaign_image']);
-        }
-
-
-
-        /*if(isset($data['campaign_tags']))
-        {
-            $this->saveTags($campaign_id,$data['campaign_tags']);
-        }*/
-
-
-
-        if(isset($data['campaign_products']))
-        {
-            $this->saveCampaignProducts($campaign_id,$data['campaign_products']);
-        }
-
-        return $campaign_id;
-    }
 
     public function checkDate($date,$campaign_id = false)
     {
@@ -207,16 +144,7 @@ class ModelProjectCampaign extends Model{
         return $res->rows;
     }
 
-    public function getTotalCampaigns($data)
-    {
-        $sql = "SELECT COUNT(DISTINCT(c.campaign_id)) as total FROM ".DB_PREFIX.".campaign c  ";
 
-        $this->applyConditions($sql,$data);
-
-        $res = $this->db->query($sql);
-
-        return $res->row['total'];
-    }
 
     // opis
     public function getCampaignDescriptions($campaign_id , $language_id = false)
