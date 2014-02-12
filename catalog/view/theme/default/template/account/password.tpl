@@ -28,7 +28,7 @@
     </div>
     <div class="buttons">
       <div class="left"><a href="<?php echo $back; ?>" class="button"><?php echo $button_back; ?></a></div>
-      <div class="right"><input type="submit" value="<?php echo $button_continue; ?>" class="button" /></div>
+      <div class="right"><input type="submit" value="<?php echo $button_continue; ?>" class="button action" /></div>
     </div>
   </form>
   <?php echo $content_bottom; ?></div>

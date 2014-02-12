@@ -23,10 +23,10 @@
       </tr>
     </table>
   </div>
-  <?php } ?>
+  <?php } ?><br/>
   <div class="buttons">
     <div class="left"><a href="<?php echo $back; ?>" class="button"><?php echo $button_back; ?></a></div>
-    <div class="right"><a href="<?php echo $insert; ?>" class="button"><?php echo $button_new_address; ?></a></div>
+    <div class="right"><a href="<?php echo $insert; ?>" class="button action"><?php echo $button_new_address; ?></a></div>
   </div>
   <?php echo $content_bottom; ?></div>
 <?php echo $footer; ?>

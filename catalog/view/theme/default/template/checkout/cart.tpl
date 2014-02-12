@@ -21,7 +21,7 @@
     <?php } ?>
   </h1>
     <div class="buttons basket" style="margin-bottom:10px;">
-    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?></a></div>
+    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
    <?/* <div class="left"><a class="button grey cofka"><?php echo $button_shopping; ?></a></div> */?>
   </div>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
@@ -30,7 +30,7 @@
         <thead>
           <tr>
             <td class="image"><?php echo $column_image; ?></td>
-            <td class="name" style="width:440px;"><?php echo $column_name; ?></td>
+            <td class="name" style="width:440px; text-align:left !important"><?php echo $column_name; ?></td>
             <td class="model"><?php echo $column_model; ?></td> 
             <td class="quantity"><?php echo $column_quantity; ?></td>
             <td class="price"><?php echo $column_price; ?></td>
@@ -43,7 +43,7 @@
             <td class="image"><?php if ($product['thumb']) { ?>
               <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" /></a>
               <?php } ?></td>
-            <td class="name"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+            <td class="name" style="text-align:left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
               <?php if (!$product['stock']) { ?>
               <span class="stock">***</span>
               <?php } ?>
@@ -60,14 +60,12 @@
               <?php } ?></td>
             <td class="model"><?php echo $product['model']; ?></td>
               <td class="quantity">
-                  <a id="dodaj" href="javascript:void(0);" >+</a>	
-				  <a id="odejmij" href="javascript:void(0);" >-</a>
-				  	  <input type="text" class="ilosc" name="quantity[<?php echo $product['key']; ?>]" value="<?php echo $product['quantity']; ?>" size="1" />
-                <?php /*  &nbsp;
-                  <input type="image" src="catalog/view/theme/default/image/update.png" alt="<?php echo $button_update; ?>" title="<?php echo $button_update; ?>" />
-                  &nbsp;<a href="<?php echo $product['remove']; ?>"><img src="catalog/view/theme/default/image/remove.png" alt="<?php echo $button_remove; ?>" title="<?php echo $button_remove; ?>" /></a>
-				  */ ?>
-                  <input type="hidden" class="p_id" value="<?php echo $product['key']; ?>" />
+				<div style="float:left">
+					<a id="odejmij" href="javascript:void(0);" >-</a>					
+					<input type="text" class="ilosc" name="quantity[<?php echo $product['key']; ?>]" value="<?php echo $product['quantity']; ?>" size="1" />
+					<a id="dodaj" href="javascript:void(0);" >+</a>
+					<input type="hidden" class="p_id" value="<?php echo $product['key']; ?>" />
+				</div>
               </td>
             <td class="price"><?php echo $product['price']; ?></td>
             <td class="total"><?php echo $product['total']; ?></td>
@@ -76,7 +74,7 @@
           <?php foreach ($vouchers as $vouchers) { ?>
           <tr>
             <td class="image"></td>
-            <td class="name"><?php echo $vouchers['description']; ?></td>
+            <td class="name" style="text-align:left"><?php echo $vouchers['description']; ?></td>
             <td class="model"></td>
             <td class="quantity"><input type="text" name="" value="1" size="1" disabled="disabled" />
             <?php /*  &nbsp;<a href="<?php echo $vouchers['remove']; ?>"><img src="catalog/view/theme/default/image/remove.png" alt="<?php echo $button_remove; ?>" title="<?php echo $button_remove; ?>" /></a>*/ ?> </td>
@@ -221,7 +219,7 @@
     </table>
   </div>
   <div class="buttons">
-    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?></a></div>
+    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
     <div class="left"><a class="button grey cofka"><?php echo $button_shopping; ?></a></div>
   </div>
   <?php echo $content_bottom; ?></div>
@@ -383,9 +381,9 @@ $('select[name=\'country_id\']').bind('change', function() {
 });
 
 
-    $('.quantity a ').bind('click', function() {
+     $('.quantity a').bind('click', function() {
 
-        targetElem = $(this).nextAll('.ilosc');
+        targetElem = $(this).siblings('.ilosc');
         currentQuantity = $(targetElem).val();
 
         changeType = $(this).attr('id');

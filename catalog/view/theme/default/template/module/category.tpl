@@ -1,6 +1,3 @@
-
-
-
 <div class="box">
   <div class="box-heading"><?php echo $heading_title; ?></div>
   <div class="box-content">
@@ -31,9 +28,7 @@
   </div>
 </div>
 
-
-
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
     $(".option_left").click(function() {
         document.forms["miechu_form"].submit();
     });

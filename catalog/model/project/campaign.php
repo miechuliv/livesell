@@ -12,7 +12,9 @@ class ModelProjectCampaign extends Model{
 
     public function showActualCampaign($language_id)
     {
-        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about FROM ".DB_PREFIX.".campaign  c
+        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about
+         , cu.avatar as author_avatar
+         FROM ".DB_PREFIX.".campaign  c
          LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
          LEFT JOIN project pro ON(c.project_id = pro.project_id)
          LEFT JOIN customer cu ON(pro.author_id = cu.customer_id)
@@ -26,9 +28,12 @@ class ModelProjectCampaign extends Model{
         return $res->row;
     }
 
+
     public function showLastChanceCampaign($language_id)
     {
-        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about FROM ".DB_PREFIX.".campaign  c
+        $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about
+         , cu.avatar as author_avatar
+         FROM ".DB_PREFIX.".campaign  c
          LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
          LEFT JOIN project pro ON(c.project_id = pro.project_id)
          LEFT JOIN customer cu ON(pro.author_id = cu.customer_id)
@@ -116,6 +121,38 @@ class ModelProjectCampaign extends Model{
             $sql .= " AND cu.firstname LIKE '%".$this->db->escape($data['filter_author'])."%' ";
         }
 
+        if(isset($data['filter_tag']) AND $data['filter_tag'])
+        {
+            $sql .= " AND cdes.tag LIKE '%".$this->db->escape($data['filter_tag'])."%' ";
+        }
+
+        if(isset($data['sort_date']) OR isset($data['sort_vote']))
+        {
+            $sql .= " ORDER BY ";
+        }
+
+        if(isset($data['sort_date']) AND ($data['sort_date'] == 'ASC' OR $data['sort_date'] == 'DESC'))
+        {
+            $sql .= " c.date_start '".$data['sort_date'];
+        }
+
+        if(isset($data['sort_date']) AND isset($data['sort_vote']) AND ($data['sort_vote'] == 'ASC' OR $data['sort_vote'] == 'DESC'))
+        {
+            $sql .= " , c.vote ".$data['sort_vote'];
+        }
+        elseif(isset($data['sort_vote']) AND ($data['sort_vote'] == 'ASC' OR $data['sort_vote'] == 'DESC'))
+        {
+            $sql .= "  c.vote ".$data['sort_vote'];
+        }
+
+        if(isset($data['start']) ANd isset($data['limit']) AND is_numeric($data['start']) AND is_numeric($data['limit']))
+        {
+            $sql .= " LIMIT ".$data['start']." , ".$data['limit']." " ;
+        }
+
+
+
+
         /*
          * statusy
          * - zaplanowana 1
@@ -134,7 +171,7 @@ class ModelProjectCampaign extends Model{
 
     public function getCampaigns($data)
     {
-        $sql = "SELECT c.*, cdes.name as name, cu.firstname as author, pr.title as project, cu.customer_id as author_id FROM ".DB_PREFIX.".campaign c ";
+        $sql = "SELECT c.*, cdes.name as name, cu.firstname as author, cu.avatar as author_avatar, pr.title as project, cu.customer_id as author_id FROM ".DB_PREFIX.".campaign c ";
 
         $this->applyConditions($sql,$data);
 
@@ -144,6 +181,25 @@ class ModelProjectCampaign extends Model{
         return $res->rows;
     }
 
+    public function getTotalCampaigns($data)
+    {
+        $sql = "SELECT COUNT(DISTINCT(c.campaign_id)) as total FROM ".DB_PREFIX.".campaign c  ";
+
+        $this->applyConditions($sql,$data);
+
+        $res = $this->db->query($sql);
+
+        return $res->row['total'];
+    }
+
+    public function upvote($campaign_id)
+    {
+        error_reporting(E_ALL);
+        ini_set('display_errors', '1');
+
+        $this->db->query("UPDATE ".DB_PREFIX."campaign SET vote = vote + 1
+         WHERE campaign_id = '".(int)$campaign_id."' ");
+    }
 
 
     // opis

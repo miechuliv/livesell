@@ -1,24 +1,16 @@
 <?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
 <div id="content" class="kasa"><?php echo $content_top; ?>
 
-<div id="payments_types" class="right clearfix">
-                <img alt="visa" src="image/data/payment icons/visa_straight_32px.png">
-                      <img alt="mastercard" src="image/data/payment icons/mastercard_curved_32px.png">
-                      <img alt="monebookers" src="image/data/payment icons/moneybookers_curved_32px.png">
-                      <img alt="paypal" src="image/data/payment icons/paypal_curved_32px.png">
-              </div>
-
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
 
- <h1 style="color:#aaa;"><?php echo $heading_title; ?></h1> 
+ <?/*<h1 style="color:#aaa;"><?php echo $heading_title; ?></h1> */?>
 
 <div id="login" class="right">
-    <h2><?php echo $text_returning_customer; ?></h2>
-    <p><?php echo $text_i_am_returning_customer; ?></p>
+    <h1 style="padding:5px 0 10px;"><?php echo $text_returning_customer; ?></h1>
     <b><?php echo $entry_email; ?></b><br />
     <input type="text" name="email" value="" />
     <br />
@@ -70,7 +62,7 @@ $('#button-login').live('click', function() {
 			if (json['redirect']) {
 				location = json['redirect'];
 			} else if (json['error']) {
-				$('#checkout .checkout-content').prepend('<div class="warning" style="display: none;">' + json['error']['warning'] + '</div>');
+				$('#button-login').after('<div class="warning" style="display: none; margin-bottom:0;">' + json['error']['warning'] + '</div>');
 				
 				$('.warning').fadeIn('slow');
 			}
@@ -277,8 +269,7 @@ $('#button-register').live('click', function() {
 
 //--></script>
 <div id="payment-address">
-<h1>1. Adresse und Kontaktinformationen</h1>
-<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<h1>1. <?php echo $this->language->get('text_checkout_payment_address'); ?></h1>
 <?/*
 <div class="left">
     <h2><?php echo $text_your_details; ?></h2>
@@ -371,82 +362,81 @@ $('#button-register').live('click', function() {
 </div>
 */?>
 
+
 <div class="left">
     <h2><?php echo $text_your_details; ?></h2>
 	<div class="lab"><span class="required">*</span> <?php echo $entry_firstname; ?></div>
-    <input type="text" name="firstname" value="<?php echo $firstname; ?>" class="large-field" />
-        <br />
+    <input id="pol1" type="text" name="firstname" value="<?php echo $firstname; ?>" class="large-field" />
     <br />
-	    <div class="lab"><span class="required">*</span> <?php echo $entry_address_1; ?></div>
+</div>
+<div class="right">	
+    <div class="lab"><span class="required">*</span> <?php echo $entry_lastname; ?></div>
+    <input id="pol2" type="text" name="lastname" value="<?php echo $lastname; ?>" class="large-field" />
+    <br />
+</div>
+<div class="left maxwidth"> 
+    <div class="lab"><span class="required">*</span> Adres: <?php // echo $entry_address_1; ?></div>
     <input type="text" name="address_1" value="<?php echo $address_1; ?>" class="large-field" />
-        <br />
     <br />
-
-      <div class="lab"><span id="payment-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></div>
+</div>
+<div class="right mobilefat" style="height:29px">	
+	&nbsp;
+</div>
+<div class="left">
+    <div class="lab"><span class="required">*</span> <?php echo $entry_postcode; ?></div>
     <input type="text" name="postcode" value="<?php echo $postcode; ?>" class="large-field" />
     <br />
-    <br />
-	    
-    <div class="lab"><span class="required">*</span> <?php echo $entry_email; ?></div>
-    <input type="text" name="email" value="<?php echo $email; ?>" class="large-field" />
-    
-        <br />
-    <br />
-    	
-	<div class="lab"><span class="required">*</span><?php echo $entry_zone; ?></div>
-    <select name="zone_id" class="large-field">
-    </select>
-
-  <?/*  <div class="lab"><?php echo $entry_fax; ?></div> */?>
-    <input type="text" name="fax" style="oveflow:hidden; height:0; padding:0; border:0; margin:0; float:left;" value="<?php echo $fax; ?>" class="large-field" />
- 
-
-	
 </div>
 <div class="right">
-    <h2><?php echo $text_your_address; ?></h2>
-
-    
-    
-    <div style="display: <?php echo (count($customer_groups) > 1 ? 'table-row' : 'none'); ?>;"> <div class="lab"><?php echo $entry_customer_group; ?></div>
-        <?php foreach ($customer_groups as $customer_group) { ?>
-        <?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
-        <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" id="customer_group_id<?php echo $customer_group['customer_group_id']; ?>" checked="checked" />
-        <label for="customer_group_id<?php echo $customer_group['customer_group_id']; ?>"><?php echo $customer_group['name']; ?></label>
-        
-        <?php } else { ?>
-        <input type="radio" name="customer_group_id" value="<?php echo $customer_group['customer_group_id']; ?>" id="customer_group_id<?php echo $customer_group['customer_group_id']; ?>" />
-        <label for="customer_group_id<?php echo $customer_group['customer_group_id']; ?>"><?php echo $customer_group['name']; ?></label>
-        
-        <?php } ?>
-        <?php } ?>
-        
-    </div>
-    <div id="tax-id-display"><div class="lab"><span id="tax-id-required" class="required">*</span> <?php echo $entry_tax_id; ?></div>
-        <input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="large-field" />
-          <br />
-    <br />  
-        
-    </div>
-
-        <div class="lab"><span class="required">*</span> <?php echo $entry_lastname; ?></div>
-    <input type="text" name="lastname" value="<?php echo $lastname; ?>" class="large-field" />
-        <br />
-    <br />
-    <div class="lab"><?php echo $entry_address_2; ?></div>
-    <input type="text" name="address_2" value="<?php echo $address_2; ?>" class="large-field" />
-    
-        <br />
-    <br />
-    <div class="lab"><span class="required">*</span> <?php echo $entry_city; ?></div>
+	<div class="lab"><span class="required">*</span> <?php echo $entry_city; ?></div>
     <input type="text" name="city" value="<?php echo $city; ?>" class="large-field" />
     <br />
+</div>
+<div class="left">
+	<div class="lab"><span class="required">*</span> <?php echo $entry_email; ?></div>
+    <input type="text" name="email" value="<?php echo $email; ?>" class="large-field" />
     <br />
-    
-    <div class="lab"><span class="required">*</span> <?php echo $entry_telephone; ?></div>
+</div>
+<div class="right">	
+	<div class="lab"><span class="required">*</span> <?php echo $entry_telephone; ?></div>
     <input type="text" name="telephone" value="<?php echo $telephone; ?>" class="large-field" />
+	<br />	
+</div>
+<div class="left">		
+    <div class="lab"><?php echo $entry_company; ?> <span style="font-weight:normal; font-size:10px;"><?php echo $this->language->get('text_optional'); ?></span></div>
+    <input type="text" name="company" value="<?php echo $company; ?>" class="large-field" />
     <br />
+</div>
+<div class="right">
+    <div id="company-id-display"><div class="lab"style="height:auto;"> <?php echo $entry_company_id; ?> <span style="font-weight:normal; font-size:10px;"><?php echo $this->language->get('text_optional'); ?></span> <?php // echo $entry_company_id; ?></div>
+        <input type="text" name="company_id" value="<?php echo $company_id; ?>" class="large-field" />
+        <br />
+    </div>
+</div>
+
+<!-- DISABLE -->
+
+	<div style="display:none">
+    <div class="lab"><?php echo $entry_address_2; ?></div>
+    <input type="text" name="address_2" value="<?php echo $address_2; ?>" class="large-field" />
     <br />
+	</div>
+	
+	<div style="display:none">
+	<div class="lab"><span class="required">*</span> <?php echo $entry_zone; ?></div>
+    <select name="zone_id" class="large-field">
+	<option value="4033" selected="selected" ></option>
+    </select>
+    <br />
+	</div>
+
+	<div style="display:none">
+    <div class="lab"><?php echo $entry_fax; ?></div>
+    <input type="text" name="fax" value="<?php echo $fax; ?>" class="large-field" />
+    <br />
+	</div>
+
+	<div style="display:none">
 	<div class="lab"><span class="required">*</span> <?php echo $entry_country; ?></div>
     <select name="country_id" class="large-field">
         <option value=""><?php echo $text_select; ?></option>
@@ -458,10 +448,16 @@ $('#button-register').live('click', function() {
         <?php } ?>
         <?php } ?>
     </select>
-    
+    <br />
+	</div>	
 	
-</div>
-
+	<div id="tax-id-display" style="display:none"><div class="lab"><span id="tax-id-required" class="required">*</span> <?php echo $entry_tax_id; ?></div>
+    <input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="large-field" />
+    <br />   
+    </div>
+	
+<!-- / DISABLE -->
+    
 
 <?php if ($shipping_required) { ?>
 <div style="float:left; width:100%; margin:20px 0">
@@ -472,10 +468,9 @@ $('#button-register').live('click', function() {
     <?php } ?>
     <label for="shipping"><strong><?php echo $entry_shipping; ?></strong></label>
 </div>
-
 <?php } ?>
 
-
+<?/*
 <div class="right" style="padding:0 0 20px; width:100% !important;">
 <div style="float:left; width:320px; margin-right:10px; margin-left:20px;">
     <div class="lab"><?php echo $entry_company; ?></div>
@@ -485,6 +480,7 @@ $('#button-register').live('click', function() {
     <input type="text" name="company_id" value="<?php echo $company_id; ?>" class="large-field" />
 </div>
 </div>	
+*/?>
 
 </div>
 
@@ -701,8 +697,7 @@ $('#button-register').live('click', function() {
 <?php } ?>
 <?php if ($shipping_methods) { ?>
 <div id="shipping-methods">
-<h1>2. Versand</h1>
-<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<h1>2. <?php echo $this->language->get('text_shipping'); ?></h1>
 
 <p><?php echo $text_shipping_method; ?></p>
 <table class="radio">
@@ -743,8 +738,7 @@ $('#button-register').live('click', function() {
 <?php } ?>
 <?php if ($payment_methods) { ?>
 <div id="payment-methods">
-<h1>3. Zahlungsart</h1>
-<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<h1>3. <?php echo $this->language->get('text_payment_method_short'); ?></h1>
 
 <p><?php echo $text_payment_method; ?></p>
 <table class="radio">
@@ -764,9 +758,9 @@ $('#button-register').live('click', function() {
 </div>
 <?php } ?>
 
-<div class="divplus">
-<div style="float:left; width:99%; margin-top:10px;"><b><?php echo $text_comments; ?></b></div>
-<textarea name="comment" rows="3" style="width:99%; border:1px solid #ddd; float:left; margin-top:10px;"><?php echo $comment; ?></textarea>
+<div class="checkout-product">
+<h1>4. <?php echo $text_comments; ?></h1>
+<textarea name="comment" rows="3" style="width:99%; border:1px solid #ddd; margin:10px auto; display:block;"><?php echo $comment; ?></textarea>
 </div>
 
 <script type="text/javascript"><!--
@@ -790,7 +784,7 @@ $('#button-register').live('click', function() {
 
                 $.each( json['totals'], function( key, value ) {
                     html+=   '<tr>';
-                    html+=    '<td colspan="3" class="price"><b>'+value['title']+':</b></td>';
+                    html+=    '<td colspan="3" class="price"><b>'+value['title']+'</b></td>';
                     html+=    '<td class="total">'+value['text']+'</td>';
                     html+=   '</tr>';
                 });
@@ -814,8 +808,7 @@ $('#button-register').live('click', function() {
 
 <?php if (!isset($redirect)) { ?>
 <div class="checkout-product">
-<h1>4. Zusammenfassung</h1>
-<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<h1>5. <?php echo $this->language->get('text_total'); ?></h1>
 
     <table>
         <thead>
@@ -866,30 +859,38 @@ $('#button-register').live('click', function() {
         </tfoot>
     </table>
 	
-	<?php if ($text_agree) { ?>
-<div class="buttons" id="agree">
-    <div class="right"><?php echo $text_agree; ?>
-        <?php if ($agree) { ?>
-        <input type="checkbox" name="agree" value="1" checked="checked" id="potw1"/>
-        <?php } else { ?>
-        <input type="checkbox" name="agree" value="1" id="potw1"/>
-        <?php } ?>
+				<?php if ($text_agree) { ?>
 
-    </div>
-    <div class="right">Die <a href="<?php echo $this->config->get('config_url'); ?>index.php?route=information/information/info&information_id=7" alt="Widerrufsbelehrung" class="colorbox cboxElement"><b>Widerrufsbelehrung</b></a> habe ich zur Kenntnis genommen.
-        <?php if ($agree2) { ?>
-        <input type="checkbox" name="agree2" value="1" checked="checked" id="potw2"/>
-        <?php } else { ?>
-        <input type="checkbox" name="agree2" value="1" id="potw2"/>
-        <?php } ?>
+					<div class="right">
+						<div>							
+							<?php if ($agree) { ?>
+							<input type="checkbox" name="agree" value="1" checked="checked" id="potw1"/>
+							<?php } else { ?>
+							<input type="checkbox" name="agree" value="1" id="potw1"/>
+							<?php } ?>
+							<?php echo $text_agree; ?>
+						</div>
+					</div>
+					<?/*
+					<div class="right">Die <a href="<?php echo $this->config->get('config_url'); ?>index.php?route=information/information/info&information_id=7" alt="Widerrufsbelehrung" class="colorbox cboxElement"><b>Widerrufsbelehrung</b></a> habe ich zur Kenntnis genommen.
+						<?php if ($agree2) { ?>
+						<input type="checkbox" name="agree2" value="1" checked="checked" id="potw2"/>
+						<?php } else { ?>
+						<input type="checkbox" name="agree2" value="1" id="potw2"/>
+						<?php } ?>	
+					</div>
+					*/?>
 
-    </div>
-</div>
-<?php } ?>
-	
+				<?php } ?>
+
+    <div>
+		<div>							
+			<input type="checkbox" name="auto_account" value="1" checked="checked"/><?php echo $this->language->get('text_auto_account'); ?>
+		</div>
+	</div>
 	
     <div class="buttons">
-        <div class="right">
+        <div class="left">
             <input type="button" onclick="finalize()"  class="button action" value="<?php echo $text_order_confirm ?>"/>
         </div>
     </div>
@@ -1024,13 +1025,13 @@ $('#button-register').live('click', function() {
 
                      // shipping method
                      if (json['error']['shipping']) {
-                         $('#shipping-methods').after('<span class="error">' + json['error']['shipping'] + '</span>');
+                         $('#shipping-methods > p').after('<span class="error">' + json['error']['shipping'] + '</span>');
 
 
                      }
                      // payment method
                      if (json['error']['payment']) {
-                         $('#payment-methods').after('<span class="error">' + json['error']['payment'] + '</span>');
+                         $('#payment-methods > p').after('<span class="error">' + json['error']['payment'] + '</span>');
 
 
                      }
@@ -1043,7 +1044,7 @@ $('#button-register').live('click', function() {
 
                  } else {
 
-				 if(spr1 && spr2) {
+
 				 
                      $.ajax({
                          url: 'index.php?route=checkout/checkout/getPayment',
@@ -1070,11 +1071,7 @@ $('#button-register').live('click', function() {
                          }
                      }); 
 					 
-					 } else { 
-					 
-						$(document.body).scrollTop($('#agree').offset().top);
-						
-					 }
+
 
                  }
              },

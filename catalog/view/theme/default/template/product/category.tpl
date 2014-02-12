@@ -130,9 +130,8 @@
   </div>
   <div class="pagination"><?php echo $pagination; ?></div>
   <?php }else{ ?>
-	<div id="search-error">
-		<?php echo $contact_link_text; ?><br/>
-		<strong>+49 777 777 777</strong><br/><a href="mailto:test@wp.pl" style="font-size:16px;"><strong>test@wp.pl</strong></a>
+	<div id="search-error" style="text-align:left;">
+		404 <?php // echo $contact_link_text; ?><br/>
 	</div>
   <?php } /* ?>
   <?php if (!$categories && !$products) { ?>

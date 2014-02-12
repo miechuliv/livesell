@@ -35,7 +35,7 @@ class Currency {
   	}
 	
   	public function set($currency) {
-        $currency = 'EUR';
+
     	$this->code = $currency;
 
     	if (!isset($this->session->data['currency']) || ($this->session->data['currency'] != $currency)) {

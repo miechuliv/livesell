@@ -3,8 +3,18 @@ class ModelCatalogProduct extends Model {
 	public function updateViewed($product_id) {
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
 	}
+
+    public function getProductsPrice($product_id,$currency_id,$last_chance)
+    {
+        $q = $this->db->query("SELECT * FROM ".DB_PREFIX."product_price
+          WHERE product_id = '".(int)$product_id."'
+           AND currency_id = '".(int)$currency_id."'
+           AND last_chance = '".(int)$last_chance."' ");
+
+        return $q->row['price'];
+    }
 	
-	public function getProduct($product_id,$car_filter = false) {
+	public function getProduct($product_id,$last_chance= false) {
 		if ($this->customer->isLogged()) {
 			$customer_group_id = $this->customer->getCustomerGroupId();
 		} else {
@@ -38,7 +48,7 @@ class ModelCatalogProduct extends Model {
                 'image'            => $query->row['image'],
                 'manufacturer_id'  => $query->row['manufacturer_id'],
                 'manufacturer'     => $query->row['manufacturer'],
-                'price'            => ($query->row['discount'] ? $query->row['discount'] : $query->row['price']),
+                'price'            => ($query->row['discount'] ? $query->row['discount'] : $this->getProductsPrice($product_id,$this->currency->getId(),$last_chance)),
                 'special'          => $query->row['special'],
                 'reward'           => $query->row['reward'],
                 'points'           => $query->row['points'],
@@ -157,6 +167,16 @@ class ModelCatalogProduct extends Model {
 
 
             $sql .= " AND p.price BETWEEN '" . (int)$filtry['cena_min'] . "' AND '" . (int)$filtry['cena_max'] . "' ";
+        }
+
+        // filtr po kampanii
+        if (!empty($data['filter_campaign_id'])) {
+            $sql .= " AND p.campaign_id = '" . (int)$data['filter_campaign_id'] . "'";
+        }
+
+        // filtr po wzorcu
+        if (isset($data['filter_parent_id'])) {
+            $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
         }
 
         // miechu manufactirer filter
@@ -305,7 +325,7 @@ class ModelCatalogProduct extends Model {
 	
 		foreach ($query->rows as $result) {
 
-                $product_data[$result['product_id']] = $this->getProduct($result['product_id']);
+                $product_data[$result['product_id']] = $this->getProduct($result['product_id'],isset($data['last_chance']));
 
 
 		}
@@ -464,7 +484,7 @@ class ModelCatalogProduct extends Model {
 			if ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') {
 				$product_option_value_data = array();
 			
-				$product_option_value_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
+				$product_option_value_query = $this->db->query("SELECT *,pov.image as image_value FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
 				
 				foreach ($product_option_value_query->rows as $product_option_value) {
 					$product_option_value_data[] = array(
@@ -477,7 +497,8 @@ class ModelCatalogProduct extends Model {
 						'price'                   => $product_option_value['price'],
 						'price_prefix'            => $product_option_value['price_prefix'],
 						'weight'                  => $product_option_value['weight'],
-						'weight_prefix'           => $product_option_value['weight_prefix']
+						'weight_prefix'           => $product_option_value['weight_prefix'],
+                        'image_value'                  => $product_option_value['image_value'],
 					);
 				}
 									
@@ -603,6 +624,16 @@ class ModelCatalogProduct extends Model {
 
 
             $sql .= " AND p.price BETWEEN '" . (int)$filtry['cena_min'] . "' AND '" . (int)$filtry['cena_max'] . "' ";
+        }
+
+        // filtr po kampanii
+        if (!empty($data['filter_campaign_id'])) {
+            $sql .= " AND p.campaign_id = '" . (int)$data['filter_campaign_id'] . "'";
+        }
+
+        // filtr po wzorcu
+        if (isset($data['filter_parent_id'])) {
+            $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
         }
 
         // miechu manufactirer filter
