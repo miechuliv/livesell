@@ -1,4 +1,4 @@
-<?php 
+<?php
 class ControllerCheckoutCart extends Controller {
 	private $error = array();
 	
@@ -531,6 +531,16 @@ class ControllerCheckoutCart extends Controller {
 
         $this->load->model('catalog/product');
 
+        $t = explode(':',$product_id);
+
+        $product_id = (int)$t[0];
+
+        $options = array();
+        if(isset($t[1]))
+        {
+            $options = unserialize(base64_decode($t[1]));
+        }
+
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
         if($product_info AND isset($this->request->post['change']))
@@ -540,13 +550,13 @@ class ControllerCheckoutCart extends Controller {
             if($this->request->post['change']=='dodaj')
             {
                 $quantity  = 1;
-                $this->cart->add($this->request->post['product_id'], $quantity);
+                $this->cart->add($this->request->post['product_id'], $quantity , $options);
             }
 
             if($this->request->post['change']=='odejmij')
             {
                 $quantity  = 1;
-                $this->cart->add($this->request->post['product_id'], $quantity , false , true);
+                $this->cart->add($this->request->post['product_id'], $quantity , $options , true);
             }
 
 
