@@ -828,10 +828,7 @@ $('#button-register').live('click', function() {
                 <br />
                 &nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
                 <?php } ?>
-                <?php if($product['kaucja']) { ?>
-                <br />
-                &nbsp;<small> - <?php echo $text_kaucja; ?>: <?php echo $product['kaucja']; ?> <?php echo $product['kaucja_cost']; ?></small>
-                <?php } ?>
+
             </td>
             <td class="model"><?php echo $product['model']; ?></td>
             <td class="quantity"><?php echo $product['quantity']; ?></td>

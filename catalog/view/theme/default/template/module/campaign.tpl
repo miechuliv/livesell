@@ -311,7 +311,7 @@
 
         $('#faken tr td input:first').click();
 
-        $('#button-cart').bind('click', function() {
+        /* $('#button-cart').bind('click', function() {
 
             $.ajax({
                 url: 'index.php?route=checkout/cart/add',
@@ -343,6 +343,6 @@
                     }
                 }
             });
-        });
+        }); */
     });
 </script>

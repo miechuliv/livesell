@@ -508,11 +508,7 @@ class ControllerCheckoutCheckout extends Controller {
                 );
             }
 
-            $kaucje = array(
-                'zw' => $this->language->get('text_kaucja_zw'),
-                'bzw' => $this->language->get('text_kaucja_bzw'),
-                0 => false,
-            );
+
 
             $this->data['products'][] = array(
                 'product_id' => $product['product_id'],
@@ -524,8 +520,7 @@ class ControllerCheckoutCheckout extends Controller {
                 'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
                 'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
                 'href'       => $this->url->link('product/product', 'product_id=' . $product['product_id']),
-                'kaucja'   => $kaucje[$product['kaucja']],
-                'kaucja_cost' => $this->currency->format($product['kaucja_cost']),
+
             );
         }
 
@@ -995,11 +990,6 @@ class ControllerCheckoutCheckout extends Controller {
                 );
             }
 
-            $kaucje = array(
-                'zw' => $this->language->get('text_kaucja_zw'),
-                'bzw' => $this->language->get('text_kaucja_bzw'),
-                0 => false,
-            );
 
 
             $this->data['products'][] = array(
@@ -1012,8 +1002,7 @@ class ControllerCheckoutCheckout extends Controller {
                 'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
                 'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
                 'href'       => $this->url->link('product/product', 'product_id=' . $product['product_id']),
-                'kaucja'   => $kaucje[$product['kaucja']],
-                'kaucja_cost' => $this->currency->format($product['kaucja_cost']),
+
 
             );
         }
@@ -2187,8 +2176,7 @@ class ControllerCheckoutCheckout extends Controller {
                     'total'      => $product['total'],
                     'tax'        => $this->tax->getTax($product['price'], $product['tax_class_id']),
                     'reward'     => $product['reward'],
-                    'kaucja'   => $kaucje[$product['kaucja']],
-                    'kaucja_cost' => $this->currency->format($product['kaucja_cost']),
+
                 );
             }
 
