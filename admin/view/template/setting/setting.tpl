@@ -21,6 +21,7 @@
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
         <div id="tab-general">
           <table class="form">
+
             <tr>
               <td><span class="required">*</span> <?php echo $entry_name; ?></td>
               <td><input type="text" name="config_name" value="<?php echo $config_name; ?>" size="40" />
@@ -270,6 +271,15 @@
         <div id="tab-option">
           <h2><?php echo $text_items; ?></h2>
           <table class="form">
+              <tr>
+                  <td><span class="required">*</span> <?php echo $this->language->get('config_show_store'); ?></td>
+                  <td>
+                      <select name="config_show_store" >
+                          <option value="1" <?php if($config_show_store){ echo  'selected="selected"'; } ?> ><?php echo $this->language->get('text_yes'); ?> </option>
+                          <option value="0" <?php if(!$config_show_store){ echo  'selected="selected"'; } ?> ><?php echo $this->language->get('text_no'); ?> </option>
+                      </select>
+                  </td>
+              </tr>
             <tr>
               <td><span class="required">*</span> <?php echo $entry_catalog_limit; ?></td>
               <td><input type="text" name="config_catalog_limit" value="<?php echo $config_catalog_limit; ?>" size="3" />

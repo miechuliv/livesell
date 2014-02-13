@@ -235,13 +235,8 @@ class ControllerCheckoutCart extends Controller {
 					$total = false;
 				}
 
-                $kaucje = array(
-                    'zw' => $this->language->get('text_kaucja_zw'),
-                    'bzw' => $this->language->get('text_kaucja_bzw'),
-                    0 => false,
-                );
 
-                $this->data['text_kaucja'] = $this->language->get('text_kaucja');
+
 				
         		$this->data['products'][] = array(
           			'key'      => $product['key'],
@@ -256,8 +251,7 @@ class ControllerCheckoutCart extends Controller {
 					'total'    => $total,
 					'href'     => $this->url->link('product/product', 'product_id=' . $product['product_id']),
 					'remove'   => $this->url->link('checkout/cart', 'remove=' . $product['key']),
-                    'kaucja'   => $kaucje[$product['kaucja']],
-                    'kaucja_cost' => $this->currency->format($product['kaucja_cost']),
+
 				);
       		}
 			
@@ -658,7 +652,7 @@ class ControllerCheckoutCart extends Controller {
 			}
 			
 			if (!$json) {
-				$this->cart->add($this->request->post['product_id'], $quantity, $option,false, isset($this->request->post['kaucja'])?$this->request->post['kaucja']:false);
+				$this->cart->add($this->request->post['product_id'], $quantity, $option,false);
 
                 $this->load->model('catalog/product');
                 $this->load->model('tool/image');

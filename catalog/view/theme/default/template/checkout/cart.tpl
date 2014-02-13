@@ -55,9 +55,7 @@
               <?php if ($product['reward']) { ?>
               <small><?php echo $product['reward']; ?></small>
               <?php } ?>
-              <?php if ($product['kaucja']) { ?>
-              <small><?php echo $text_kaucja; ?> <?php echo $product['kaucja']; ?>  <?php echo $product['kaucja_cost']; ?></small>
-              <?php } ?></td>
+
             <td class="model"><?php echo $product['model']; ?></td>
               <td class="quantity">
 				<div style="float:left">

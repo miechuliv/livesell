@@ -177,12 +177,15 @@ DD_belatedPNG.fix('#logo img');
 <div id="navi">
 
 	<ul>
-		<li class="active"><a href="/livesell/">Today's Collection</a></li>
-		<li><a href="<?php echo $last_chance; ?>">Last Chance</a></li>
-		<li><a href="<?php echo $gallery; ?>">Gallery</a></li>
-		<li><a href="<?php echo $register; ?>">Submit</a></li>
-		<li><a href="<?php echo $contact; ?>">Contact</a></li>
-		<li class="kasa"><a href="<?php echo $cart_link; ?>" >Koszyk</a></li>
+		<li <?php if($selected=='active'){ ?> class="active" <?php } ?> ><a href="/livesell/">Today's Collection</a></li>
+		<li <?php if($selected=='last_chance'){ ?> class="active" <?php } ?> ><a href="<?php echo $last_chance; ?>">Last Chance</a></li>
+		<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>">Gallery</a></li>
+		<li <?php if($selected=='register'){ ?> class="active" <?php } ?> ><a href="<?php echo $register; ?>">Submit</a></li>
+		<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>">Contact</a></li>
+        <?php if($show_shop){ ?>
+        <li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>">Shop</a></li>
+        <?php } ?>
+		<li  <?php if($selected=='cart'){ ?> class="active" <?php } ?> class="kasa"><a href="<?php echo $cart_link; ?>" >Koszyk</a></li>
 	</ul>
 </div>
 <?/*

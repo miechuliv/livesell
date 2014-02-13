@@ -371,7 +371,7 @@ class ControllerProductCategory extends Controller {
                     'order'              => $order,
                     'start'              => ($page - 1) * ($limit),
                     'limit'              => $limit,
-                    'type' => 'regenerated',
+                    'filter_show_on_store' => 1,
                     'quantity' => 1,
                 );
 
@@ -426,7 +426,7 @@ class ControllerProductCategory extends Controller {
                     'order'              => $order,
                     'start'              => ($page - 1) * $limit,
                     'limit'              => $limit,
-                    'type' => 'regenerated',
+                    'filter_show_on_store' => 1,
                     'quantity' => 1,
                 );
 

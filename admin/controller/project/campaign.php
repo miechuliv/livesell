@@ -142,7 +142,7 @@ ini_set('display_errors', '1');
             $date = new DateTime($campaign['date_start']);
             $in = new DateInterval('P1D');
             $date->add($in);
-            $this->data['campaigns'][$key]['date_end'] = $date->format('Y-m-d h:i:s');
+            $this->data['campaigns'][$key]['date_end'] = $date->format('Y-m-d H:i:s');
         }
 
 

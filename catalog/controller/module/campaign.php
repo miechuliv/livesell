@@ -24,13 +24,58 @@ class ControllerModuleCampaign extends Controller{
             $campaign = $this->model_project_campaign->showActualCampaign(2);
         }
 
+        if(isset($this->request->get['no_buy']))
+        {
+            $this->data['no_buy'] = true;
+        }
+        else
+        {
+            $this->data['no_buy'] = false;
+        }
+
 
         if(!empty($campaign))
         {
+
+
             $this->data['campaign_products'] = $this->model_project_campaign->getCampaignProducts($campaign['campaign_id']);
 
 
 
+
+            $campaign['author_href'] = $this->url->link('project/author','&author_id='.$campaign['author_id']);
+            $campaign['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],200,200);
+
+            $date = new DateTime($campaign['date_start']);
+
+
+            if(isset($this->request->get['last_chance']))
+            {
+                $i = new DateInterval('P2D');
+            }
+            else
+            {
+                $i = new DateInterval('P1D');
+            }
+
+            $date->add($i);
+
+            $campaign['date_end'] = $date->format('Y-m-d H:i:s');
+
+
+            $campaign['split_date'] = array(
+                'year' => $date->format('Y'),
+                'month' => (int)$date->format('m')-1,
+                'day' => $date->format('d'),
+                'hour' => $date->format('H'),
+                'minute' => $date->format('i'),
+                'second' => $date->format('s'),
+            );
+
+
+
+
+            $this->data['campaign'] = $campaign;
 
 
             $campaign_images = $this->model_project_campaign->getCampaignImages($campaign['campaign_id']);
@@ -42,9 +87,8 @@ class ControllerModuleCampaign extends Controller{
                 $this->data['campaign_images'][] =  $this->model_tool_image->resize($image,200,200);
             }
 
-            $this->data['author_about'] = $campaign['author_about'];
 
-            $this->data['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],200,200);
+
 
 
 
@@ -56,9 +100,11 @@ class ControllerModuleCampaign extends Controller{
             }
             else
             {
-                $this->data['alt_link'] = $this->url->link('common/home&type=last_chance');
+                $this->data['alt_link'] = $this->url->link('common/home&last_chance=1');
 
                 $alt_offer = $this->model_project_campaign->showLastChanceCampaign(2);
+
+
             }
 
 
@@ -67,11 +113,12 @@ class ControllerModuleCampaign extends Controller{
             {
                 $images = $this->model_project_campaign->getCampaignImages($alt_offer['campaign_id']);
 
+
                 if(!empty($images))
                 {
                     $image = array_shift($images);
 
-                    $this->data['alt_offer_preview'] = $this->model_tool_image->resize($image,200,200);
+                    $this->data['alt_offer_preview'] = $this->model_tool_image->resize($image['image'],200,200);
                 }
             }
             else
@@ -82,11 +129,17 @@ class ControllerModuleCampaign extends Controller{
 
 
 
+
+
             foreach($this->data['campaign_products'] as $key => $product)
             {
-                $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id']);
+                $im = $this->model_tool_image;
+                $f = function($image) use ($im) {
+                     return $im->resize($image,200,200);
+                };
+                $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id'],$f);
                 $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),(isset($this->request->get['last_chance'])?true:false));
-
+                $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],200,200);
             }
 
 

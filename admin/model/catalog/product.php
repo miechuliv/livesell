@@ -304,7 +304,8 @@ class ModelCatalogProduct extends Model {
 		  delivery_time = '".(int)$data['delivery_time']."',
 		  delivery_price = '".(float)$data['delivery_price']."',
 		  feed = '".(int)$data['feed']."',
-		  google_merchant = '".(int)$data['google_merchant']."'
+		  google_merchant = '".(int)$data['google_merchant']."',
+		  show_on_store = '".(int)$data['show_on_store']."'
 
 
 
@@ -492,7 +493,8 @@ class ModelCatalogProduct extends Model {
 		     delivery_time = '".(int)$data['delivery_time']."',
 		  delivery_price = '".(float)$data['delivery_price']."',
 		  feed = '".(int)$data['feed']."',
-		  google_merchant = '".(int)$data['google_merchant']."'
+		  google_merchant = '".(int)$data['google_merchant']."',
+		  show_on_store = '".(int)$data['show_on_store']."'
 
 
 		    WHERE product_id = '" . (int)$product_id . "'");
@@ -790,8 +792,35 @@ class ModelCatalogProduct extends Model {
             $sql .= "LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
         }
 
+        if (isset($data['filter_campaign_status']) ) {
+            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        }
+
 
         $sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+        if (isset($data['filter_campaign_status'])) {
+            if($data['filter_campaign_status'] == 'basic')
+            {
+                $sql .= " AND p.parent_product = '0' ";
+            }
+            elseif($data['filter_campaign_status'] == 'current')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) >= SYSDATE()
+                  AND cam.date_start <= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'future')
+            {
+                $sql .= " AND cam.date_start >= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'ended')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) <= SYSDATE()
+                   ";
+            }
+
+
+        }
 
         // filtr po kategorii
         if (!empty($data['filter_category_id'])) {
@@ -1124,7 +1153,35 @@ class ModelCatalogProduct extends Model {
         }
 
 
+        if (isset($data['filter_campaign_status']) ) {
+            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        }
+
+
         $sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+        if (isset($data['filter_campaign_status'])) {
+            if($data['filter_campaign_status'] == 'basic')
+            {
+                $sql .= " AND p.parent_product = '0' ";
+            }
+            elseif($data['filter_campaign_status'] == 'current')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) >= SYSDATE()
+                  AND cam.date_start <= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'future')
+            {
+                $sql .= " AND cam.date_start >= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'ended')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) <= SYSDATE()
+                   ";
+            }
+
+
+        }
 
         // filtr po kategorii
         if (!empty($data['filter_category_id'])) {

@@ -37,178 +37,12 @@ class ControllerProductGallery extends Controller{
 
     public function show()
     {
-        $this->load->model('project/campaign');
-
-        if(isset($this->request->get['campaign_id']) AND $this->request->get['campaign_id'])
-        {
-            $campaign = $this->model_project_campaign->getCampaign($this->request->get['campaign_id']);
-        }
-        else
-        {
-            $campaign = array();
-        }
 
 
-
-        if(isset($this->request->get['project_id']))
-        {
-            $this->data['project_id'] = $this->request->get['project_id'];
-        }
-        elseif(isset($this->request->post['project_id']))
-        {
-            $this->data['project_id'] = $this->request->post['project_id'];
-        }
-        elseif(isset($campaign['project_id']))
-        {
-            $this->data['project_id'] =  $campaign['project_id'];
-        }
-        else
-        {
-            $this->session->data['error'] = $this->language->get('error_no_project');
-            $this->redirect($this->url->link('project/campaign/showList', 'token=' . $this->session->data['token'] . $this->baseUrl, 'SSL'));
-        }
-
-
-
-
-
-        $this->setFields(array(
-            'date_start',
-            'show_archiwe',
-            'vote'
-
-        ),$campaign);
-
-
-        $this->setFields(array(
-            'error_date_start',
-            'error_name',
-            'error_products'
-        ),$this->errors);
-
-
-
-        $this->data['token'] = $this->session->data['token'];
-
-        if (isset($this->request->post['campaign_description'])) {
-            $this->data['campaign_description'] = $this->request->post['campaign_description'];
-        } elseif (isset($this->request->get['campaign_id'])) {
-            $this->data['campaign_description'] = $this->model_project_campaign->getCampaignDescriptions($this->request->get['campaign_id']);
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/product/gallery_show.tpl')) {
+            $this->template = $this->config->get('config_template') . '/template/product/gallery_show.tpl';
         } else {
-            $this->data['campaign_description'] = array();
-        }
-
-        if (isset($this->request->post['campaign_products'])) {
-            $this->data['campaign_products'] = $this->request->post['campaign_products'];
-        } elseif (isset($this->request->get['campaign_id'])) {
-            $this->data['campaign_products'] = $this->model_project_campaign->getCampaignProducts($this->request->get['campaign_id']);
-        } else {
-            $this->data['campaign_products'] = array();
-        }
-
-
-
-        $this->data['release_status'] = false;
-
-        if($this->data['date_start'])
-        {
-            // status
-            $now = new DateTime();
-            $date_start = new DateTime($this->data['date_start']);
-
-            $date_last_chance = new DateTime($this->data['date_start']);
-            $i = new DateInterval('P1D');
-            $date_last_chance->add($i);
-
-            $date_end = new DateTime($this->data['date_start']);
-            $i = new DateInterval('P2D');
-            $date_end->add($i);
-
-            if($now < $date_start)
-            {
-                $this->data['release_status'] = $this->language->get('text_future');
-            }
-            elseif($now < $date_last_chance)
-            {
-                $this->data['release_status'] = $this->language->get('text_now_normal');
-            }
-            elseif($now < $date_end)
-            {
-                $this->data['release_status'] = $this->language->get('text_now_last_chance');
-            }
-            elseif($now > $date_end)
-            {
-                $this->data['release_status'] = $this->language->get('text_ended');
-            }
-
-        }
-
-
-
-
-        foreach($this->data['campaign_products'] as $key => $value)
-        {
-            $this->data['campaign_products'][$key]['edit'] = $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . $this->baseUrl . '&product_id='.$value['product_id'] . '&full=1', 'SSL');
-            $this->data['campaign_products'][$key]['show'] = str_ireplace('admin','',$this->url->link('product/product', 'token=' . $this->session->data['token'] . '&product_id=' . $value['product_id'] ));
-        }
-
-        /* if (isset($this->request->post['campaign_tags'])) {
-             $this->data['campaign_tags'] = $this->request->post['campaign_tags'];
-         } elseif (isset($this->request->get['campaign_id'])) {
-             $this->data['campaign_tags'] = $this->model_project_campaign->getCampaignTags($this->request->get['campaign_id']);
-         } else {
-             $this->data['campaign_tags'] = array();
-         } */
-
-        if (isset($this->request->post['campaign_image'])) {
-            $campaign_images = $this->request->post['campaign_image'];
-        } elseif (isset($this->request->get['campaign_id'])) {
-            $campaign_images = $this->model_project_campaign->getCampaignImages($this->request->get['campaign_id']);
-        } else {
-            $campaign_images = array();
-        }
-
-        $this->data['campaign_images'] = array();
-
-        $this->load->model('tool/image');
-
-        $this->data['product_templates'] = $this->model_project_campaign->getBasicProducts();
-
-
-
-        foreach ($campaign_images as $campaign_image) {
-            if ($campaign_image['image'] && file_exists(DIR_IMAGE . $campaign_image['image'])) {
-                $image = $campaign_image['image'];
-            } else {
-                $image = 'no_image.jpg';
-            }
-
-            $this->data['campaign_images'][] = array(
-                'image'      => $image,
-                'thumb'      => $this->model_tool_image->resize($image, 100, 100),
-                'sort_order' => $campaign_image['sort_order']
-            );
-        }
-
-
-        $this->data['no_image'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
-
-        if (!isset($this->request->get['campaign_id'])) {
-            $this->data['action'] = $this->url->link('project/campaign/insert', 'token=' . $this->session->data['token'] . $this->baseUrl, 'SSL');
-        } else {
-            $this->data['action'] = $this->url->link('project/campaign/update', 'token=' . $this->session->data['token'] . '&campaign_id=' . $this->request->get['campaign_id'] . $this->baseUrl, 'SSL');
-        }
-
-        $this->data['cancel'] = $this->url->link('project/campaign/showList', 'token=' . $this->session->data['token'] . $this->baseUrl, 'SSL');
-
-        $this->load->model('localisation/language');
-
-        $this->data['languages'] = $this->model_localisation_language->getLanguages();
-
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/product/gallery/show.tpl')) {
-            $this->template = $this->config->get('config_template') . '/template/product/gallery/show.tpl';
-        } else {
-            $this->template = 'default/template/product/gallery/show.tpl';
+            $this->template = 'default/template/product/gallery_show.tpl';
         }
 
         $this->children = array(
@@ -218,6 +52,7 @@ class ControllerProductGallery extends Controller{
             'common/content_bottom',
             'common/footer',
             'common/header',
+            'module/campaign'
 
 
         );
@@ -293,15 +128,17 @@ class ControllerProductGallery extends Controller{
         // tylko kampanie które juz sie całkowicie zakończyły
 
 
-        if(!isset($data['date_stop']))
+        if(!isset($data['filter_date_stop']))
         {
             $date = new DateTime();
             $in = new DateInterval('P2D');
 
             $date->sub($in);
 
-            $data['date_stop'] = $date->format('Y-m-d h:i:s');
+            $data['filter_date_stop'] = $date->format('Y-m-d H:i:s');
         }
+
+
 
 
         $total_campaigns = $this->model_project_campaign->getTotalCampaigns($data);
@@ -324,7 +161,7 @@ class ControllerProductGallery extends Controller{
             $in = new DateInterval('P1D');
             $date->add($in);
             $this->data['campaigns'][$key]['date_end'] = $date->format('Y-m-d');
-            $this->data['campaigns'][$key]['show'] = $this->url->link('product/gallery/show','&campaign_id='.$campaign['campaign_id'] . $this->baseUrl);
+            $this->data['campaigns'][$key]['show'] = $this->url->link('product/gallery/show','&campaign_id='.$campaign['campaign_id'] . '&no_buy=1'. $this->baseUrl);
 
             $images = $this->model_project_campaign->getCampaignImages($campaign['campaign_id']);
 
@@ -398,17 +235,7 @@ class ControllerProductGallery extends Controller{
 
 
 
-      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
-      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      } else {
-          $ip = $_SERVER['REMOTE_ADDR'];
-      }
-
-
-
-      $find = $this->db->query("SELECT * FROM ".DB_PREFIX."vote_ip WHERE ip = '".$ip."' AND campaign_id = '".(int)$campaign_id."'  ");
+      $find = $this->db->query("SELECT * FROM ".DB_PREFIX."vote_ip WHERE customer_id = '".(int)$this->customer->getId()."' AND campaign_id = '".(int)$campaign_id."'  ");
 
 
 
@@ -419,7 +246,7 @@ class ControllerProductGallery extends Controller{
       else
       {
           $res = 'ok';
-          $this->db->query("INSERT INTO ".DB_PREFIX."vote_ip SET ip = '".$ip."', campaign_id = '".(int)$campaign_id."' ");
+          $this->db->query("INSERT INTO ".DB_PREFIX."vote_ip SET customer_id = '".(int)$this->customer->getId()."', campaign_id = '".(int)$campaign_id."' ");
           $this->load->model('project/campaign');
 
           $this->model_project_campaign->upvote($campaign_id);

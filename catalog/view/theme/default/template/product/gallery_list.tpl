@@ -62,7 +62,7 @@
         <?php if ($campaign['image']) { ?>
 
 
-        <div class="image"><a href="<?php echo $campaign['image']; ?>"><img  src="<?php echo $campaign['image']; ?>" title="<?php echo $campaign['name']; ?>" alt="<?php echo $campaign['name']; ?>" /></a></div>
+        <div class="image"><a href="<?php echo $campaign['show']; ?>"><img  src="<?php echo $campaign['image']; ?>" title="<?php echo $campaign['name']; ?>" alt="<?php echo $campaign['name']; ?>" /></a></div>
 
         <?php } ?>
 
@@ -76,8 +76,9 @@
         <?php if ($campaign['vote']) { ?>
         <div class="rating"><?php echo $campaign['vote']; ?></div>
         <?php } ?>
+        <?php if($this->customer->isLogged()){ ?>
         <div class="vote" onclick="upvote(this,'<?php echo $campaign["campaign_id"]; ?>');">+ <?php echo $this->language->get('text_upvote'); ?></div>
-
+        <?php } ?>
 
 </div>
 <?php } ?>
@@ -144,6 +145,7 @@
         });
     }
 
+    <?php if($this->customer->isLogged()){ ?>
     function upvote(elem,campaign_id)
     {
       /*  var upvote = $.cookie('upvote');
@@ -176,6 +178,7 @@
 
         })
     }
+    <?php } ?>
 
     function filter(mass_edit) {
         url = 'index.php?route=product/gallery/showList&page=<?php echo $page; ?>';

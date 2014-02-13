@@ -412,6 +412,13 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_telephone'] = $this->config->get('config_telephone');
 		}
 
+        //
+        if (isset($this->request->post['config_show_store'])) {
+            $this->data['config_show_store'] = $this->request->post['config_show_store'];
+        } else {
+            $this->data['config_show_store'] = $this->config->get('config_show_store');
+        }
+
 		if (isset($this->request->post['config_fax'])) {
 			$this->data['config_fax'] = $this->request->post['config_fax'];
 		} else {
@@ -1218,13 +1225,7 @@ class ControllerSettingSetting extends Controller {
 
 
 
-        if (strlen($this->request->post['config_smsapi_order_update_msg']) > 160) {
-            $this->error['error_smsapi_order_update_msg'] = 'przekroczono limit 160 znaków';
-        }
 
-        if (strlen($this->request->post['config_smsapi_order_confirm_msg']) > 160) {
-            $this->error['error_smsapi_order_confirm_msg'] = 'przekroczono limit 160 znaków';
-        }
         // code end
 
 		if (!$this->request->post['config_name']) {

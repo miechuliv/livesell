@@ -477,6 +477,16 @@ class ControllerCatalogProduct extends Controller {
 
         $this->data['filter_attribute'] = $filter_attribute;
 
+        if (isset($this->request->get['filter_campaign_status'])) {
+            $filter_campaign_status = $this->request->get['filter_campaign_status'];
+        } else {
+            $filter_campaign_status = null;
+        }
+
+        $this->data['filter_campaign_status'] = $filter_campaign_status;
+
+
+
         if (isset($this->request->get['filter_attribute_value'])) {
             $filter_attribute_value = $this->request->get['filter_attribute_value'];
 
@@ -538,6 +548,10 @@ class ControllerCatalogProduct extends Controller {
             $url .= '&filter_retailer=' . $this->request->get['filter_retailer'];
         }
 
+        if (isset($this->request->get['filter_campaign_status'])) {
+            $url .= '&filter_campaign_statusr=' . $this->request->get['filter_campaign_status'];
+        }
+
         // koniec miechu
 
         if (isset($this->request->get['filter_status'])) {
@@ -590,6 +604,7 @@ class ControllerCatalogProduct extends Controller {
 
             'filter_category_id' => $filter_category_id,
             'filter_retailer' => $filter_retailer,
+            'filter_campaign_status' => $filter_campaign_status,
 
 
             'filter_option' => $filter_option,
@@ -620,10 +635,7 @@ class ControllerCatalogProduct extends Controller {
 		foreach ($results as $result) {
 			$action = array();
 			
-			$action[] = array(
-				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $result['product_id'] . $url, 'SSL')
-			);
+
 			
 			if ($result['image'] && file_exists(DIR_IMAGE . $result['image'])) {
 				$image = $this->model_tool_image->resize($result['image'], 40, 40);
@@ -658,6 +670,75 @@ class ControllerCatalogProduct extends Controller {
 				}					
 			}
 
+            // kampania
+
+            $this->load->model('project/campaign');
+
+
+
+            $c_status = false;
+            $full = true;
+
+
+            if(!$result['parent_product'])
+            {
+                $c_status = $this->language->get('text_basic');
+                $full = false;
+            }
+            else
+            {
+
+                $campaign = $this->model_project_campaign->getCampaign($result['campaign_id']);
+
+                if(!empty($campaign))
+                {
+                    // status
+                    $now = new DateTime();
+                    $date_start = new DateTime($campaign['date_start']);
+
+                    $date_last_chance = new DateTime($campaign['date_start']);
+                    $i = new DateInterval('P1D');
+                    $date_last_chance->add($i);
+
+                    $date_end = new DateTime($campaign['date_start']);
+                    $i = new DateInterval('P2D');
+                    $date_end->add($i);
+
+
+
+                    if($now < $date_start)
+                    {
+                        $c_status = $this->language->get('text_future');
+                    }
+                    elseif($now < $date_end)
+                    {
+                        $c_status  = $this->language->get('text_current');
+                    }
+                    elseif($now > $date_end)
+                    {
+                        $c_status  = $this->language->get('text_ended');
+                    }
+                }
+                else
+                {
+                    $c_status  = $this->language->get('text_unassigned');
+                }
+            }
+
+            if(!$full)
+            {
+                $action[] = array(
+                    'text' => $this->language->get('text_edit'),
+                    'href' => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $result['product_id'] . $url , 'SSL')
+                );
+            }
+            else
+            {
+                $action[] = array(
+                    'text' => $this->language->get('text_edit'),
+                    'href' => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $result['product_id'] . $url . '&full=1', 'SSL')
+                );
+            }
 
 
 	
@@ -675,6 +756,7 @@ class ControllerCatalogProduct extends Controller {
 
 
                 'category_name'  => $category_name,
+                'campaign_status' => $c_status,
 			);
     	}
 		
@@ -745,6 +827,10 @@ class ControllerCatalogProduct extends Controller {
 		if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
 		}
+
+        if (isset($this->request->get['filter_campaign_status'])) {
+            $url .= '&filter_campaign_statusr=' . $this->request->get['filter_campaign_status'];
+        }
 					
 		$this->data['sort_name'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=pd.name' . $url, 'SSL');
 		$this->data['sort_model'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.model' . $url, 'SSL');
@@ -782,6 +868,10 @@ class ControllerCatalogProduct extends Controller {
 		if (isset($this->request->get['order'])) {
 			$url .= '&order=' . $this->request->get['order'];
 		}
+
+        if (isset($this->request->get['filter_campaign_status'])) {
+            $url .= '&filter_campaign_statusr=' . $this->request->get['filter_campaign_status'];
+        }
 				
 		$pagination = new Pagination();
 		$pagination->total = $product_total;
@@ -1050,7 +1140,8 @@ class ControllerCatalogProduct extends Controller {
             'width',
             'points',
             'height',
-            'google_merchant'
+            'google_merchant',
+            'show_on_store'
 
         );
 

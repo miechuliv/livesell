@@ -65,7 +65,7 @@
 
                 <td >Stan magazynowy</td>
               <td style="width:125px" class="right">Kategoria</td>
-              <td style="width:125px" class="right">Hurtownia</td>
+              <td style="width:125px" class="right">Rodzaj produktu: </td>
                 <td class="left"><?php if ($sort == 'p.status') { ?>
                 <a href="<?php echo $sort_status; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_status; ?></a>
                 <?php } else { ?>
@@ -95,13 +95,21 @@
                 <td align="right">
 
 
-                    <select name="retailer" style="width:115px;">
+                    <select style="display: none" name="retailer" style="width:115px;">
                         <option></option>
                         <?php if(!empty($retailers)){ ?>
                         <?php foreach($retailers as $retailerow){ ?>
                         <option value="<?php echo $retailerow['retailer_id'] ?>"  <?php if($filter_retailer==$retailerow['retailer_id']){ echo 'selected="selected"'; } ?> ><?php echo $retailerow['retailer_name']; ?></option>
                         <?php } ?>
                         <?php } ?>
+                    </select>
+
+                    <select  name="filter_campaign_status" style="width:115px;">
+                        <option></option>
+                        <option value="basic" <?php if($filter_campaign_status == 'basic'){ echo 'selected="selected"'; } ?>  ><?php echo $this->language->get('text_basic'); ?></option>
+                        <option value="current" <?php if($filter_campaign_status == 'current'){ echo 'selected="selected"'; } ?>  ><?php echo $this->language->get('text_current'); ?></option>
+                        <option value="future" <?php if($filter_campaign_status == 'future'){ echo 'selected="selected"'; } ?>  ><?php echo $this->language->get('text_future'); ?></option>
+                        <option value="ended" <?php if($filter_campaign_status == 'ended'){ echo 'selected="selected"'; } ?>  ><?php echo $this->language->get('text_ended'); ?></option>
                     </select>
                 </td>
                 <td><select name="filter_status">
@@ -450,7 +458,7 @@
 
 
                 <td class="left"><?php echo $product['category_name']; ?></td>
-                <td>Hurtownia</td>
+                <td><?php echo $product['campaign_status']; ?></td>
                 <td class="left"><?php echo $product['status']; ?></td>
 
               <td id="action-td" class="right"><?php foreach ($product['action'] as $action) { ?>
@@ -555,6 +563,13 @@ function filter(mass_edit) {
 
     if (filter_retailer) {
         url += '&filter_retailer=' + encodeURIComponent(filter_retailer);
+    }
+
+    var filter_campaign_status = $('select[name=\'filter_campaign_status\'] option:selected').val();
+
+
+    if (filter_campaign_status) {
+        url += '&filter_campaign_status=' + encodeURIComponent(filter_campaign_status);
     }
 	
 	var filter_name = $('input[name=\'filter_name\']').attr('value');

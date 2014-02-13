@@ -11,6 +11,7 @@ class ProjectProjectRow extends DbRow{
 
     public $author_id;
     public $author;
+    public $email;
     public $status;
     public $prev_release;
     public $title;
@@ -93,6 +94,7 @@ class ProjectProjectRow extends DbRow{
         $this->title = $row['title'];
 
         $this->author = isset($row['author'])?$row['author']:false;
+        $this->email = isset($row['email'])?$row['email']:false;
         $this->status = isset($row['status'])?$row['status']:false;
     }
 

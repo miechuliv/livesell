@@ -13,7 +13,7 @@ class ModelProjectCampaign extends Model{
     public function showActualCampaign($language_id)
     {
         $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about
-         , cu.avatar as author_avatar
+         , cu.avatar as author_avatar , cu.customer_id as author_id
          FROM ".DB_PREFIX.".campaign  c
          LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
          LEFT JOIN project pro ON(c.project_id = pro.project_id)
@@ -32,7 +32,7 @@ class ModelProjectCampaign extends Model{
     public function showLastChanceCampaign($language_id)
     {
         $sql = "SELECT c.*, des.*, cu.firstname as author, cu.about as author_about
-         , cu.avatar as author_avatar
+         , cu.avatar as author_avatar , cu.customer_id as author_id
          FROM ".DB_PREFIX.".campaign  c
          LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
          LEFT JOIN project pro ON(c.project_id = pro.project_id)
@@ -40,6 +40,7 @@ class ModelProjectCampaign extends Model{
           WHERE DATE_ADD(c.date_start,INTERVAL 1 DAY) <= SYSDATE()
           AND DATE_ADD(c.date_start,INTERVAL 2 DAY) >= SYSDATE()
            AND des.language_id = '".(int)$language_id."' ";
+
 
 
         $res = $this->db->query($sql);
@@ -54,7 +55,7 @@ class ModelProjectCampaign extends Model{
         $dateObj = new DateTime($date);
         $dateObj->add(new DateInterval('P1D'));
 
-        $date_end = $dateObj->format('Y-m-d h:i');
+        $date_end = $dateObj->format('Y-m-d H:i');
 
         $sql = "SELECT * FROM ".DB_PREFIX."campaign
          WHERE date_start >= '".$this->db->escape($date)."' AND
@@ -80,7 +81,8 @@ class ModelProjectCampaign extends Model{
 
     public function getCampaign($campaign_id)
     {
-        $sql = "SELECT * FROM ".DB_PREFIX.".campaign  c
+        $sql = "SELECT c.*, cdes.name as name, cu.firstname as author, cu.avatar as author_avatar, pr.title as project, cu.customer_id as author_id
+         FROM ".DB_PREFIX.".campaign  c
          LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
           WHERE c.campaign_id = '".(int)$campaign_id."'
            AND des.language_id = '2' ";

@@ -19,6 +19,13 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><label for="email" ><?php echo $this->language->get('text_email'); ?></label></td>
+                        <td>
+                            <input disabled="disabled" type="text" name="email" value="<?php echo $project->email; ?>" />
+
+                        </td>
+                    </tr>
+                    <tr>
                         <td><label for="title" ><?php echo $this->language->get('text_title'); ?></label></td>
                         <td>
                             <input type="text" name="title" value="<?php echo $title; ?>" />

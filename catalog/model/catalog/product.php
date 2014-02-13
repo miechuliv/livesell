@@ -11,7 +11,7 @@ class ModelCatalogProduct extends Model {
            AND currency_id = '".(int)$currency_id."'
            AND last_chance = '".(int)$last_chance."' ");
 
-        return $q->row['price'];
+        return isset($q->row['price'])?$q->row['price']:false;
     }
 	
 	public function getProduct($product_id,$last_chance= false) {
@@ -69,6 +69,9 @@ class ModelCatalogProduct extends Model {
                 'date_added'       => $query->row['date_added'],
                 'date_modified'    => $query->row['date_modified'],
                 'viewed'           => $query->row['viewed'],
+                'show_on_store'   => $query->row['show_on_store'],
+                'campaign_id'   => $query->row['campaign_id'],
+                'parent_product'   => $query->row['parent_product'],
 
             );
 
@@ -120,6 +123,10 @@ class ModelCatalogProduct extends Model {
             $sql .= "LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
         }
 
+        if (isset($filtry['filter_campaign_status']) ) {
+            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        }
+
 
 		$sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
@@ -160,6 +167,29 @@ class ModelCatalogProduct extends Model {
                 }
             }
         }
+
+        if (isset($data['filter_campaign_status'])) {
+            if($data['filter_campaign_status'] == 'basic')
+            {
+                $sql .= " AND p.parent_product = '0' ";
+            }
+            elseif($data['filter_campaign_status'] == 'current')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) >= SYSDATE()
+                  AND cam.date_start <= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'future')
+            {
+                $sql .= " AND cam.date_start >= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'ended')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) <= SYSDATE()
+                   ";
+            }
+
+
+        }
         //
 
         // miechu price filter
@@ -177,6 +207,10 @@ class ModelCatalogProduct extends Model {
         // filtr po wzorcu
         if (isset($data['filter_parent_id'])) {
             $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
+        }
+
+        if (isset($data['filter_show_on_store'])) {
+            $sql .= " AND p.show_on_store = '" . (int)$data['filter_show_on_store'] . "'";
         }
 
         // miechu manufactirer filter
@@ -475,7 +509,7 @@ class ModelCatalogProduct extends Model {
 		return $product_attribute_group_data;
 	}
 			
-	public function getProductOptions($product_id) {
+	public function getProductOptions($product_id , $image_function = false) {
 		$product_option_data = array();
 
 		$product_option_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option po LEFT JOIN `" . DB_PREFIX . "option` o ON (po.option_id = o.option_id) LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE po.product_id = '" . (int)$product_id . "' AND od.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.sort_order");
@@ -498,7 +532,7 @@ class ModelCatalogProduct extends Model {
 						'price_prefix'            => $product_option_value['price_prefix'],
 						'weight'                  => $product_option_value['weight'],
 						'weight_prefix'           => $product_option_value['weight_prefix'],
-                        'image_value'                  => $product_option_value['image_value'],
+                        'image_value'                  => (is_callable($image_function))?$image_function($product_option_value['image_value']):$product_option_value['image_value'],
 					);
 				}
 									
@@ -604,6 +638,10 @@ class ModelCatalogProduct extends Model {
             $sql .= "LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
         }
 
+        if (isset($filtry['filter_campaign_status']) ) {
+            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        }
+
 
 		$sql .= " LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
@@ -631,9 +669,36 @@ class ModelCatalogProduct extends Model {
             $sql .= " AND p.campaign_id = '" . (int)$data['filter_campaign_id'] . "'";
         }
 
+        if (isset($data['filter_campaign_status'])) {
+            if($data['filter_campaign_status'] == 'basic')
+            {
+                $sql .= " AND p.parent_product = '0' ";
+            }
+            elseif($data['filter_campaign_status'] == 'current')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) >= SYSDATE()
+                  AND cam.date_start <= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'future')
+            {
+                $sql .= " AND cam.date_start >= SYSDATE() ";
+            }
+            elseif($data['filter_campaign_status'] == 'ended')
+            {
+                $sql .= " AND DATE_ADD(cam.date_start,INTERVAL 2 DAY) <= SYSDATE()
+                   ";
+            }
+
+
+        }
+
         // filtr po wzorcu
         if (isset($data['filter_parent_id'])) {
             $sql .= " AND p.parent_product = '" . (int)$data['filter_parent_id'] . "'";
+        }
+
+        if (isset($data['filter_show_on_store'])) {
+            $sql .= " AND p.show_on_store = '" . (int)$data['filter_show_on_store'] . "'";
         }
 
         // miechu manufactirer filter

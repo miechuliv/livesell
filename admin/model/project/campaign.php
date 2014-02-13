@@ -110,13 +110,16 @@ class ModelProjectCampaign extends Model{
     {
 
         $dateObj = new DateTime($date);
-        $dateObj->add(new DateInterval('P1D'));
+        $dateObj->add(new DateInterval('PT24H'));
 
-        $date_end = $dateObj->format('Y-m-d h:i');
+        $date_end = $dateObj->format('Y-m-d H:I:s');
+
+
+
 
         $sql = "SELECT * FROM ".DB_PREFIX."campaign
-         WHERE date_start >= '".$this->db->escape($date)."' AND
-         date_start <= '".$this->db->escape($date_end)."'   ";
+         WHERE date_start > '".$this->db->escape($date)."' AND
+         date_start < '".$this->db->escape($date_end)."'   ";
 
         if($campaign_id)
         {
@@ -124,6 +127,8 @@ class ModelProjectCampaign extends Model{
         }
 
         $res = $this->db->query($sql);
+
+
 
         if($res->num_rows)
         {

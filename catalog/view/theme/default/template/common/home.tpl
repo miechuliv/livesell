@@ -23,27 +23,6 @@
 </div>
 */?>
 
-<script>
-	$(document).ready(function(){
-		$('label').bind('click',function(){
-			$(this).parent().find('label').removeClass('activ');
-			$(this).addClass('activ');
-		});
-		$('.inpczerwony').click(function(){
-			$('#startmoke').css('background','#e74c3c');
-		});
-		$('.inpniebieski').click(function(){
-			$('#startmoke').css('background','#3498db');
-		});
-		$('.pleck').click(function(){
-			$('.meska').hide();
-			$('.damska').show();
-		});
-		$('.plecm').click(function(){
-			$('.meska').show();
-			$('.damska').hide();
-		});
-	});
-</script>
+
 
 <?php echo $footer; ?>

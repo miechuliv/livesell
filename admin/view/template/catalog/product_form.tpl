@@ -156,6 +156,15 @@
               <td><?php echo $entry_quantity; ?></td>
               <td><input type="text" name="quantity" value="<?php echo $quantity; ?>" size="2" /></td>
             </tr>
+            <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
+                <td><?php echo $this->language->get('text_show_on_store'); ?></td>
+                <td>
+                    <select  name="show_on_store" >
+                    <option value="1" <?php if($show_on_store==1){ echo 'selected="selected"'; } ?> >Tak</option>
+                    <option value="0" <?php if($show_on_store==0){ echo 'selected="selected"'; } ?> >Nie</option>
+                        </select>
+                </td>
+            </tr>
               <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
                   <td>czy ma pojawiać sie w porównywarkach produktów?</td>
                   <td><select  name="feed" >

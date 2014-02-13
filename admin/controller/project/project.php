@@ -283,7 +283,7 @@ class ControllerProjectProject extends Controller{
 
             $q = new DbQBuilder();
             $wh = new DbWhere();
-            $q->setSelect('pro.*, cu.firstname as author, pro.accepted as status ');
+            $q->setSelect('pro.*, cu.firstname as author, pro.accepted as status, cu.email as email ');
             $wh->setAlias('pro')
                 ->setRelation('=')
                 ->setValue($this->request->get['project_id'])
@@ -310,6 +310,7 @@ class ControllerProjectProject extends Controller{
                 'inspiration',
                 'design',
                 'author',
+                'email',
                 'colors',
                 'description',
                 'portfolio',

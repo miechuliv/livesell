@@ -58,7 +58,8 @@
 
             <td><?php echo $project->status; ?></td>
 
-            <td><?php echo $project->author; ?></td>
+            <td><?php echo $project->author; ?><br/>
+                <?php echo $project->email; ?></td>
 
             <td>
                 <a href="<?php echo $edit($project->ID); ?>" ><?php echo $this->language->get('text_edit'); ?></a><br/>

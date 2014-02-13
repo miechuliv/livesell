@@ -76,6 +76,51 @@ class ControllerCommonHeader extends Controller {
         $this->data['register'] = $this->url->link('account/register');
         $this->data['contact'] = $this->url->link('information/contact');
         $this->data['cart_link'] = $this->url->link('checkout/cart');
+        $this->data['shop'] = $this->url->link('product/category');
+
+        $this->data['show_shop'] = $this->config->get('config_show_store');
+
+
+
+        if(isset($this->request->get['route']))
+        {
+            if(strpos($this->request->get['route'],'common/home')!==false AND isset($this->request->get['last_chance']))
+            {
+                $this->data['selected'] = 'last_chance';
+            }
+            elseif(strpos($this->request->get['route'],'common/home')!==false)
+            {
+                $this->data['selected'] = 'active';
+            }
+            elseif(strpos($this->request->get['route'],'product/gallery')!==false)
+            {
+                $this->data['selected'] = 'gallery';
+            }
+            elseif(strpos($this->request->get['route'],'account/register')!==false)
+            {
+                $this->data['selected'] = 'register';
+            }
+            elseif(strpos($this->request->get['route'],'information/contact')!==false)
+            {
+                $this->data['selected'] = 'contact';
+            }
+            elseif(strpos($this->request->get['route'],'checkout/cart')!==false)
+            {
+                $this->data['selected'] = 'cart';
+            }
+            elseif(strpos($this->request->get['route'],'category')!==false OR strpos($this->request->get['route'],'product')!==false)
+            {
+                $this->data['selected'] = 'shop';
+            }
+            else
+            {
+                $this->data['selected'] = false;
+            }
+        }
+        else
+        {
+            $this->data['selected'] = 'active';
+        }
 		
 		// Daniel's robot detector
 		$status = true;
