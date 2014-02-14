@@ -297,9 +297,7 @@ if (isset($session->data['language']) && array_key_exists($session->data['langua
 	$code = $config->get('config_language');
 }
 
-// hard code german
 
-$code = 'pl';
 
 if (!isset($session->data['language']) || $session->data['language'] != $code) {
 	$session->data['language'] = $code;

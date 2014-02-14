@@ -86,6 +86,7 @@
 
               <td id="action-td" class="right">
                  <a href="<?php echo $campaign['edit']; ?>"  ><?php echo $this->language->get('text_edit'); ?></a>
+                  <a target="_blank" href="<?php echo $campaign['preview_link']; ?>"  ><?php echo $this->language->get('text_preview'); ?></a>
               </td>
             </tr>
             <?php } ?>

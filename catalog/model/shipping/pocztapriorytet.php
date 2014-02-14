@@ -2,24 +2,42 @@
 class ModelShippingpocztapriorytet extends Model {
 	function getQuote($address) {
 		$this->load->language('shipping/pocztapriorytet');
+
 		
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('pocztapriorytet_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
-	
-		if (!$this->config->get('pocztapriorytet_geo_zone_id')) {
-			$status = true;
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+
+        $c = $this->config->get('pocztapriorytet_allowed_zones');
+		if (!$c OR empty($c)) {
+			$status = false;
 		} elseif ($query->num_rows) {
 			$status = true;
 		} else {
 			$status = false;
 		}
 
+
+
+        $rate = false;
+
+        if($status)
+        {
+            foreach($c as $zone)
+            {
+                if($zone['zone_id'] == $query->row['geo_zone_id'])
+                {
+                    $rate = $zone['weight'];
+                }
+            }
+        }
+
+
 		$method_data = array();
 	
-		if ($status) {
+		if ($status AND $rate) {
 			$cost = 0;
 			$weight = $this->cart->getWeight();
 			
-			$rates = explode(',', $this->config->get('pocztapriorytet_rate'));
+			$rates = explode(',', $rate);
 			
 			foreach ($rates as $rate) {
   				$data = explode(':', $rate);

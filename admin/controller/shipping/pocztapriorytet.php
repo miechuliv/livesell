@@ -11,6 +11,7 @@ class ControllerShippingpocztapriorytet extends Controller {
 		$this->load->model('setting/setting');
 				
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+
 			$this->model_setting_setting->editSetting('pocztapriorytet', $this->request->post);		
 					
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -66,13 +67,13 @@ class ControllerShippingpocztapriorytet extends Controller {
 		
 		$this->data['cancel'] = $this->url->link('extension/shipping', 'token=' . $this->session->data['token'], 'SSL');
 		
-		if (isset($this->request->post['pocztapriorytet_rate'])) {
+		/* if (isset($this->request->post['pocztapriorytet_rate'])) {
 			$this->data['pocztapriorytet_rate'] = $this->request->post['pocztapriorytet_rate'];
 		} elseif ($this->config->get('pocztapriorytet_rate')) {
 			$this->data['pocztapriorytet_rate'] = $this->config->get('pocztapriorytet_rate');
 		} else {
 			$this->data['pocztapriorytet_rate'] = '0:15';	
-		}
+		} */
 
 		if (isset($this->request->post['pocztapriorytet_tax_class_id'])) {
 			$this->data['pocztapriorytet_tax_class_id'] = $this->request->post['pocztapriorytet_tax_class_id'];
@@ -80,10 +81,40 @@ class ControllerShippingpocztapriorytet extends Controller {
 			$this->data['pocztapriorytet_tax_class_id'] = $this->config->get('pocztapriorytet_tax_class_id');
 		}
 
-		if (isset($this->request->post['pocztapriorytet_geo_zone_id'])) {
-			$this->data['pocztapriorytet_geo_zone_id'] = $this->request->post['pocztapriorytet_geo_zone_id'];
+        $this->load->model('localisation/geo_zone');
+
+		if (isset($this->request->post['pocztapriorytet_allowed_zones'])) {
+
+            $zones = array();
+            foreach($this->request->post['pocztapriorytet_allowed_zones'] as $zone){
+                $t = $this->model_localisation_geo_zone->getGeoZone($zone['zone_id']);
+                $zones[] = array(
+                     'zone_id' => $zone['zone_id'],
+                       'name' => $t['name'],
+                    'delivery_time' => $zone['delivery_time'],
+                      'weight' => $zone['weight'],
+                );
+            }
+			$this->data['pocztapriorytet_allowed_zones'] = $zones;
 		} else {
-			$this->data['pocztapriorytet_geo_zone_id'] = $this->config->get('pocztapriorytet_geo_zone_id');
+
+            $zones = array();
+            $ar = $this->config->get('pocztapriorytet_allowed_zones');
+            if(!empty($ar))
+            {
+                foreach($this->config->get('pocztapriorytet_allowed_zones') as $zone){
+
+                    $t = $this->model_localisation_geo_zone->getGeoZone($zone['zone_id']);
+                    $zones[] = array(
+                        'zone_id' => $zone['zone_id'],
+                        'name' => $t['name'],
+                        'delivery_time' => $zone['delivery_time'],
+                        'weight' => $zone['weight'],
+                    );
+                }
+            }
+
+			$this->data['pocztapriorytet_allowed_zones'] = $zones;
 		}
 		
 		if (isset($this->request->post['pocztapriorytet_status'])) {
@@ -102,7 +133,7 @@ class ControllerShippingpocztapriorytet extends Controller {
 		
 		$this->data['tax_classes'] = $this->model_localisation_tax_class->getTaxClasses();
 		
-		$this->load->model('localisation/geo_zone');
+
 		
 		$this->data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 

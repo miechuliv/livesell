@@ -17,12 +17,18 @@ class ControllerModuleCampaign extends Controller{
 
         if(isset($this->request->get['last_chance']))
         {
-            $campaign = $this->model_project_campaign->showLastChanceCampaign(2);
+            $campaign = $this->model_project_campaign->showLastChanceCampaign($this->config->get('config_language_id'));
+        }
+        elseif(isset($this->request->get['campaign_id']) AND isset($this->session->data['token']))
+        {
+            $campaign = $this->model_project_campaign->getCampaign($this->request->get['campaign_id'],$this->config->get('config_language_id'));
+            $this->data['preview'] = true;
         }
         else
         {
-            $campaign = $this->model_project_campaign->showActualCampaign(2);
+            $campaign = $this->model_project_campaign->showActualCampaign($this->config->get('config_language_id'));
         }
+
 
         if(isset($this->request->get['no_buy']))
         {
@@ -150,7 +156,7 @@ class ControllerModuleCampaign extends Controller{
                 };
                 $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id'],$f);
                 $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),(isset($this->request->get['last_chance'])?true:false));
-                $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$config->get('config_image_thumb_width'),$config->get('config_image_thumb_height'));
+                $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$this->config->get('config_image_thumb_width'),$this->config->get('config_image_thumb_height'));
             }
 
 
@@ -170,6 +176,74 @@ class ControllerModuleCampaign extends Controller{
 
         $this->render();
     }
+
+    /*
+     * generuje 3 pliki xml w różnych jezykach do rss, trzeba to do krona wrzucić żeby je aktualizawać
+     */
+
+    public function rss()
+    {
+          $language = $this->request->get('language');
+          $targetFile = DIR_IMAGE.'../rss'.$language.'.xml';
+
+        $this->load->model('project/campaign');
+        $this->load->model('catalog/product');
+        $this->load->model('tool/image');
+
+
+          $campaign = $this->model_project_campaign->showActualCampaign(2);
+          $campaign_products = $this->model_project_campaign->getCampaignProducts($campaign['campaign_id']);
+
+        foreach($campaign_products as $key => $product)
+        {
+            $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),false);
+            $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$this->config->get('config_image_thumb_width'),$this->config->get('config_image_thumb_height'));
+        }
+
+        $campaign_images = $this->model_project_campaign->getCampaignImages($campaign['campaign_id']);
+
+        $image = array_shift($campaign_images);
+
+        $campaign_image =  $this->model_tool_image->resize($image['image'],600,600);
+
+        $description = sprintf($this->language->get('text_rss_author'),$campaign['name'],$campaign['author']).' ';
+
+        foreach($campaign_products as $product)
+        {
+            $description .= sprintf($this->language->get('text_rss_product'),$product['name'],$product['price']).' ';
+        }
+
+        $xml = '';
+
+        $xml .= '<?xml version="1.0" encoding="UTF-8" ?>';
+
+        $xml .= '<rss version="2.0">';
+        $xml .= '<channel>';
+            $xml .= '<title>'.$this->config->get("config_name").'</title>';
+        $xml .= '<link>'.HTTP_SERVER.'</link>';
+        $xml .= '<description>'.$this->config->get("config_meta_description").'</description>';
+        $xml .= '<language>'.$language.'</language>';
+            $xml .= '<image>';
+            $xml .= '<url>'.$campaign_image.'</url>';
+            $xml .= '<title>'.$this->config->get("config_name").'</title>';
+                $xml .= '<link>'.HTTP_SERVER.'</link>';
+                $xml .= '</image>';
+        $xml .= '<item>';
+        $xml .= '<title>'.sprintf($this->language->get('text_rss_title'),$campaign['name'],$campaign['author'],$campaign['description']).'</title>';
+        $xml .= '<link>'.HTTP_SERVER.'</link>';
+        $xml .= '<description>'.$description.'</description>';
+
+        $xml .= '</item>';
+          $xml .= '</channel>';
+        $xml .= '</rss>';
+
+        file_put_contents($targetFile,$xml);
+
+
+
+
+
+}
 
 
 }

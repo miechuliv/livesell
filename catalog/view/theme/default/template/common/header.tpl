@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
     <meta name="google-site-verification" content="l9N6oDorNSlFCx2E8tWfMUJdjAN_yZ5aPOCz62X0COw" />
 <title><?php echo $title; ?></title>
+<link rel="alternate" type="application/rss+xml"  href="<?php echo $rss_link; ?>" title="<?php echo $this->language->get('text_rss'); ?>">
 <base href="<?php echo $base; ?>" />
 <?php if ($description) { ?>
 <meta name="description" content="<?php echo $description; ?>" />
@@ -181,10 +182,10 @@ DD_belatedPNG.fix('#logo img');
 		<li <?php if($selected=='last_chance'){ ?> class="active" <?php } ?> ><a href="<?php echo $last_chance; ?>">Last Chance</a></li>
 		<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>">Gallery</a></li>
 		<li <?php if($selected=='register'){ ?> class="active" <?php } ?> ><a href="<?php echo $register; ?>">Submit</a></li>
-		<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>">Contact</a></li>
-        <li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>">blog</a></li>
+		<?/*<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>">Contact</a></li>*/?>
+        <li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>">Blog</a></li>
         <?php if($show_shop){ ?>
-        <li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>">Shop</a></li>
+			<li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>">Shop</a></li>
         <?php } ?>
 		<li  <?php if($selected=='cart'){ ?> class="active" <?php } ?> class="kasa"><a href="<?php echo $cart_link; ?>" >Koszyk</a></li>
 	</ul>

@@ -70,7 +70,7 @@ class ModelProjectCampaign extends Model{
 
         if($res->num_rows)
         {
-             $camp = $this->getCampaign($res->row['campaign_id']);
+             $camp = $this->getCampaign($res->row['campaign_id'],2);
              return $camp['name'];
         }
         else
@@ -79,13 +79,15 @@ class ModelProjectCampaign extends Model{
         }
     }
 
-    public function getCampaign($campaign_id)
+    public function getCampaign($campaign_id,$language_id)
     {
-        $sql = "SELECT c.*, cdes.name as name, cu.firstname as author, cu.avatar as author_avatar, pr.title as project, cu.customer_id as author_id
+        $sql = "SELECT c.*, cdes.*, cdes.name as name, cu.firstname as author, cu.avatar as author_avatar,  cu.customer_id as author_id,  cu.about as author_about
          FROM ".DB_PREFIX.".campaign  c
-         LEFT JOIN campaign_description des ON(c.campaign_id = des.campaign_id)
+         LEFT JOIN campaign_description cdes ON(c.campaign_id = cdes.campaign_id)
+          LEFT JOIN project pro ON(c.project_id = pro.project_id)
+         LEFT JOIN customer cu ON(pro.author_id = cu.customer_id)
           WHERE c.campaign_id = '".(int)$campaign_id."'
-           AND des.language_id = '2' ";
+           AND cdes.language_id = '".(int)$language_id."' ";
 
         $res = $this->db->query($sql);
 

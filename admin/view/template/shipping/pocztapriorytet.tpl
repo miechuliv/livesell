@@ -16,10 +16,7 @@
     <div class="content">
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
         <table class="form">
-          <tr>
-            <td><?php echo $entry_rate; ?></td>
-            <td><textarea name="pocztapriorytet_rate" cols="40" rows="5"><?php echo $pocztapriorytet_rate; ?></textarea></td>
-          </tr>
+
           <tr>
             <td><?php echo $entry_tax; ?></td>
             <td><select name="pocztapriorytet_tax_class_id">
@@ -34,17 +31,57 @@
               </select></td>
           </tr>
           <tr>
-            <td><?php echo $entry_geo_zone; ?></td>
-            <td><select name="pocztapriorytet_geo_zone_id">
-                <option value="0"><?php echo $text_all_zones; ?></option>
+            <td><?php echo $this->language->get('text_add_zone'); ?></td>
+            <td><select name="pocztapriorytet_geo_zone_id"  onclick="addZone(this)" >
+
+                    <option>    </option>
                 <?php foreach ($geo_zones as $geo_zone) { ?>
-                <?php if ($geo_zone['geo_zone_id'] == $pocztapriorytet_geo_zone_id) { ?>
-                <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
-                <?php } else { ?>
-                <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
-                <?php } ?>
+
+                <option  value="<?php echo $geo_zone['geo_zone_id']; ?>" ><?php echo $geo_zone['name']; ?></option>
+
                 <?php } ?>
               </select></td>
+          </tr>
+          <tr>
+              <td><?php echo $this->language->get('text_zones'); ?></td>
+              <td id="zones">
+                  <?php $zone_row = 0; ?>
+
+                  <table>
+
+                      <thead>
+                      <tr>
+                          <td><?php echo $this->language->get('text_zone_name'); ?></td>
+                          <td><?php echo $this->language->get('text_zone_time'); ?></td>
+                          <td><?php echo $this->language->get('text_zone_weight'); ?></td>
+                          <td><?php echo $this->language->get('text_zone_remove'); ?></td>
+                      </tr>
+                      </thead>
+                      <tbody id="zones_cont">
+                      <?php if(!empty($pocztapriorytet_allowed_zones)){ ?>
+                      <?php foreach($pocztapriorytet_allowed_zones as $zone){ ?>
+                      <tr>
+                          <td>
+                              <label for="pocztapriorytet_allowed_zones[<?php echo $zone_row; ?>][zone_id]" ><?php echo $zone['name']; ?></label><br/>
+                              <input type="hidden" name="pocztapriorytet_allowed_zones[<?php echo $zone_row; ?>][zone_id]" value="<?php echo $zone['zone_id']; ?>" />
+                          </td>
+                          <td>
+                              <input type="text" name="pocztapriorytet_allowed_zones[<?php echo $zone_row; ?>][delivery_time]" value="<?php echo $zone['delivery_time']; ?>" />
+                          </td>
+                          <td>
+                              <textarea name="pocztapriorytet_allowed_zones[<?php echo $zone_row; ?>][weight]" ><?php echo $zone['weight']; ?></textarea>
+                          </td>
+                          <td onclick="$(this).parent().remove();">
+                              <img src="view/image/delete.png" />
+                          </td>
+                      </tr>
+                      <?php $zone_row++; ?>
+                      <?php } ?>
+                      </tbody>
+                      <?php } ?>
+                  </table>
+
+              </td>
           </tr>
           <tr>
             <td><?php echo $entry_status; ?></td>
@@ -67,4 +104,46 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" >
+    var prev = false;
+    var zone_row = <?php echo $zone_row; ?>;
+    function addZone(elem)
+    {
+        var zone_id = $(elem).find('option:selected').val();
+
+        if(!zone_id || zone_id == prev)
+        {
+            return false;
+        }
+        prev = zone_id;
+        var zone_name = $(elem).find('option:selected').text();
+
+        var html = '';
+
+        html += '<tr>';
+        html += '<td>';
+        html += '<label for="pocztapriorytet_allowed_zones['+zone_row+'][zone_id]" >'+zone_name+'</label><br/>';
+        html += '<input type="hidden" name="pocztapriorytet_allowed_zones['+zone_row+'][zone_id]" value="'+zone_id+'" />';
+        html += '</td>';
+        html += '<td>';
+        html += '<input type="text" name="pocztapriorytet_allowed_zones['+zone_row+'][delivery_time]" value="" />';
+        html += '</td>';
+        html += '<td>';
+        html += '<textarea name="pocztapriorytet_allowed_zones['+zone_row+'][weight]" >';
+
+        html += '</textarea>';
+        html += '</td>';
+
+        html += '<td onclick="$(this).parent().remove();">';
+        html += '<img src="view/image/delete.png" />';
+        html += '</td>';
+        html += '</tr>';
+
+        console.log(html);
+
+        $('#zones_cont').append(html);
+
+        zone_row++;
+    }
+</script>
 <?php echo $footer; ?>

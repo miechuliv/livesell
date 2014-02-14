@@ -139,6 +139,8 @@ ini_set('display_errors', '1');
             $this->data['campaigns'][$key]['selected'] = isset($this->request->post['selected']) && in_array($campaign['campaign_id'], $this->request->post['selected']);
             $this->data['campaigns'][$key]['edit_author'] = $this->url->link('sale/customer/update', $this->baseUrl.'&token='.$this->session->data['token'] . '&customer_id='.$campaign['author_id'], 'SSL');
             //$this->image->resize($campaign[''], $config->get('config_image_thumb_width'), $config->get('config_image_thumb_height'));\
+            $this->data['campaigns'][$key]['preview_link'] = str_ireplace('admin','',$this->url->link('common/home','&campaign_id='.$campaign['campaign_id']));
+
             $date = new DateTime($campaign['date_start']);
             $in = new DateInterval('P1D');
             $date->add($in);
@@ -215,6 +217,7 @@ ini_set('display_errors', '1');
         {
             $campaign = array();
         }
+
 
 
 

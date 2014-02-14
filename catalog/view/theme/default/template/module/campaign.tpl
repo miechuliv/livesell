@@ -1,14 +1,11 @@
 <div class="fff">
     <?php if($campaign){ ?>
-    <h1><span><?php echo $campaign['name']; ?></span>
-        <small>by: <a href="<?php echo $campaign['author_href']; ?>"><?php echo $campaign['author']; ?></a></small>
-    </h1>		<div style="background:#000; text-align:center; width:100%; padding:20px 0;">
+    <h1>		<span><?php echo $campaign['name']; ?></span> <a href="<?php echo $campaign['author_href']; ?>"><small>by: <?php echo $campaign['author']; ?></small></a>
+    </h1>		
 
-
-
-    <?php if($campaign_image){ ?>
-        <img src="<?php echo $campaign_image; ?>" style="width:100%;" alt=""/>	</div>
-    <?php } ?>
+    <?php if($campaign_image){ ?>		<div id="startmoke">
+			<img src="<?php echo $campaign_image; ?>" alt="<?php echo $campaign['name']; ?>"/>			</div>
+    <?php } ?>	<!-- zamknięcie fff i homepage --></div></div><!-- / zamknięcie --><div class="bigfff"><div class="poziom">		<h1>Chose Your style</h1>
     <div id="oferta">
         <div>
             <div id="sldiecontrol">
@@ -78,13 +75,13 @@
             <div>
                 <?php echo $campaign['description']; ?>
             </div>
-            <?php if(!$no_buy){ ?>
+            <?php if(!$no_buy AND !isset($preview)){ ?>
             <a  class="action margintop line25 full" id="button-cart" >Kup teraz!</a>
             <?php } ?>
         </div>
     </div>
 </div>
-</div>
+
 <?php if(!$no_buy){ ?>
 <div id="morehome" class="fff">
     <div class="lewa">
@@ -123,7 +120,7 @@
     <?php echo $this->language->get('text_no_campaign'); ?>
 </div>
 <?php } ?>
-
+</div></div>
 <script type="text/javascript" src="catalog/view/javascript/countdown.js"></script>
 <?php if($campaign AND !$no_buy){ ?>
 <script type="text/javascript">
@@ -286,7 +283,7 @@
     }
 
 
-    $(document).ready(function(){
+    $(document).ready(function(){			var document = $(window).height();		var head = $('#header').height() + 60;			$('#homepage').css('min-height',document-head);
         $('label').live('click',function(){
             $(this).parent().find('label').removeClass('activ');
             $(this).parent().find('input').attr('checked',false);

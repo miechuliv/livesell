@@ -19,6 +19,12 @@ var module, countdown = function (r) {
 
     function f(a, b) {
        // return a + " " + (1 === a ? p[b] : q[b])
+
+        if( a < 10 )
+        {
+            a = '0'+a;
+        }
+
         return a
     }
 
@@ -185,6 +191,7 @@ var module, countdown = function (r) {
             c = a.millennia;
 
         c && b.push(f(c, 10));
+
         (c = a.centuries) && b.push(f(c, 9));
         (c = a.decades) && b.push(f(c, 8));
         (c = a.years) && b.push(f(c, 7));
@@ -192,9 +199,9 @@ var module, countdown = function (r) {
         (c = a.weeks) && b.push(f(c, 5));
         (c = a.days) &&
         b.push(f(c, 4));
-        (c = a.hours) && b.push(f(c, 3));
-        (c = a.minutes) && b.push(f(c, 2));
-        (c = a.seconds) && b.push(f(c, 1));
+        ((c = a.hours) >= 0) && b.push(f(c, 3));
+        ((c = a.minutes) >= 0) && b.push(f(c, 2));
+        ((c = a.seconds) >= 0) && b.push(f(c, 1));
         (c = a.milliseconds) && b.push(f(c, 0));
 
         return b
