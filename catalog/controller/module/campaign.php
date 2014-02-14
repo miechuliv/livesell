@@ -44,7 +44,7 @@ class ControllerModuleCampaign extends Controller{
 
 
             $campaign['author_href'] = $this->url->link('project/author','&author_id='.$campaign['author_id']);
-            $campaign['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],200,200);
+            $campaign['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],300,300);
 
             $date = new DateTime($campaign['date_start']);
 
@@ -80,13 +80,18 @@ class ControllerModuleCampaign extends Controller{
 
             $campaign_images = $this->model_project_campaign->getCampaignImages($campaign['campaign_id']);
 
+
+
             $this->data['campaign_images'] = array();
 
             foreach($campaign_images as $image)
             {
-                $this->data['campaign_images'][] =  $this->model_tool_image->resize($image,200,200);
+                $this->data['campaign_images'][] =  $this->model_tool_image->resize($image['image'],200,200);
             }
 
+            $image = array_shift($campaign_images);
+
+            $this->data['campaign_image'] =  $this->model_tool_image->resize($image['image'],800,800);
 
 
 
@@ -118,7 +123,7 @@ class ControllerModuleCampaign extends Controller{
                 {
                     $image = array_shift($images);
 
-                    $this->data['alt_offer_preview'] = $this->model_tool_image->resize($image['image'],200,200);
+                    $this->data['alt_offer_preview'] = $this->model_tool_image->resize($image['image'],300,300);
                 }
             }
             else
@@ -134,12 +139,13 @@ class ControllerModuleCampaign extends Controller{
             foreach($this->data['campaign_products'] as $key => $product)
             {
                 $im = $this->model_tool_image;
-                $f = function($image) use ($im) {
-                     return $im->resize($image,200,200);
+                $config = $this->config;
+                $f = function($image) use ($im,$config) {
+                     return $im->resize($image,$config->get('config_image_thumb_width'),$config->get('config_image_thumb_height'));
                 };
                 $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id'],$f);
                 $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),(isset($this->request->get['last_chance'])?true:false));
-                $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],200,200);
+                $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$config->get('config_image_thumb_width'),$config->get('config_image_thumb_height'));
             }
 
 

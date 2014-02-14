@@ -85,6 +85,52 @@
 
                 </table>
 
+                <p><?php echo $this->language->get('text_notes'); ?></p>
+                <table id="notes" >
+                    <tbody>
+                    <?php foreach($notes as $note){ ?>
+                           <tr class="root">
+
+
+                                           <td>
+
+                                               <textarea id="note-<?php echo $note['project_note_id']; ?>" style="width: 500px; height: 200px;"><?php echo $note["note"]; ?></textarea>
+                                           </td>
+
+                                    <td>
+                                               <a class="button" onclick="deleteNote(this,<?php echo $note["project_note_id"]; ?>)" ><?php echo $this->language->get('text_delete_note'); ?></a><br/>
+                                               <a class="button" onclick="updateNote(this,<?php echo $note["project_note_id"]; ?>)" ><?php echo $this->language->get('text_update_note'); ?></a>
+                                   </td>
+
+
+                           </tr>
+
+
+                    <?php } ?>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2"
+                            >
+                            <?php echo $this->language->get('text_new_note'); ?>
+                            </td>
+                    </tr>
+                       <tr>
+                           <td>
+
+                               <textarea id="note-new" style="width: 500px; height: 200px;">
+
+                               </textarea>
+                           </td>
+                           <td>
+                               <a class="button" onclick="addNote(this,<?php echo $project->ID; ?>)" ><?php echo $this->language->get('text_add_note'); ?></a>
+                           </td>
+                       </tr>
+
+
+                    </tfoot>
+                </table>
+
                 <div class="buttons">
                     <div class="left"><a href="<?php echo $back; ?>" class="button"><?php echo $button_back; ?></a></div>
                     <div class="right">
@@ -96,6 +142,84 @@
         </div>
     </div>
 </div>
+
+
+
+<script type="text/javascript">
+
+    function deleteNote(elem,note_id)
+    {
+        $.ajax({
+            url: 'index.php?route=project/project/deleteNote&token=<?php echo $this->session->data["token"]; ?>',
+            type: 'post',
+            data: {
+               note_id: note_id
+            },
+            success: function()
+            {
+                $(elem).parents('.root').remove();
+            }
+        })
+    }
+
+    function editNote()
+    {
+
+    }
+
+    function updateNote(elem,note_id)
+    {
+        var note = $(elem).parents('.root').find('textarea').val();
+        $.ajax({
+            url: 'index.php?route=project/project/updateNote&token=<?php echo $this->session->data["token"]; ?>',
+            type: 'post',
+            data: {
+                note_id: note_id,
+                note: note
+            }
+
+        })
+    }
+
+    function addNote(elem,project_id)
+    {
+        var note = $(elem).parents('tr').find('textarea').val();
+
+        $.ajax({
+            url: 'index.php?route=project/project/addNote&token=<?php echo $this->session->data["token"]; ?>',
+            type: 'post',
+            dataType: 'text',
+            data: {
+                project_id: project_id,
+                note: note
+            },
+            success: function(text)
+            {
+                var html = '';
+                html += '<tr class="root">';
+
+                html += '<td>';
+                html += '<textarea id="note-'+text+'" style="width: 500px; height: 200px;">';
+                html += note;
+                html += '</textarea>';
+                html += '</td>';
+
+
+                html += '<td>';
+                html += '<a class="button" onclick="deleteNote(this,'+text+')" ><?php echo $this->language->get('text_delete_note'); ?></a><br/>';
+                html += '<a class="button" onclick="updateNote(this,'+text+')" ><?php echo $this->language->get('text_delete_note'); ?></a>';
+                html += '</td>';
+
+
+                html += '</tr>';
+
+                $('#notes tbody').append(html);
+
+            }
+        })
+    }
+
+</script>
 
 
 <?php echo $footer; ?>

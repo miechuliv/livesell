@@ -220,7 +220,7 @@ class Cart {
 					}
 					
 					// Stock
-					if (!$product_query->row['quantity'] || ($product_query->row['quantity'] < $quantity)) {
+					if ($product_query->row['subtract'] AND ( !$product_query->row['quantity'] || ($product_query->row['quantity'] < $quantity)) ) {
 						$stock = false;
 					}
 

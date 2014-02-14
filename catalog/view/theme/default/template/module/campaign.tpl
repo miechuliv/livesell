@@ -6,8 +6,8 @@
 
 
 
-    <?php foreach($campaign_images as $image){ ?>
-        <img src="<?php echo $image; ?>" style="width:100%;" alt=""/>	</div>
+    <?php if($campaign_image){ ?>
+        <img src="<?php echo $campaign_image; ?>" style="width:100%;" alt=""/>	</div>
     <?php } ?>
     <div id="oferta">
         <div>
@@ -39,10 +39,17 @@
                     <input onclick="reloadOptions('<?php echo $product["product_id"]; ?>')" type="radio" name="rodzaj" id="<?php echo $product['name']; ?>" value="<?php echo $product['product_id']; ?>"><label for="<?php echo $product['name']; ?>" class="<?php echo $product['name']; ?>"><?php echo $product['price']; ?></label>
 
                     <?php } ?>
+                    <div id="campaign_errors">
+
+                    </div>
                     </td>
 
 
+
                 </tr>
+
+
+
 
               <?php /*  <tr>
                     <td>
@@ -68,6 +75,9 @@
                     </td>
                 </tr> */ ?>
             </table>
+            <div>
+                <?php echo $campaign['description']; ?>
+            </div>
             <?php if(!$no_buy){ ?>
             <a  class="action margintop line25 full" id="button-cart" >Kup teraz!</a>
             <?php } ?>
@@ -195,7 +205,7 @@
                 {
                     i++;
 
-                    html += '<tr><td><h2>'+i+'. Wybierz '+elem.option_name+'</h2>';
+                    html += '<tr><td><h2 id="option-'+elem.option_id+'" >'+i+'. Wybierz '+elem.option_name+'</h2>';
                     $.each(elem.values,function(key2,value)
                     {
                         html += '   <input pro_id="'+product_id+'" op_id="'+elem.option_id+'" val_id="'+value.option_value_id+'" type="radio" name="option['+elem.product_option_id+']" id="'+value.option_value_name+'" value="'+value.product_option_value_id+'"><label for="'+elem.option_name+'" class="'+value.option_value_name+' op">'+value.option_value_name+'</label>';

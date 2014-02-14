@@ -71,10 +71,17 @@
             success: function(json) {
                 $('.success, .warning, .attention, information, .error').remove();
 
+                $('#campaign_errors').empty();
+
                 if (json['error']) {
                     if (json['error']['option']) {
                         for (i in json['error']['option']) {
+
                             $('#option-' + i).after('<span class="error">' + json['error']['option'][i] + '</span>');
+
+                            // kanpania
+                            $('#campaign_errors').append('<span class="error">' + json['error']['option'][i] + '</span>');
+
                         }
                     }
                 }

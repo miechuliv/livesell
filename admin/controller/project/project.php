@@ -26,6 +26,48 @@ class ControllerProjectProject extends Controller{
 
     }
 
+    public function addNote()
+    {
+        error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+        $note = $this->request->post['note'];
+        $project_id = $this->request->post['project_id'];
+
+        $this->load->model('project/note');
+
+        $project_note_id = $this->model_project_note->insert(array(
+            'note' => $note,
+            'project_id' => $project_id
+        ));
+
+        echo $project_note_id;
+    }
+
+    public function updateNote()
+    {
+        $note = $this->request->post['note'];
+
+        $note_id = $this->request->post['note_id'];
+
+        $this->load->model('project/note');
+
+        $this->model_project_note->update(array(
+            'note' => $note,
+
+        ),$note_id);
+    }
+
+    public function deleteNote()
+    {
+
+        $note_id = $this->request->post['note_id'];
+
+        $this->load->model('project/note');
+
+        $this->model_project_note->delete($note_id);
+    }
+
     public function submit()
     {
         $this->setFields(array(
@@ -318,6 +360,24 @@ class ControllerProjectProject extends Controller{
 
 
             ),$project);
+
+            $this->load->model('project/note');
+
+            $this->data['notes'] = $this->model_project_note->getByProject($project->ID);
+
+            $this->load->model('user/user');
+
+            $this->data['token'] = $this->session->data['token'];
+
+
+
+            foreach($this->data['notes']  as $key => $note)
+            {
+                $user = $this->model_user_user->getUser($note['user_id']);
+                $this->data['notes'][$key]['user'] = $user['username'];
+            }
+
+
 
 
 

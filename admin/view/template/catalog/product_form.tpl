@@ -154,7 +154,12 @@
             </script>
             <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
               <td><?php echo $entry_quantity; ?></td>
-              <td><input type="text" name="quantity" value="<?php echo $quantity; ?>" size="2" /></td>
+              <td>
+
+                  <input type="text" name="quantity" value="100000" size="2" />
+
+
+              </td>
             </tr>
             <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
                 <td><?php echo $this->language->get('text_show_on_store'); ?></td>
