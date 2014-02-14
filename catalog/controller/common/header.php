@@ -77,6 +77,7 @@ class ControllerCommonHeader extends Controller {
         $this->data['contact'] = $this->url->link('information/contact');
         $this->data['cart_link'] = $this->url->link('checkout/cart');
         $this->data['shop'] = $this->url->link('product/category');
+        $this->data['blog'] = $this->url->link('module/blog');
 
         $this->data['show_shop'] = $this->config->get('config_show_store');
 
@@ -107,6 +108,10 @@ class ControllerCommonHeader extends Controller {
             elseif(strpos($this->request->get['route'],'checkout/cart')!==false)
             {
                 $this->data['selected'] = 'cart';
+            }
+            elseif(strpos($this->request->get['route'],'module/blog')!==false)
+            {
+                $this->data['selected'] = 'blog';
             }
             elseif(strpos($this->request->get['route'],'category')!==false OR strpos($this->request->get['route'],'product')!==false)
             {

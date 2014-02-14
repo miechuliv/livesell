@@ -182,6 +182,7 @@ DD_belatedPNG.fix('#logo img');
 		<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>">Gallery</a></li>
 		<li <?php if($selected=='register'){ ?> class="active" <?php } ?> ><a href="<?php echo $register; ?>">Submit</a></li>
 		<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>">Contact</a></li>
+        <li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>">blog</a></li>
         <?php if($show_shop){ ?>
         <li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>">Shop</a></li>
         <?php } ?>

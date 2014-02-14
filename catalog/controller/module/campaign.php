@@ -46,6 +46,11 @@ class ControllerModuleCampaign extends Controller{
             $campaign['author_href'] = $this->url->link('project/author','&author_id='.$campaign['author_id']);
             $campaign['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],300,300);
 
+            // seo
+            $this->document->setTitle($campaign['name']);
+            $this->document->setDescription($campaign['meta_description']);
+            $this->document->setKeywords($campaign['meta_keyword']);
+
             $date = new DateTime($campaign['date_start']);
 
 

@@ -1,8 +1,8 @@
 <?php  
 class ControllerCommonHome extends Controller {
 	public function index() {
-		$this->document->setTitle($this->config->get('config_title'));
-		$this->document->setDescription($this->config->get('config_meta_description'));
+		/*$this->document->setTitle($this->config->get('config_title'));
+		$this->document->setDescription($this->config->get('config_meta_description')); */
 
         $this->load->model('catalog/manufacturer');
 
@@ -32,8 +32,9 @@ class ControllerCommonHome extends Controller {
 			'common/content_top',
 			'common/content_bottom',
 			'common/footer',
-			'common/header',
             'module/campaign',
+			'common/header',
+
 
 		);
 										

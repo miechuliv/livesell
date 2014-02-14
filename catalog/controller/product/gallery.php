@@ -51,8 +51,9 @@ class ControllerProductGallery extends Controller{
             'common/content_top',
             'common/content_bottom',
             'common/footer',
+            'module/campaign',
             'common/header',
-            'module/campaign'
+
 
 
         );
@@ -73,6 +74,10 @@ class ControllerProductGallery extends Controller{
         ini_set('display_errors', '1');
 
         $defaultData = array('sort_date' => 'DESC', 'sort_vote' => 'DESC');
+
+        $this->document->setTitle($this->language->get('text_title'));
+        $this->document->setDescription($this->language->get('text_description'));
+        $this->document->setKeywords($this->language->get('text_keyword'));
 
 
         $this->setFields(array(
