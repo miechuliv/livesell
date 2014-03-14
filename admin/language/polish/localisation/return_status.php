@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Status zwrotu';
+$_['heading_title']    = 'Statusy zwrotów';
 
 // Text
 $_['text_success']     = 'Sukces: Zmodyfikowałeś statusy zwrotu!';

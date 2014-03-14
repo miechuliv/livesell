@@ -3,6 +3,7 @@
 $_['heading_title']                    = 'Administracja';
 
 // Text
+$_['text_blog']                   = 'Blog';
 $_['text_affiliate']                   = 'Partnerzy';
 $_['text_attribute']                   = 'Atrybuty';
 $_['text_attribute_group']             = 'Grupy atrybutów';
@@ -80,5 +81,5 @@ $_['text_voucher']                     = 'Bony upominkowe';
 $_['text_voucher_theme']               = 'Tematy bonów';
 $_['text_weight_class']                = 'Klasy wagi';
 $_['text_length_class']                = 'Klasy długości';
-$_['text_zone']                        = 'Strefy';
+$_['text_zone']                        = 'Strefy';$_['text_project']                = 'Projekty';$_['text_campaign']                        = 'Kampanie';
 ?>

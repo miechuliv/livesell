@@ -220,20 +220,31 @@ class ControllerCheckoutCart extends Controller {
 						'value' => (utf8_strlen($value) > 20 ? utf8_substr($value, 0, 20) . '..' : $value)
 					);
         		}
-				
+
+                // bierzemy prawidłowa cena
+                $this->load->model('catalog/product');
+
+                $price_raw = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),$product['campaign_type']);
+
+                $price = $this->currency->format($price_raw,'',1);
+
+                $total = $price_raw * $product['quantity'];
+
+                $total = $this->currency->format($total,'',1);
 				// Display prices
-				if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+				/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 					$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')));
 				} else {
 					$price = false;
-				}
-				
+				}*/
+
+
 				// Display prices
-				if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+				/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 					$total = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']);
 				} else {
 					$total = false;
-				}
+				}*/
 
 
 
@@ -662,7 +673,9 @@ class ControllerCheckoutCart extends Controller {
 			}
 			
 			if (!$json) {
-				$this->cart->add($this->request->post['product_id'], $quantity, $option,false);
+
+                $campaign_type = isset($this->request->post['campaign_type'])?$this->request->post['campaign_type']:false;
+				$this->cart->add($this->request->post['product_id'], $quantity, $option,false,$campaign_type);
 
                 $this->load->model('catalog/product');
                 $this->load->model('tool/image');

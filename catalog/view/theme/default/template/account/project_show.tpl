@@ -40,7 +40,13 @@
         </tr>
         <tr>
             <td><?php echo $this->language->get('text_accepted'); ?></td>
-            <td><input type="checkbox" disabled="disabled" <?php if($project->accepted){ echo 'checked="checked"'; } ?> /> </td>
+            <td>
+			<?php foreach($statuses->rows as $status){ ?>
+				<?php if($project->accepted == $status['project_status_id']){ ?>
+					<?php echo $status['name']; ?>
+				<?php } ?>
+			<?php } ?>
+			</td>
         </tr>
 
         <?php } ?>

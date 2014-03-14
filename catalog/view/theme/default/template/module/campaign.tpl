@@ -1,148 +1,233 @@
-<div class="fff">
-    <?php if($campaign){ ?>
-    <h1>		<span><?php echo $campaign['name']; ?></span> <a href="<?php echo $campaign['author_href']; ?>"><small>by: <?php echo $campaign['author']; ?></small></a>
-    </h1>		
+<?php if(!$no_buy){ ?>
+	<?/*<div id="bomb">
+		<div id="bomba"><div id="pageTimer" >00:00</div></div>
+	</div>*/?>
+<?php } ?>
 
-    <?php if($campaign_image){ ?>		<div id="startmoke">
-			<img src="<?php echo $campaign_image; ?>" alt="<?php echo $campaign['name']; ?>"/>			</div>
-    <?php } ?>	<!-- zamknięcie fff i homepage --></div></div><!-- / zamknięcie --><div class="bigfff"><div class="poziom">		<h1>Chose Your style</h1>
-    <div id="oferta">
-        <div>
-            <div id="sldiecontrol">
-                <div id="prev"></div>
-                <div id="next"></div>
-            </div>
-            <div class="homeslide">
-                <img id="main-foto" src="" class="meska" alt="" />
+ <?php if($campaign){ ?>	
+	
+<div class="fff">		
+		 
+<div id="oferta">
+	<div>
+		<div id="tableoff">
+			<div>
+				<div id="sldiecontrol">
+					<div id="prev"></div>
+					<div id="next"></div>
+				</div>
+				<div class="homeslide">
+					<img id="main-foto" src="" class="meska" alt="" />
 
-            </div>
-        </div>
-        <div>
-            <h1>&nbsp;</h1>
-            <?/*<div id="kabelki"></div>*/?>
-        <?php if(!$no_buy){ ?>
-        <div>
-            <div id="bomba"><div id="pageTimer" >00:00</div></div>
-        </div>
-        <?php } ?>
-        <div  class="selecty marginhor product-info">
-            <input type="hidden" name="product_id" size="2" value="" />
-            <table id="faken" >
-                <tr>
-                    <td>
-                        <h2>1.Wybierz rodzaj</h2>
-                    <?php foreach($campaign_products as $product){ ?>
+				</div>
+			</div>
+			<div>
+				<div class="selecty marginhor product-info">
 
-                    <input onclick="reloadOptions('<?php echo $product["product_id"]; ?>')" type="radio" name="rodzaj" id="<?php echo $product['name']; ?>" value="<?php echo $product['product_id']; ?>"><label for="<?php echo $product['name']; ?>" class="<?php echo $product['name']; ?>"><?php echo $product['price']; ?></label>
+					<input type="hidden" name="product_id" size="2" value="" />
+                    <input type="hidden" name="campaign_type" value="<?php echo $campaign_type; ?>" />
+					
+					<h1 class="camp" style="width:300px;">		
+						<span><?php echo $campaign['name']; ?></span> <a href="<?php echo $campaign['author_href']; ?>"><?php echo $this->language->get('text_by'); ?><small><?php echo $campaign['author']; ?></small></a>
+					</h1>	
+					
+					<table id="faken" >
+						<tr>
+							<td>
+								<h2>1. <?php echo $this->language->get('text_pick_product'); ?></h2>
+								<?php foreach($campaign_products as $product){ ?>
+									<input onclick="reloadOptions('<?php echo $product["product_id"]; ?>')" type="radio" name="rodzaj" id="<?php echo $product['name']; ?>" value="<?php echo $product['product_id']; ?>"><label for="<?php echo $product['name']; ?>" class="<?php echo $product['name']; ?>"><?php if(!$no_buy){ echo'<span></span>'; echo number_format($product['price'],2); /*echo' '; echo $this->config->get('config_currency');*/ }else{ echo '----'; } ?></label>
+								<?php } ?>    
+							</td>
+						</tr>
+					</table>
+					<?/*
+					<div>
+						<?php echo $campaign['description']; ?>
+					</div>
+						*/?>            
+						
+					<?php if(!$no_buy){ ?>
+					<a  class="action margintop line25 full" <?php if(!isset($preview)){ ?> id="button-cart" <?php } ?> ><?php echo $this->language->get('text_buy_now'); ?></a>
+				   
+					<?php } ?>
+					
+					<?php /* <div class="fb-like" data-href="<?php echo $like_url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> */ ?>
+					
 
-                    <?php } ?>
-                    <div id="campaign_errors">
-
-                    </div>
-                    </td>
-
-
-
-                </tr>
-
-
-
-
-              <?php /*  <tr>
-                    <td>
-                        <h2>2. Wybierz płeć</h2>
-                        <input type="radio" name="plec" id="plec-k" value="s"><label for="plec-k" class="pleck">Kobieta</label>
-                        <input type="radio" name="plec" id="plec-m" value="m"><label for="plec-m" class="plecm">Mężczyzna</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h2>3. Wybierz rozmiar</h2>
-                        <input type="radio" name="rozmiar" id="rozmiar-s" value="s"><label for="rozmiar-s">S</label>
-                        <input type="radio" name="rozmiar" id="rozmiar-m" value="m"><label for="rozmiar-m">M</label>
-                        <input type="radio" name="rozmiar" id="rozmiar-l" value="l"><label for="rozmiar-s">L</label>
-                        <input type="radio" name="rozmiar" id="rozmiar-xl" value="xl"><label for="rozmiar-s">XL</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h2>4. Wybierz kolor</h2>
-                        <input type="radio" name="kolor" id="kolor-c" value="kolor-c"><label for="kolor-c" class="czerwony">&nbsp;</label>
-                        <input type="radio" name="kolor" id="kolor-n" value="kolor-n"><label for="kolor-n" class="niebieski">&nbsp;</label>
-                    </td>
-                </tr> */ ?>
-            </table>
-            <div>
-                <?php echo $campaign['description']; ?>
-            </div>
-            <?php if(!$no_buy AND !isset($preview)){ ?>
-            <a  class="action margintop line25 full" id="button-cart" >Kup teraz!</a>
-            <?php } ?>
-        </div>
-    </div>
+					<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+					<script type="text/javascript">
+						stLight.options({
+							publisher: "d86370c7-306a-4ae7-a9c4-fec51c5c11f1", 
+							doNotHash: false, 
+							doNotCopy: false, 
+							hashAddressBar: false
+						});
+							function myCallbackFunction (event,service)
+								{					
+									if(service=='facebook'){
+										$.ajax({
+											url: 'index.php?route=module/campaign/facelike&campaign_id=<?php echo $campaign['campaign_id']; ?>',
+											type: 'get'
+										})
+									} 
+								}
+							stLight.subscribe("click",myCallbackFunction);
+					</script>
+					
+					<span class='st_facebook_large' displayText='Facebook' st_url='<?php echo $like_url; ?>'></span>
+					<span class='st_twitter_large' displayText='Tweet' st_url='<?php echo $like_url; ?>'></span>
+					<span class='st_googleplus_large' displayText='Google +' st_url='<?php echo $like_url; ?>'></span>
+					<span class='st_linkedin_large' displayText='LinkedIn' st_url='<?php echo $like_url; ?>'></span>
+					<span class='st_pinterest_large' displayText='Pinterest' st_url='<?php echo $like_url; ?>'></span>
+					
+				</div>			
+			</div>
+		</div>
+	</div>
+	<div id="newslet-home">
+		<div>
+			<div>
+				<div>
+					<img src="./image/data/logo/logo-small.png" alt="" id="logos"/> <h3><?php echo $this->language->get('news_submitnew'); ?></h3>
+				</div>
+				<div>
+					<form>
+						<input type="text" placeholder="<?php echo $this->language->get('news_email'); ?>">
+						<input type="submit" value="<?php echo $this->language->get('news_submit'); ?>" class="button action">
+						<div id="czeki">
+							<div><input type="checkbox" id="news-regular" checked="checked"><label for="news-regular"><?php echo $this->language->get('news_regular'); ?></label></div>
+							<div><input type="checkbox" id="news-okazj" checked="checked"><label for="news-okazj"><?php echo $this->language->get('news_okazja'); ?></label></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+
+	
+<!-- zamknięcie fff i homepage -->
+</div></div>
+<!-- / zamknięcie -->
+	
+<div class="bigfff">
+	<div class="poziom">
+
+
+    <?php if($campaign_image){ ?>		
+		<div id="startmoke" class="fff">
+			<div>
+				<div>
+					<img src="<?php echo $campaign_image; ?>" alt="<?php echo $campaign['name']; ?>"/>			
+				</div>
+				<div class="prawa">
+					<table>
+						<thead>
+						<tr>
+							<td colspan="2">
+								<a href="<?php echo $campaign['author_href']; ?>" class="ahead">
+									<img src="<?php echo $campaign['author_avatar']; ?>" alt="<?php echo $campaign['author']; ?>"/>
+									<h1 class="lite nomargin"><strong><?php echo $campaign['author']; ?></strong></h1>
+								</a>
+							</td>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="justify">								
+								<?php echo html_entity_decode($campaign['author_about']); ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+    <?php } ?>	
+
 
 <?php if(!$no_buy){ ?>
 <div id="morehome" class="fff">
-    <div class="lewa">
-        <table>
-            <thead>
-            <tr>
-                <td colspan="2">
-                    <h2>O autorze</h2>
-                </td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <?php echo $campaign['author_about']; ?>
-                </td>
-                <td>
-                    <img src="<?php echo $campaign['author_avatar']; ?>" alt="<?php echo $campaign['author']; ?>"/>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="prawa">
-        <h2 class="white">Ostatnia szansa</h2>
-        <div style="height:244px;">
-            <img src="<?php echo $alt_offer_preview; ?>" />
-            <a href="<?php echo $alt_link; ?>" class="action margintop">Kup teraz!</a>
+	<div id="tablemore">
+		<div class="lewa">
+			
+			<div class="table">
+				<div class="col-left">
+					<div style="display:table-cell; text-align:center;">
+						<img src="<?php echo $alt_offer_preview; ?>" style="max-width:90%;" alt=""/>
+					</div>
+					<div style="display:table-cell; vertical-align:middle; text-align:left;">
+						<h1 style="font-size:25px;"><?php echo ($last_chance_flag?$this->language->get('text_current_offer'):$this->language->get('text_last_chance')); ?></h1>
+						<h1 style="border:none; font-size:20px; padding:0; margin:0;"><?php echo $alt_name; ?></h1>
+						<a href="<?php echo $alt_link; ?>" class="action margintop"><?php echo $this->language->get('text_buy_now'); ?></a>
+					</div>
+				</div>
+				<div class="col-right">
+					<div>
+						<h1><?php echo $this->language->get('text_headprom'); ?></h1>
+						<ul>
+						<?php echo $this->language->get('text_prom'); ?>
+						</ul>
+					</div>
+					<div>
+						<h1><?php echo $this->language->get('text_headpay'); ?></h1>
+						<p>
+							<img alt="" src="./image/data/payment icons/mastercard_curved_32px.png">
+							<img alt="" src="./image/data/payment icons/visa_straight_32px.png">
+							<img alt="" src="./image/data/payment icons/paypal_curved_32px.png">
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<?php } ?>
+
+    <div id="komhome" class="fff">
+		<div>
+			<h1 class="lite"><?php echo $this->language->get('text_comment'); ?></h1>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'd4livesell'; // required: replace example with your forum shortname
+                var disqus_identifier =  'campaign_id=<?php echo $campaign["campaign_id"]; ?>';
+                var disqus_url = '<?php echo HTTP_SERVER; ?>index.php?route=common/home/#!/<?php echo $campaign["campaign_id"]; ?>';
+
+                var disqus_config = function () {
+                    this.language = "<?php echo $this->config->get('config_language'); ?>";
+
+                };
+
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    dsq.reload = true;
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
         </div>
     </div>
-
-</div>
-<?php } ?>
-<?php }else{ ?>
-<div>
-    <?php echo $this->language->get('text_no_campaign'); ?>
-</div>
-<?php } ?>
-</div></div>
-<script type="text/javascript" src="catalog/view/javascript/countdown.js"></script>
-<?php if($campaign AND !$no_buy){ ?>
-<script type="text/javascript">
-
-    var end = new Date('<?php echo $campaign["split_date"]["year"]; ?>',
-            '<?php echo $campaign["split_date"]["month"]; ?>',
-            '<?php echo $campaign["split_date"]["day"]; ?>',
-            '<?php echo $campaign["split_date"]["hour"]; ?>',
-            '<?php echo $campaign["split_date"]["minute"]; ?>',
-            '<?php echo $campaign["split_date"]["day"]; ?>');
+	
+	
+		<?php }else{ ?>
+			<div>
+				<?php echo $this->language->get('text_no_campaign'); ?>
+			</div>
+		<?php } ?>
+    </div>	
+		
 
 
-    var timerId =
-            countdown(
-
-                    end,
-                    function(ts) {
-                        document.getElementById('pageTimer').innerHTML = ts.toString("strong");
-                    },
-                    countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
-</script>
-<?php } ?>
 <script type="text/javascript">
     function Option()
     {
@@ -166,7 +251,7 @@
     }
 
 
-
+    var im = '';
 
     function OptionRepo()
     {
@@ -174,7 +259,22 @@
         this.getOptionValuesImage = function(option_id,option_value_id)
         {
 
-              var im = this.options[option_id].values[option_value_id].option_value_image;
+            var opt = this.options;
+
+
+
+            $.each(opt,function(key,elem){
+
+                ;
+                if(option_id == elem.option_id)
+                {
+                 
+                    im = elem.values[option_value_id].option_value_image;
+                }
+            })
+
+
+
 
 
             if(im)
@@ -189,7 +289,7 @@
 
             var html = '';
 
-            var i = 0;
+            var i = 1;
 
             var opt = this.options;
 
@@ -202,10 +302,10 @@
                 {
                     i++;
 
-                    html += '<tr><td><h2 id="option-'+elem.option_id+'" >'+i+'. Wybierz '+elem.option_name+'</h2>';
+                    html += '<tr><td><h2 id="option-'+elem.option_id+'">'+i+'. <?php echo $this->language->get('text_wybierz'); ?> '+elem.option_name+'</h2><div class="opt-'+elem.product_option_id+' error-popup"><?php echo $this->language->get('text_wybierz'); ?> '+elem.option_name+'!</div>';
                     $.each(elem.values,function(key2,value)
                     {
-                        html += '   <input pro_id="'+product_id+'" op_id="'+elem.option_id+'" val_id="'+value.option_value_id+'" type="radio" name="option['+elem.product_option_id+']" id="'+value.option_value_name+'" value="'+value.product_option_value_id+'"><label for="'+elem.option_name+'" class="'+value.option_value_name+' op">'+value.option_value_name+'</label>';
+                        html += '<input pro_id="'+product_id+'" op_id="'+elem.option_id+'" val_id="'+value.option_value_id+'" type="radio" name="option['+elem.product_option_id+']" id="'+value.option_value_name+'" value="'+value.product_option_value_id+'"><label for="'+elem.option_name+'" class="'+value.option_value_name+' op">'+value.option_value_name+'</label>';
                     })
                     html += '</td></tr>';
 
@@ -230,7 +330,7 @@
 
     var images = {};
 
-
+    var i = 0;
     <?php if($campaign){ ?>
     <?php foreach($campaign_products as $product){ ?>
 
@@ -243,19 +343,22 @@
                 op.option_name = '<?php echo $option['name']; ?>';
                 op.product_id = '<?php echo $product['product_id']; ?>';
                  op.product_option_id = '<?php echo $option['product_option_id']; ?>';
+				 
+				
 
                 <?php foreach($option['option_value'] as $value){ ?>
                     var v = new OptionValue();
                     v.option_value_name = '<?php echo $value['name']; ?>';
                     v.option_value_image = '<?php echo $value['image_value']; ?>';
-                    v.option_value_price = '<?php echo $value['price']; ?>';
+                    v.option_value_price = '<?php echo number_format($value['price'],2); ?>';
                     v.option_value_id = '<?php echo $value['option_value_id']; ?>';
                     v.product_option_value_id = '<?php echo $value['product_option_value_id']; ?>';
 
                     op.values['<?php echo $value['option_value_id']; ?>'] = v;
                 <?php } ?>
 
-                repo.options['<?php echo $option['option_id']; ?>'] = op;
+                repo.options[i] = op;
+                i++;
             <?php } ?>
 
             set['<?php echo $product['product_id']; ?>'] = repo;
@@ -281,16 +384,15 @@
     {
         set[product_id].getOptionValuesImage(option_id,option_value_id);
     }
-
-
-    $(document).ready(function(){			var document = $(window).height();		var head = $('#header').height() + 60;			$('#homepage').css('min-height',document-head);
-        $('label').live('click',function(){
+	
+    $(document).ready(function(){	 
+	  
+			$('#tableoff label').live('click',function(){
             $(this).parent().find('label').removeClass('activ');
             $(this).parent().find('input').attr('checked',false);
             $(this).addClass('activ');
 
             $(this).prev('input').attr('checked','checked');
-
 
         });
 
@@ -301,55 +403,7 @@
         });
 
 
-        $('.inpczerwony').click(function(){
-            $('#startmoke').css('background','#e74c3c');
-        });
-        $('.inpniebieski').click(function(){
-            $('#startmoke').css('background','#3498db');
-        });
-        $('.pleck').click(function(){
-            $('.meska').hide();
-            $('.damska').show();
-        });
-        $('.plecm').click(function(){
-            $('.meska').show();
-            $('.damska').hide();
-        });
-
         $('#faken tr td input:first').click();
 
-        /* $('#button-cart').bind('click', function() {
-
-            $.ajax({
-                url: 'index.php?route=checkout/cart/add',
-                type: 'post',
-                data: $('.product-info input[type=\'text\'], .product-info input[type=\'hidden\'], .product-info input[type=\'radio\']:checked, .product-info input[type=\'checkbox\']:checked, .product-info select, .product-info textarea, input[name="kaucja"]'),
-                dataType: 'json',
-                success: function(json) {
-                    $('.success, .warning, .attention, information, .error').remove();
-
-                    if (json['error']) {
-                        if (json['error']['option']) {
-                            for (i in json['error']['option']) {
-                                $('#option-' + i).after('<span class="error">' + json['error']['option'][i] + '</span>');
-                            }
-                        }
-                    }
-
-                    if (json['success']) {
-
-                        html = cartNotify(json);
-
-                        $('#notification').html(html);
-
-                        $('.success').fadeIn('slow');
-
-                        $('#cart-total').html(json['total']);
-
-                        $('html, body').animate({ scrollTop: 0 }, 'slow');
-                    }
-                }
-            });
-        }); */
     });
 </script>

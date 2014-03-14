@@ -17,4 +17,12 @@ $_['text_download']    = 'Downloads';
 $_['text_return']      = 'Returns';
 $_['text_transaction'] = 'Transactions';
 $_['text_newsletter']  = 'Newsletter';
+
+$_['text_project_submit'] = 'Submit your design';
+
+$_['text_projects'] = 'Your projects';
+
+$_['text_author_transaction'] = 'Your earnings';
+
+$_['text_avatar'] = 'Change your avatar';
 ?>

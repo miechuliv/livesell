@@ -18,5 +18,8 @@ $_['entry_password']               = 'Hasło:';
 
 // Error
 $_['error_login']                  = 'Uwaga: E-mail i/lub hasło nieprawidłowe!';
-$_['error_approved']               = 'Uwaga: Twoje konto wymaga zatwierdzenia zanim będziesz mógł się zalogować.'; 
+$_['error_approved']               = 'Uwaga: Twoje konto wymaga zatwierdzenia zanim będziesz mógł się zalogować.';
+
+$_['error_firstname']      = 'Uwaga: Imię musi zawierać od 1 do 32 znaków!';
+$_['error_password']       = 'Uwaga: Hasło musi mieć od 4 do 20 znaków!';
 ?>

@@ -1,4 +1,10 @@
 $(document).ready(function() {
+
+	$('a.cofka').click(function(){
+        parent.history.back();
+        return false;
+	});
+
 	/* Search */
 	$('.button-search').bind('click', function() {
 		url = $('base').attr('href') + 'index.php?route=product/search';
@@ -220,9 +226,9 @@ function ZoomGallery(popup,middle) {
 function cartNotify(json)
 {
 
-window.location = './index.php?route=checkout/cart';
+//window.location = './index.php?route=checkout/cart';
 
-  /*  var title = json['title'];
+    var title = json['title'];
     var thumb = json['thumb'];
     var text = json['success'];
     var price = json['price'];
@@ -232,9 +238,9 @@ window.location = './index.php?route=checkout/cart';
     var continue_shop = json['continue'];
     var see_cart = json['see_cart'];
 
-    var html = '<div id="notification-container">';
+    var html = '<div id="notification-container"  >';
     html +=  '<div id="thumb-template">';
-    html +=   '<a class="ui-notify-cross ui-notify-close s_button_remove"  href="javascript:;" onclick="kill();" style="margin-right:10px;">x</a>';
+    html +=   '<div style="text-align:left;"><a class="ui-notify-cross ui-notify-close s_button_remove"  href="javascript:;" onclick="kill();" style="margin-right:10px;margin-bottom:10px;font-size:20px;">x</a></div>';
     html +=   '<h2 class="s_icon_24">'+title+'</h2>';
     html +=   '<div class="s_item s_size_1 clearfix" style="background:#fff;">';
     html +=     '<a class="s_thumb" href=""><img src="'+thumb+'" /></a>';
@@ -242,15 +248,15 @@ window.location = './index.php?route=checkout/cart';
     html +=     '<h4>'+price+'</h4>';
     html +=     '<h5>'+total+'</h5>';
     html +=    '</div>';
-    html += '<div class="navu"><a class="butti konti" href="javascript:;" onclick="kill();">'+continue_shop+'</a> <a class="butti" href="./index.php?route=checkout/cart"><span></span>'+see_cart+'</a></div></div>';
-  /*  html += '<div id="nothumb-template">';
+    html += '<div class="navu"><a class="butti konti button" style="background-color:red;width:100px;margin-right:10px" href="javascript:;" onclick="kill();">'+continue_shop+'</a> <a class="butti button" style="background-color:red;width:100px;" href="./index.php?route=checkout/cart"><span></span>'+see_cart+'</a></div></div>';
+   /* html += '<div id="nothumb-template">';
     html +=   '<a class="ui-notify-cross ui-notify-close s_button_remove" href="javascript:;">x</a>';
     html +=   '<h2 class="s_icon_24">'+title+'</h2>';
     html +=   '<div class="s_item s_size_1 clearfix">';
     html +=     '<h3>'+text+'</h3>';
     html +=   '</div>';
-    html += '</div>'; 
+    html += '</div>'; */
     html +='</div>';
 
-    return html;*/
+    return html;
 }

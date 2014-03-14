@@ -18,6 +18,9 @@
       <li><a href="<?php echo $return; ?>"><?php echo $text_return; ?></a></li>
       <li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>
       <li><a href="<?php echo $newsletter; ?>"><?php echo $text_newsletter; ?></a></li>
+	  <li><a href="<?php echo $project_submit; ?>"><?php echo $text_project_submit; ?></a></li>
+        <li><a href="<?php echo $projects; ?>"><?php echo $text_projects; ?></a></li>
+		<li><a href="<?php echo $author_transaction; ?>"><?php echo $text_author_transaction; ?></a></li>
       <?php if ($logged) { ?>
       <li><a href="<?php echo $logout; ?>"><?php echo $text_logout; ?></a></li>
       <?php } ?>

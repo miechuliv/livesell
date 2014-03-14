@@ -117,7 +117,7 @@
       <div class="rating"><img src="catalog/view/theme/default/image/stars-<?php echo $product['rating']; ?>.png" alt="<?php echo $product['reviews']; ?>" /></div>
       <?php } ?>
       <div class="cart">
-        <a href="<?php echo $product['href']; ?>"  ><input type="button" value="jetzt anzeigen"  class="button" /></a>
+        <a href="<?php echo $product['href']; ?>"  ><input type="button" value="<?php echo $button_cart; ?>"  class="button" /></a>
       </div>
 	  <?/*
       <div class="wishlist"><a onclick="addToWishList('<?php echo $product['product_id']; ?>');"><?php echo $button_wishlist; ?></a></div>

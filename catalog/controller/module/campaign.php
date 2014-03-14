@@ -13,19 +13,31 @@ class ControllerModuleCampaign extends Controller{
     {
         $this->load->model('project/campaign');
         $this->load->model('catalog/product');
-        $this->load->model('tool/image');
+        $this->load->model('tool/image');	
+
+			$this->language->load('module/campaign');
+
+        $this->data['campaign_type'] = false;
 
         if(isset($this->request->get['last_chance']))
         {
             $campaign = $this->model_project_campaign->showLastChanceCampaign($this->config->get('config_language_id'));
+            $this->data['campaign_type'] = 'last_chance';
+
         }
         elseif(isset($this->request->get['campaign_id']) AND isset($this->session->data['token']))
         {
             $campaign = $this->model_project_campaign->getCampaign($this->request->get['campaign_id'],$this->config->get('config_language_id'));
             $this->data['preview'] = true;
         }
+        elseif(isset($this->request->get['campaign_id']) AND isset($this->request->get['no_buy']))
+        {
+            $campaign = $this->model_project_campaign->getCampaign($this->request->get['campaign_id'],$this->config->get('config_language_id'));
+
+        }
         else
         {
+            $this->data['campaign_type'] = 'current';
             $campaign = $this->model_project_campaign->showActualCampaign($this->config->get('config_language_id'));
         }
 
@@ -36,7 +48,24 @@ class ControllerModuleCampaign extends Controller{
         }
         else
         {
+		   
             $this->data['no_buy'] = false;
+			
+			if(!empty($campaign))
+			{
+				$date = new DateTime($campaign['date_start']);
+				$i = new DateInterval('P2D');
+				$date->add($i);
+				
+				$now = new DateTime();
+				
+				if($now > $date)
+				{
+					$this->data['no_buy'] = true;
+				}
+				
+				
+			}
         }
 
 
@@ -49,13 +78,13 @@ class ControllerModuleCampaign extends Controller{
 
 
 
-            $campaign['author_href'] = $this->url->link('project/author','&author_id='.$campaign['author_id']);
+            $campaign['author_href'] = $this->url->link('author/profile','&author_id='.$campaign['author_id']);
             $campaign['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],300,300);
 
             // seo
             $this->document->setTitle($campaign['name']);
             $this->document->setDescription($campaign['meta_description']);
-            $this->document->setKeywords($campaign['meta_keyword']);
+            $this->document->setKeywords($campaign['meta_keyword']);						
 
             $date = new DateTime($campaign['date_start']);
 
@@ -102,10 +131,18 @@ class ControllerModuleCampaign extends Controller{
 
             $image = array_shift($campaign_images);
 
-            $this->data['campaign_image'] =  $this->model_tool_image->resize($image['image'],800,800);
+            $this->data['campaign_image'] =  $this->model_tool_image->resize($image['image'],800,800);						
+			
+			$this->document->setOpengraph(array(				
+			'title' => $campaign['name'],				
+			'site_name' => $this->config->get('config_name'),				
+			'type' => 'article',				
+			'url' => $this->url->link('common/home','&campaign_id='.$campaign['campaign_id'].(isset($this->request->get['last_chance'])?'&last_chance=1':'')),			
+			'image' => $this->data['campaign_image'],		
+			));
 
 
-
+			$this->data['like_url'] = $this->url->link('common/home','&campaign_id='.$campaign['campaign_id'].(isset($this->request->get['last_chance'])?'&last_chance=1':''));
 
 
             if(isset($this->request->get['last_chance']))
@@ -113,21 +150,27 @@ class ControllerModuleCampaign extends Controller{
                 $this->data['alt_link'] = $this->url->link('common/home');
 
                 $alt_offer = $this->model_project_campaign->showActualCampaign(2);
+				
+				$this->data['last_chance_flag'] = true;
             }
             else
             {
                 $this->data['alt_link'] = $this->url->link('common/home&last_chance=1');
 
                 $alt_offer = $this->model_project_campaign->showLastChanceCampaign(2);
+				
+				$this->data['last_chance_flag'] = false;
 
 
             }
 
-
+			$this->data['alt_name'] = false;
 
             if(isset($alt_offer['campaign_id']))
             {
                 $images = $this->model_project_campaign->getCampaignImages($alt_offer['campaign_id']);
+				
+				$this->data['alt_name'] = $alt_offer['name'];
 
 
                 if(!empty($images))
@@ -155,16 +198,26 @@ class ControllerModuleCampaign extends Controller{
                      return $im->resize($image,$config->get('config_image_thumb_width'),$config->get('config_image_thumb_height'));
                 };
                 $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id'],$f);
-                $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),(isset($this->request->get['last_chance'])?true:false));
+
+                $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),isset($this->request->get['last_chance'])?'last_chance':'current');
+
+
                 $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$this->config->get('config_image_thumb_width'),$this->config->get('config_image_thumb_height'));
             }
 
+            // zapisujemy to do dokumentu żeby było dostępne z headerze
+            $this->data['campaign']['no_buy'] = $this->data['no_buy'];
+            $this->data['campaign']['campaign_type'] = $this->data['campaign_type'];
+
+            $this->document->setCampaign($this->data['campaign']);
 
         }
         else
         {
             $this->data['campaign'] = false;
         }
+
+
 
 
 
@@ -176,6 +229,17 @@ class ControllerModuleCampaign extends Controller{
 
         $this->render();
     }
+	
+	public function facelike()
+	{
+			$campaign_id = $this->request->get['campaign_id'];
+			
+			$this->load->model('project/campaign');
+
+
+
+          $this->model_project_campaign->upvote($campaign_id);
+	}
 
     /*
      * generuje 3 pliki xml w różnych jezykach do rss, trzeba to do krona wrzucić żeby je aktualizawać

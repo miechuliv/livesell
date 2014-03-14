@@ -1,6 +1,6 @@
 <?php
 // Heading 
-$_['heading_title']     = 'Książka adresowa';
+$_['heading_title']     = 'Moje adresy';
 
 // Text
 $_['text_account']      = 'Konto';

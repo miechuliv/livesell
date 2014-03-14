@@ -3,6 +3,11 @@
 $_['heading_title']           = 'Zamówienia';
 
 // Text
+$_['text_mass_edit']            = 'Masowa edycja: nadaj status i/lub dodaj notatkę';
+$_['text_notify']            = 'Powiadom klienta ( mail )';
+$_['text_mass_status']            = 'Edytuj masowo zaznaczone zamówienia';
+$_['text_filter_campaign_name']            = 'Nazwa kampanii';
+
 $_['text_success']            = 'Sukces: Zmodyfikowałeś zamówienia!';
 $_['text_order_id']           = 'Nr zamówienia:';
 $_['text_invoice_no']         = 'Nr faktury:';

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']     = 'Próg podatkowy';
+$_['heading_title']     = 'Progi podatkowe';
 
 // Text
 $_['text_shipping']     = 'Adres wysyłki';

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']     = 'Report prowizji partnera';
+$_['heading_title']     = 'Raport prowizji partnera';
 
 // Column
 $_['column_affiliate']  = 'Nazwa partnera';

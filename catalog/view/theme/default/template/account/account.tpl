@@ -32,6 +32,7 @@
       <li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>
         <li><a href="<?php echo $project_submit; ?>"><?php echo $text_project_submit; ?></a></li>
         <li><a href="<?php echo $projects; ?>"><?php echo $text_projects; ?></a></li>
+		<li><a href="<?php echo $author_transaction; ?>"><?php echo $text_author_transaction; ?></a></li>
     </ul>
   </div>
   <h2><?php echo $text_my_newsletter; ?></h2>

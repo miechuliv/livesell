@@ -9,11 +9,25 @@
 
 class ControllerAccountAvatar extends Controller{
 
+	public function __construct($register)
+	{
+			parent::__construct($register);
+			
+			if (!$this->customer->isLogged()) {
+	  		$this->session->data['redirect'] = $this->url->link('account/avatar', '', 'SSL');
+	  
+	  		$this->redirect($this->url->link('account/login', '', 'SSL'));
+			
+    	    } 
+	}
+
     public function index()
     {
 
         $this->load->model('account/customer');
         $this->load->model('tool/image');
+		
+		$this->language->load('account/avatar');
 
         $this->data['error'] = false;
 
@@ -30,7 +44,7 @@ class ControllerAccountAvatar extends Controller{
 
         if($customer['avatar'])
         {
-            $this->data['avatar'] = $this->model_tool_image->resize($customer['avatar'], $this->config->get('config_image_popup_width'), $this->config->get('config_image_popup_height'));
+            $this->data['avatar'] = $this->model_tool_image->resize($customer['avatar'], $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_height'));
         }
         else
         {
@@ -60,8 +74,8 @@ class ControllerAccountAvatar extends Controller{
 
     private function validate()
     {
-
-        return $this->upload();
+		if(!isset($this->request->post['default_avatar']))		{			return $this->upload();		}		else		{			return 'data/avatars/default_avatar.jpg';		}
+        
     }
 
     private function upload() {
@@ -99,7 +113,7 @@ class ControllerAccountAvatar extends Controller{
                 $allowed[] = trim($filetype);
             }
 
-
+         
             if (!in_array($this->request->files['file']['type'], $allowed)) {
 
                 $this->data['error'] = $this->language->get('error_filetype');

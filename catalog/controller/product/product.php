@@ -350,11 +350,13 @@ class ControllerProductProduct extends Controller {
                 }
             }
 						
-			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+			/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 				$this->data['price'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
 			} else {
 				$this->data['price'] = false;
-			}
+			}*/
+
+            $this->data['price'] = $this->model_catalog_product->getProductsPrice($product_info['product_id'],$this->currency->getId(),false);
 						
 			if ((float)$product_info['special']) {
 				$this->data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')));

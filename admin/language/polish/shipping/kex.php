@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']      = 'Kurier KEX';
+$_['heading_title']      = 'Poczta Polska';
 
 // Text
 $_['text_shipping']      = 'Dostawa';

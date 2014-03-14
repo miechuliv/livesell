@@ -9,19 +9,24 @@ class ModelCatalogProduct extends Model {
          WHERE product_id = '".(int)$product_id."' ");
     }
 
-    public function getProductsPrices($product_id , $last_chance = false)
+    public function getProductsPrices($product_id , $type = false)
     {
         $sql = "SELECT * FROM ".DB_PREFIX."product_price
           WHERE product_id = '".(int)$product_id."' ";
 
-        if($last_chance)
+        if($type == 'current')
         {
             $sql .= " AND last_chance = '1' ";
         }
-        else
+        elseif($type == 'last_chance')
         {
             $sql .= " AND last_chance = '0' ";
         }
+        else
+        {
+            $sql .= " AND shop = '1' ";
+        }
+
 
 
         $q = $this->db->query($sql);
@@ -51,7 +56,7 @@ class ModelCatalogProduct extends Model {
                  ");
     }
 
-    public function saveProductPrices($product_id,$data ,$last_chance = false)
+    public function saveProductPrices($product_id,$data ,$type = false)
     {
 
 
@@ -61,13 +66,23 @@ class ModelCatalogProduct extends Model {
         {
             foreach($data as $currency_id => $price)
             {
-                if($last_chance)
+                if($type == 'current')
                 {
                     $this->db->query("INSERT INTO ".DB_PREFIX."product_price SET
                  product_id = '".(int)$product_id."',
                  currency_id = '".(int)$currency_id."',
                  price = '".(float)$price."',
-                  last_chance = 1 ");
+                  last_chance = 1,
+                  shop = 0 ");
+                }
+                elseif($type == 'last_chance')
+                {
+                    $this->db->query("INSERT INTO ".DB_PREFIX."product_price SET
+                 product_id = '".(int)$product_id."',
+                 currency_id = '".(int)$currency_id."',
+                 price = '".(float)$price."',
+                  last_chance = 0,
+                   shop = 0 ");
                 }
                 else
                 {
@@ -75,8 +90,10 @@ class ModelCatalogProduct extends Model {
                  product_id = '".(int)$product_id."',
                  currency_id = '".(int)$currency_id."',
                  price = '".(float)$price."',
-                  last_chance = 0 ");
+                  last_chance = 0,
+                  shop = 1  ");
                 }
+
 
             }
         }
@@ -318,8 +335,9 @@ class ModelCatalogProduct extends Model {
 
         $this->deleteProductPrices($product_id);
         // ceny wg currency
-        $this->saveProductPrices($product_id,$data['product_prices'],false);
-        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],true);
+        $this->saveProductPrices($product_id,$data['product_prices'],'current');
+        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],'last_chance');
+        $this->saveProductPrices($product_id,$data['product_prices_shop'],false);
 
 
 
@@ -501,8 +519,9 @@ class ModelCatalogProduct extends Model {
 
         $this->deleteProductPrices($product_id);
         // ceny wg currency
-        $this->saveProductPrices($product_id,$data['product_prices'],false);
-        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],true);
+        $this->saveProductPrices($product_id,$data['product_prices'],'current');
+        $this->saveProductPrices($product_id,$data['product_prices_last_chance'],'last_chance');
+        $this->saveProductPrices($product_id,$data['product_prices_shop'],false);
 
         if($data['google_merchant'])
         {
@@ -915,7 +934,8 @@ class ModelCatalogProduct extends Model {
 			}	
 		
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-		}	
+		}
+
 		
 		$query = $this->db->query($sql);
 	

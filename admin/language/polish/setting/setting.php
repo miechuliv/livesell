@@ -3,6 +3,13 @@
 $_['heading_title']             = 'Ustawienia';
 
 // Text
+$_['text_author_commission']              = 'Procent od sprzedanego produktu dla Autora';
+$_['text_show_store']                = 'Pokaż sklep ( sprzedaż nadwyżek )';
+
+$_['text_author_rules']              = 'Warunki współpracy i stawki prowizyjne autora ( pojawi się przy wysyłaniu wzoru przez autora )';
+$_['text_author_account_id']                = 'Warunki wysłania wzoru';
+$_['text_submission_kit']                = 'Link do pliku PSD z szablonem';
+
 $_['text_success']              = 'Sukces: Zmodyfikowałeś ustawienia!';
 $_['text_items']                = 'Pozycje';
 $_['text_product']              = 'Produkty';

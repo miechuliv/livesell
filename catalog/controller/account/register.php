@@ -1,8 +1,89 @@
 <?php 
 class ControllerAccountRegister extends Controller {
 	private $error = array();
+
+    function parse_signed_request($signed_request) {
+        list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+
+        $secret = "b2fb2f21fb9b1b72994237a31fc72aca"; // Use your app secret here
+
+        // decode the data
+        $sig = $this->base64_url_decode($encoded_sig);
+        $data = json_decode($this->base64_url_decode($payload), true);
+
+        // confirm the signature
+        $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+        if ($sig !== $expected_sig) {
+            error_log('Bad Signed JSON signature!');
+            return null;
+        }
+
+        return $data;
+    }
+
+    function getUserData()
+    {
+
+        $facebook = new Facebook(array(
+            'appId'  => '495578190494203',
+            'secret' => 'b2fb2f21fb9b1b72994237a31fc72aca',
+        ));
+
+        $userId = $facebook->getUser();
+
+        $userInfo = $facebook->api('/me');
+
+        return $userInfo;
+
+
+    }
+
+    function base64_url_decode($input) {
+        return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    public function fb()
+    {
+
+
+
+        $uData = $this->getUserData();
+
+        $this->request->post['firstname'] = $uData['first_name'];
+        $f_name = str_ireplace(' ','.',strtolower(trim($this->request->post['firstname'])));
+
+        try{
+            $file = file_get_contents('http://graph.facebook.com/'.$f_name.'/picture?type=large');
+
+            $f_name = str_ireplace('.','',$f_name);
+
+            $file_dir = DIR_IMAGE.'data/avatars/'.$f_name.'.png';
+
+            file_put_contents($file_dir,$file);
+
+            $this->request->post['avatar'] = 'data/avatars/'.$f_name.'.png';
+        }
+        catch(Exception $e)
+        {
+
+        }
+
+        $rid = uniqid();
+
+        $this->request->post['email'] = $uData['email'];
+        $this->request->post['password'] = $rid;
+        $this->request->post['confirm'] = $rid;
+        $this->request->post['agree'] = 1;
+        $this->request->server['REQUEST_METHOD'] = 'POST';
+
+
+
+        $this->index();
+    }
 	      
   	public function index() {
+
+
 		if ($this->customer->isLogged()) {
 	  		$this->redirect($this->url->link('account/account', '', 'SSL'));
     	}
@@ -14,6 +95,8 @@ class ControllerAccountRegister extends Controller {
 		$this->document->addStyle('catalog/view/javascript/jquery/colorbox/colorbox.css');
 					
 		$this->load->model('account/customer');
+
+
 		
     	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_account_customer->addCustomer($this->request->post);
@@ -23,7 +106,7 @@ class ControllerAccountRegister extends Controller {
 			unset($this->session->data['guest']);
 			
 			// Default Shipping Address
-			if ($this->config->get('config_tax_customer') == 'shipping') {
+			/*if ($this->config->get('config_tax_customer') == 'shipping') {
 				$this->session->data['shipping_country_id'] = $this->request->post['country_id'];
 				$this->session->data['shipping_zone_id'] = $this->request->post['zone_id'];
 				$this->session->data['shipping_postcode'] = $this->request->post['postcode'];				
@@ -33,9 +116,9 @@ class ControllerAccountRegister extends Controller {
 			if ($this->config->get('config_tax_customer') == 'payment') {
 				$this->session->data['payment_country_id'] = $this->request->post['country_id'];
 				$this->session->data['payment_zone_id'] = $this->request->post['zone_id'];			
-			}
+			} */
 							  	  
-	  		$this->redirect($this->url->link('account/success'));
+	  		$this->redirect($this->url->link('account/address'));
     	} 
 
       	$this->data['breadcrumbs'] = array();
@@ -350,6 +433,28 @@ class ControllerAccountRegister extends Controller {
 				
 		$this->response->setOutput($this->render());	
   	}
+
+    public function checkEmail()
+    {
+
+        $json = array();
+
+        $json['res'] = 'success';
+
+        $this->load->model('account/customer');
+
+        $this->language->load('account/register');
+
+        if ((utf8_strlen($this->request->get['email']) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->get['email'])) {
+            $json['res'] = $this->language->get('error_email');
+        }
+
+        if ($this->model_account_customer->getTotalCustomersByEmail($this->request->get['email'])) {
+            $json['res'] = $this->language->get('error_exists');
+        }
+
+        echo json_encode($json);
+    }
 
   	protected function validate() {
     	if ((utf8_strlen($this->request->post['firstname']) < 1) || (utf8_strlen($this->request->post['firstname']) > 32)) {

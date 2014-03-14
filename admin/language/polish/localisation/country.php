@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']           = 'Kraj';
+$_['heading_title']           = 'Kraje';
 
 // Text
 $_['text_success']            = 'Sukces: Zmodyfikowałeś kraje!';

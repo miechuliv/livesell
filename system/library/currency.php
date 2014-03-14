@@ -35,7 +35,7 @@ class Currency {
   	}
 	
   	public function set($currency) {
-
+        
     	$this->code = $currency;
 
     	if (!isset($this->session->data['currency']) || ($this->session->data['currency'] != $currency)) {
@@ -47,7 +47,7 @@ class Currency {
     	}
   	}
 
-  	public function format($number, $currency = '', $value = '', $format = true) {
+  	public function format($number, $currency = '', $value = '', $format = true, $override = true) {
 		if ($currency && $this->has($currency)) {
       		$symbol_left   = $this->currencies[$currency]['symbol_left'];
       		$symbol_right  = $this->currencies[$currency]['symbol_right'];

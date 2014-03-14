@@ -4,13 +4,6 @@ $_['heading_title']                  = 'Kasa';
 
 // Text
 $_['text_cart']                      = 'Koszyk';
-$_['text_checkout_option']           = 'Krok 1: Opcje kasy';
-$_['text_checkout_account']          = 'Krok 2: Konto i szczegóły płatności';
-$_['text_checkout_payment_address']  = 'Krok 2: Szczegóły płatności';
-$_['text_checkout_shipping_address'] = 'Krok 3: Szczegóły dostawy';
-$_['text_checkout_shipping_method']  = 'Krok 4: Sposób dostawy';
-$_['text_checkout_payment_method']   = 'Krok 5: Metoda płatności';
-$_['text_checkout_confirm']          = 'Krok 6: Potwierdź zamówienie';
 $_['text_modify']                    = 'Modyfikuj &raquo;';
 $_['text_new_customer']              = 'Nowy klient';
 $_['text_returning_customer']        = 'Zarejestrowany klient';
@@ -29,7 +22,7 @@ $_['text_address_existing']          = 'Chcę użyć obecny adres';
 $_['text_shipping_method']           = 'Proszę wybrać preferowany sposób dostawy do wykorzystania w tym zamówieniu.';
 $_['text_payment_method']            = 'Wybierz preferowaną metodę płatności do wykorzystania w tym zamówieniu.';
 $_['text_comments']                  = 'Dodaj komentarz do zamówienia';
-
+$_['text_totals'] = 'Podsumowanie';$_['text_checkout_payment_address']  = 'Krok 1: Dane do wysyłki';$_['text_shipping'] = 'Krok 2: Dostawa';$_['text_payment_method_short'] = 'Krok 3: Płatność';$_['text_shipping_calculator'] = 'Wybierz kraj dostawy aby wyliczyć koszt wysyłki:';
 $_['text_order_confirm'] = 'Potwierdź zamówienie';
 
 // Column
@@ -50,16 +43,16 @@ $_['entry_telephone']                = 'Telefon:';
 $_['entry_fax']                      = 'Faks:';
 $_['entry_company']                  = 'Firma:';
 $_['entry_customer_group']           = 'Rodzaj Działalności:';
-$_['entry_company_id']               = 'Identyfikator firmy (REGON):';
+$_['entry_company_id']               = 'NIP:';
 $_['entry_tax_id']                   = 'Identyfikator podatkowy (NIP):';
-$_['entry_address_1']                = 'Adres 1:';
+$_['entry_address_1']                = 'Ulica i nr domu:';
 $_['entry_address_2']                = 'Adres 2:';
 $_['entry_postcode']                 = 'Kod pocztowy:';
 $_['entry_city']                     = 'Miejscowość:';
 $_['entry_country']                  = 'Kraj:';
 $_['entry_zone']                     = 'Region:';
 $_['entry_newsletter']               = 'Chciałbym zapisać się do biuletynu %s.';
-$_['entry_shipping'] 	             = 'Mój adres dostawy i do faktury jest taki sam.';
+$_['entry_shipping'] 	             = 'Mój adres dostawy i do faktury jest taki sam.';$_['text_auto_account'] = 'Utwórz konto na stronie';
 
 // Error
 $_['error_warning']                  = 'Uwaga: Wystąpił problem podczas próby realizacji zamówienia! Jeśli problem nie ustąpi spróbuj wybrać inny sposób płatności lub możesz skontaktować się z właścicielem sklepu <a href="%s">klikając tutaj</a>.';

@@ -1,5 +1,5 @@
 <?php
 // Text
-$_['text_title']  = 'Poczta Polska Priorytet';
-$_['text_weight'] = 'Waga:';
+$_['text_title']  = 'Mail';
+$_['text_weight'] = 'Weight:';
 ?>

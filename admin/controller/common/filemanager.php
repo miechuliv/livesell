@@ -508,6 +508,7 @@ class ControllerCommonFileManager extends Controller {
 
         if (isset($this->request->post['directory'])) {
 
+
         $files = $this->request->files['file'];
 
         for($i=0;$i<count($files['name']);$i++){
@@ -525,7 +526,7 @@ class ControllerCommonFileManager extends Controller {
                     $json['error'] = $this->language->get('error_directory');
                 }
 
-                if ($files['size'][$i] > 300000) {
+                if ($files['size'][$i] > 3000000) {
                     $json['error'] = $this->language->get('error_file_size');
                 }
 
@@ -561,8 +562,11 @@ class ControllerCommonFileManager extends Controller {
                 $json['error'] = $this->language->get('error_file');
             }
 
+
+
             if (!isset($json['error'])) {
                 if (@move_uploaded_file($files['tmp_name'][$i], $directory . '/' . $filename)) {
+
                     $json['success'] = $this->language->get('text_uploaded');
                 } else {
                     $json['error'] = $this->language->get('error_uploaded');

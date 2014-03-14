@@ -6,6 +6,7 @@ class Cart {
 	
   	public function __construct($registry) {
 		$this->config = $registry->get('config');
+        $this->currency = $registry->get('currency');
 		$this->customer = $registry->get('customer');
 		$this->session = $registry->get('session');
 		$this->db = $registry->get('db');
@@ -22,14 +23,18 @@ class Cart {
 			foreach ($this->session->data['cart'] as $key => $quantity) {
 
 
+                $product = explode('__', $key);
+
+                if (isset($product[1])) {
+                    $campaign_type = $product[1];
+                    $product = $product[0];
+                }
 
 
-				$product = explode(':', $key);
+                $product = explode(':', $key);
 				$product_id = $product[0];
 				$stock = true;
 
-
-	
 				// Options
 				if (isset($product[1])) {
 					$options = unserialize(base64_decode($product[1]));
@@ -170,7 +175,7 @@ class Cart {
 					}
 					
 					$price = $product_query->row['price'];
-					
+
 					// Product Discounts
 					$discount_quantity = 0;
 					
@@ -193,9 +198,12 @@ class Cart {
 				
 					if ($product_special_query->num_rows) {
 						$price = $product_special_query->row['price'];
-					}						
-			
-					// Reward Points
+					}
+
+                    // cena na sztywno
+                    $price = $this->getProductsPrice($product_id,$this->currency->getId(),(isset($campaign_type)?$campaign_type:false));
+
+						// Reward Points
 					$product_reward_query = $this->db->query("SELECT points FROM " . DB_PREFIX . "product_reward WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$customer_group_id . "'");
 					
 					if ($product_reward_query->num_rows) {	
@@ -249,7 +257,9 @@ class Cart {
 						'length'          => $product_query->row['length'],
 						'width'           => $product_query->row['width'],
 						'height'          => $product_query->row['height'],
-						'length_class_id' => $product_query->row['length_class_id'],
+						'length_class_id' => $product_query->row['length_class_id'],						
+						'campaign_id' => $product_query->row['campaign_id'],
+                        'campaign_type' => isset($campaign_type)?$campaign_type:false,
 
 					);
 				} else {
@@ -261,12 +271,17 @@ class Cart {
 		return $this->data;
   	}
 		  
-  	public function add($product_id, $qty = 1, $option = array(), $lower = false) {
+  	public function add($product_id, $qty = 1, $option = array(), $lower = false, $campaign_type = false) {
     	if (!$option) {
       		$key = (int)$product_id;
     	} else {
       		$key = (int)$product_id . ':' . base64_encode(serialize($option));
     	}
+
+        if($campaign_type)
+        {
+            $key .= '__'.$campaign_type;
+        }
 
 
 
@@ -436,6 +451,34 @@ class Cart {
 		}
 		
 		return $download;
-	}	
+	}
+
+    public function getProductsPrice($product_id,$currency_id,$type = false)
+    {
+
+        $sql = "SELECT * FROM ".DB_PREFIX."product_price
+          WHERE product_id = '".(int)$product_id."'
+           AND currency_id = '".(int)$currency_id."'
+            ";
+
+        if($type == 'current')
+        {
+            $sql .= " AND last_chance = '1' ";
+        }
+        elseif($type == 'last_chance')
+        {
+            $sql .= " AND last_chance = '0' ";
+        }
+        else
+        {
+            $sql .= " AND shop = '1' ";
+        }
+
+
+
+        $q = $this->db->query($sql);
+
+        return isset($q->row['price'])?$q->row['price']:false;
+    }
 }
 ?>

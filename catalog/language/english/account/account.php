@@ -17,4 +17,12 @@ $_['text_reward']        = 'Your Reward Points';
 $_['text_return']        = 'View your return requests'; 
 $_['text_transaction']   = 'Your Transactions'; 
 $_['text_newsletter']    = 'Subscribe / unsubscribe to newsletter';
+
+$_['text_project_submit'] = 'Submit your design';
+
+$_['text_projects'] = 'Your projects';
+
+$_['text_author_transaction'] = 'Your earnings';
+
+$_['text_avatar'] = 'Change your avatar';
 ?>

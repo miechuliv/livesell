@@ -30,6 +30,7 @@
 </p>
 <?php } ?>
 <div id="payment-new" style="display: <?php echo ($addresses ? 'none' : 'block'); ?>;">
+<?php if(!$addresses){ ?> <input type="hidden" name="payment_address" value="new"  /> <?php } ?>
     <table class="form">
         <tr>
             <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
@@ -90,9 +91,10 @@
                     <?php } ?>
                 </select></td>
         </tr>
-        <tr>
+        <tr style="display:none">
             <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
             <td><select id="payment_zone_id" name="payment_zone_id" class="large-field">
+					<option value="1" selected="selected" ></option>
                 </select></td>
         </tr>
     </table>
@@ -147,9 +149,9 @@
                     for (i = 0; i < json['zone'].length; i++) {
                         html += '<option value="' + json['zone'][i]['zone_id'] + '"';
 
-                        if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
+                        <?php /* if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
                             html += ' selected="selected"';
-                        }
+                        } */ ?>
 
                         html += '>' + json['zone'][i]['name'] + '</option>';
                     }
@@ -157,7 +159,7 @@
                     html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
                 }
 
-                $('#payment_zone_id').html(html);
+                //$('#payment_zone_id').html(html);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -192,6 +194,7 @@
 </p>
 <?php } ?>
 <div id="shipping-new" style="display: <?php echo ($addresses ? 'none' : 'block'); ?>;">
+<?php if(!$addresses){ ?> <input type="hidden" name="shipping_address" value="new"   /> <?php } ?>
     <table class="form">
         <tr>
             <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
@@ -234,9 +237,10 @@
                     <?php } ?>
                 </select></td>
         </tr>
-        <tr>
+        <tr style="display:none">
             <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
             <td><select id="shipping_zone_id" name="shipping_zone_id" class="large-field">
+			<option value="1" selected="selected" ></option>
                 </select></td>
         </tr>
     </table>
@@ -289,9 +293,9 @@
                     for (i = 0; i < json['zone'].length; i++) {
                         html += '<option value="' + json['zone'][i]['zone_id'] + '"';
 
-                        if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
+                        <?php /* if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
                             html += ' selected="selected"';
-                        }
+                        } */ ?>
 
                         html += '>' + json['zone'][i]['name'] + '</option>';
                     }
@@ -299,7 +303,7 @@
                     html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
                 }
 
-                $('#shipping_zone_id').html(html);
+               // $('#shipping_zone_id').html(html);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -316,6 +320,147 @@
 <?php } ?>
 <?php if ($shipping_methods) { ?>
 <div id="shipping-methods">
+<div id="shipping-calculator" style="display:none">
+             <p><?php echo $this->language->get('text_shipping_calculator'); ?></p>
+        <select name="country_id" class="large-field">
+            <option value=""><?php echo $text_select; ?></option>
+            <?php foreach ($countries as $country) { ?>
+            <?php if ($country['country_id'] == 170) { ?>
+            <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
+            <?php } else { ?>
+            <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+            <?php } ?>
+            <?php } ?>
+        </select>
+
+
+        </div>
+    <script type="text/javascript"><!--
+
+        function reloadShipping()
+        {
+
+            $.ajax({
+                url: 'index.php?route=checkout/checkout/reloadShipping&country_id=' + $('#shipping-calculator select[name="country_id"] option:selected').val() +'&zone_id=0',
+                dataType: 'json',
+                beforeSend: function() {
+                    // $('#payment-address select[name=\'country_id\']').after('<span class="wait">&nbsp;<img src="catalog/view/theme/default/image/loading.gif" alt="" /></span>');
+                },
+                complete: function() {
+                    //   $('.wait').remove();
+                },
+                success: function(json) {
+
+                    html = '';
+                    $.each(json,function(index,item){
+
+                        var error = '';
+                        if(item['error'])
+                        {
+                            error = item['error'];
+                        }
+
+
+                        html+=  '<tr>';
+                        //     html+=  '<td colspan="3"><b>'+item['title']+'</b></td>';
+                        html+=  '</tr>';
+
+                        $.each(item['quote'],function(index2,quote){
+
+                            html+=  '<tr class="highlight">';
+
+                            html+=  '<td><input type="radio" checked="checked" onchange="reloadTotals()" name="shipping_method" value="'+quote['code']+'" id="'+quote['code']+'" /></td>';
+
+                            html+=  '<td><label  for="'+quote['code']+'">'+quote['title']+'</label></td>';
+                            html+=  '<td style="text-align: right;"><label for="'+quote['code']+'">'+quote['text']+'</label></td>';
+                            html+=  '</tr>';
+
+                        });
+
+
+                        html+=  '<tr>';
+                        html+=  '<td colspan="3"><div class="error">'+error+'</div></td>';
+                        html+=  '</tr>';
+
+
+                    });
+
+
+
+                    target = $('#shipping-methods table');
+
+                    $(target).html(html);
+
+                    reloadTotals();
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+
+        }
+
+
+        
+
+        $('#shipping-new select[name=\'shipping_country_id\']').bind('change', function() {
+            if (this.value == '') return;
+
+            var v = this.value;
+
+            $('#shipping-calculator select[name=\'country_id\']').val(v);
+            reloadShipping();
+        });
+
+        $('#shipping-calculator select[name=\'country_id\']').bind('change', function() {
+            if (this.value == '') return;
+
+            var v = this.value;
+
+          
+            $('#shipping-new select[name=\'shipping_country_id\']').val(v);
+
+           
+
+            reloadShipping();
+        });
+
+
+        $('#shipping-calculator select[name=\'country_id\']').trigger('change');
+		
+		<?php if($addresses){ ?>
+		$('select[name=\'shipping_address_id\']').bind('change',function(){
+				
+				$.ajax({
+                url: 'index.php?route=checkout/checkout/reloadShippingByAddress&address_id=' + $('select[name=\'shipping_address_id\'] option:selected').val() +'&zone_id=0',
+                dataType: 'json',
+                beforeSend: function() {
+                    // $('#payment-address select[name=\'country_id\']').after('<span class="wait">&nbsp;<img src="catalog/view/theme/default/image/loading.gif" alt="" /></span>');
+                },
+                complete: function() {
+                    //   $('.wait').remove();
+                },
+                success: function(json) {
+
+							var country_id = json['country_id'];
+							
+							$('#shipping-calculator select[name=\'country_id\']').val(country_id);
+							$('#shipping-calculator select[name=\'country_id\']').trigger('change');
+							
+							
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+			
+		})
+		
+		$('select[name=\'shipping_address_id\']').trigger('change');
+		<?php } ?>
+        //--></script>
     <p><?php echo $text_shipping_method; ?></p>
     <table class="radio">
         <?php foreach ($shipping_methods as $shipping_method) { ?>
@@ -453,10 +598,7 @@
                 <br />
                 &nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
                 <?php } ?>
-                <?php if($product['kaucja']) { ?>
-                <br />
-                &nbsp;<small> - <?php echo $text_kaucja; ?>: <?php echo $product['kaucja']; ?> <?php echo $product['kaucja_cost']; ?></small>
-                <?php } ?>
+                
             </td>
             <td class="model"><?php echo $product['model']; ?></td>
             <td class="quantity"><?php echo $product['quantity']; ?></td>

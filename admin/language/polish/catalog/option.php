@@ -20,6 +20,7 @@ $_['text_image_manager']  = 'Menedżer obrazu';
 $_['text_browse']         = 'Przeglądaj pliki';
 $_['text_clear']          = 'Wymaż obraz';
 
+
 // Column
 $_['column_name']         = 'Nazwa opcji';
 $_['column_sort_order']   = 'Porządek sortowania';

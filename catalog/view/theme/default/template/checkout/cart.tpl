@@ -10,18 +10,21 @@
 <?php } ?>
 <?php // echo $column_left; ?><?php echo $column_right; ?>
 <div id="content"><?php echo $content_top; ?>
+<div class="fff podstr">
+<div>
+<?/*
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
-  </div>
-  <h1 style="margin:10px 0;"><?php echo $heading_title; ?>
+  </div>*/?>
+  <h1><?php echo $heading_title; ?>
     <?php if ($weight) { ?>
     &nbsp;(<?php echo $weight; ?>)
     <?php } ?>
   </h1>
-    <div class="buttons basket" style="margin-bottom:10px;">
-    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
+    <div class="buttons basket">
+    <div class="right"><a href="<?php echo $checkout; ?>" class="button action"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
    <?/* <div class="left"><a class="button grey cofka"><?php echo $button_shopping; ?></a></div> */?>
   </div>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
@@ -29,8 +32,8 @@
       <table>
         <thead>
           <tr>
-            <td class="image"><?php echo $column_image; ?></td>
-            <td class="name" style="width:440px; text-align:left !important"><?php echo $column_name; ?></td>
+            <td class="image"><?php // echo $column_image; ?></td>
+            <td class="name" style="width:440px; text-align:left !important"><?php // echo $column_name; ?></td>
             <td class="model"><?php echo $column_model; ?></td> 
             <td class="quantity"><?php echo $column_quantity; ?></td>
             <td class="price"><?php echo $column_price; ?></td>
@@ -41,9 +44,9 @@
           <?php foreach ($products as $product) { ?>
           <tr>
             <td class="image"><?php if ($product['thumb']) { ?>
-              <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" /></a>
+              <img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="" />
               <?php } ?></td>
-            <td class="name" style="text-align:left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+            <td class="name" style="text-align:left"><?php echo $product['name']; ?>
               <?php if (!$product['stock']) { ?>
               <span class="stock">***</span>
               <?php } ?>
@@ -189,15 +192,14 @@
     </div>
   </div>
   <?php } */ ?>
+  <div style="padding:0 20px; display:block; width:auto">
   <div class="cart-total">
   
-	<div id="koszyk-promo" style="background:#fff; border:1px solid #ccc; padding:10px; margin:10px; width:570px; float:left;">
+	<div id="koszyk-promo" style="margin:20px; float:left;">
 		<div style="float:left;margin-right:10px; font-size:12px;">
-			<strong class="ok">Lorem ipsum</strong> Lorem ipsum opis<br>
-			<strong class="ok">Lorem ipsum</strong> Inny opis lorem ipsum<br>
-			<strong class="ok">Lorem ipsum</strong> Lorem ipsum lorem ipsum	
+			<?php echo $this->language->get('text_zalety'); ?>
 		</div>
-		<div style="float:right; padding:6px;">	
+		<div style="float:right; padding:0 20px;">&nbsp; <strong><?php echo $this->language->get('text_platnosci'); ?></strong><br/><br/>
 			<div class="right clearfix" id="payments_types" style="position:relative; right:0; top:0;">
 				<img src="image/data/payment icons/visa_straight_32px.png" alt="visa">
 				<img src="image/data/payment icons/mastercard_curved_32px.png" alt="mastercard">
@@ -217,10 +219,13 @@
     </table>
   </div>
   <div class="buttons">
-    <div class="right"><a href="<?php echo $checkout; ?>" class="button buttonred"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
+    <div class="right"><a href="<?php echo $checkout; ?>" class="button action"><?php echo $button_checkout; ?> <img class="buttonarrow" src="./image/arrr.png" alt=""/></a></div>
     <div class="left"><a class="button grey cofka"><?php echo $button_shopping; ?></a></div>
   </div>
+  </div>
   <?php echo $content_bottom; ?></div>
+  </div>
+  </div>
 <script type="text/javascript"><!--
 $('input[name=\'next\']').bind('change', function() {
 	$('.cart-module > div').hide();
@@ -444,4 +449,12 @@ $('select[name=\'country_id\']').bind('change', function() {
 $('select[name=\'country_id\']').trigger('change');
 //--></script>
 <?php } ?>
+
+<script>
+	$(document).ready(function(){
+		$('.tohide').hide();
+		$('.toshow').removeClass('toshow');
+	});
+</script>
+
 <?php echo $footer; ?>

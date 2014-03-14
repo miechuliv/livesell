@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>">
+<html dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>" xmlns:fb="http://ogp.me/ns/fb#" >
 <head>
 <meta charset="UTF-8" />
-    <meta name="google-site-verification" content="l9N6oDorNSlFCx2E8tWfMUJdjAN_yZ5aPOCz62X0COw" />
+<meta name="google-site-verification" content="l9N6oDorNSlFCx2E8tWfMUJdjAN_yZ5aPOCz62X0COw" />
 <title><?php echo $title; ?></title>
 <link rel="alternate" type="application/rss+xml"  href="<?php echo $rss_link; ?>" title="<?php echo $this->language->get('text_rss'); ?>">
 <base href="<?php echo $base; ?>" />
+<?php if(($d = $this->document->getOpengraph())!=false){ ?>
+<meta property="og:site_name" content="<?php echo $d['site_name']; ?>" />
+<meta property="og:title" content="<?php echo $d['title']; ?>" />
+<meta property="og:type" content="<?php echo $d['type']; ?>" />
+<meta property="og:url" content="<?php echo $d['url']; ?>" />
+<meta property="og:image" content="<?php echo $d['image']; ?>" />
+<?php } ?>
 <?php if ($description) { ?>
 <meta name="description" content="<?php echo $description; ?>" />
 <?php } ?>
@@ -19,6 +26,7 @@
 <link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
 <?php } ?>
 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/stylesheet.css" />
+
 <?php foreach ($styles as $style) { ?>
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>" media="<?php echo $style['media']; ?>" />
 <?php } ?>
@@ -159,45 +167,71 @@ DD_belatedPNG.fix('#logo img');
         }
     </script>
 */?>
+
+
 <?php echo $google_analytics; ?>
 
 </head>
 <body>
-
-<div id="black"></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=112173815552215";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 <div id="header">
 	<div class="poziom">
 	
-		<div>	
-			<?php if ($logo) { ?>
-				<div id="logo"><a href="./"><img src="<?php echo $logo; ?>" title="<?php echo $name; ?>" alt="<?php echo $name; ?>" /></a></div>
-			<?php } ?>  
-		</div>
+	<?/*
+	<div id="menusi" style="position:absolute; top:0; right:0; margin:-15px 0 0;">
+		<a href="./index.php?route=account/login">Logowanie</a> | <a href="./index.php?route=account/register">Rejestracja</a>
+	</div>
+	*/?>
+	
+	<div id="head-site">
 		
-<div id="navi">
+		<div id="men2">
+			<ul>
+				<li class="toshow"><a href="mailto:<?php echo $this->config->get('config_email'); ?>"><?php echo $this->config->get('config_email'); ?></a></li>
+				<li <?php if($selected=='active'){ ?> class="active" <?php } ?> class="tohide"><a href="/livesell/"><?php echo $this->language->get('text_today_offer'); ?></a></li>
+                <?php if($last_chance){ ?>
+				<li <?php if($selected=='last_chance'){ ?> class="active" <?php } ?> ><a href="<?php echo $last_chance; ?>" class="tohide"><?php echo $this->language->get('text_last_chance'); ?></a></li>
+                <?php } ?>
+                <?php if($total_campaigns){ ?>
+				<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>" class="tohide"><?php echo $this->language->get('text_gallery'); ?></a></li>
+				<?php } ?>
+                <?php foreach($informations as $information){ ?>
+					<li><a href="<?php echo $information['href']; ?>"><?php echo $information['name']; ?></a></li>
+				<?php } ?>
+			</ul>
+			
+			<?php echo $language; ?>
+			<?php echo $currency; ?>
+			
+			<ul style="float:right;">				
+				<?php if($this->customer->isLogged()){ ?>
+					<li><a href="./index.php?route=account/account"><?php echo $this->language->get('text_account'); ?></a></li>
+				<?php } else { ?>
+					<li><a href="./index.php?route=account/login"><?php echo $this->language->get('text_loginreg'); ?></a></li>
+				<?php } ?>
+				<li <?php if($selected=='register'){ ?> class="active" <?php } ?>  class="tohide"><a href="./index.php?route=account/project/submit"><?php echo $this->language->get('text_submit_project'); ?></a></li>
+				<li <?php if($selected=='contact'){ ?> class="active" <?php } ?>><a href="<?php echo $contact; ?>"><?php echo $this->language->get('text_contact'); ?></a></li>
+				
+				<?/*<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>"><?php echo $this->language->get('text_contact'); ?></a></li>*/?>
+				<?/*<li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>"><?php echo $this->language->get('text_blog'); ?></a></li> */ ?>
 
-	<ul>
-		<li <?php if($selected=='active'){ ?> class="active" <?php } ?> ><a href="/livesell/">Today's Collection</a></li>
-		<li <?php if($selected=='last_chance'){ ?> class="active" <?php } ?> ><a href="<?php echo $last_chance; ?>">Last Chance</a></li>
-		<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>">Gallery</a></li>
-		<li <?php if($selected=='register'){ ?> class="active" <?php } ?> ><a href="<?php echo $register; ?>">Submit</a></li>
-		<?/*<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>">Contact</a></li>*/?>
-        <li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>">Blog</a></li>
-        <?php if($show_shop){ ?>
-			<li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>">Shop</a></li>
-        <?php } ?>
-		<li  <?php if($selected=='cart'){ ?> class="active" <?php } ?> class="kasa"><a href="<?php echo $cart_link; ?>" >Koszyk</a></li>
-	</ul>
-</div>
-<?/*
-		<div>
-			<img src="./image/bomba.png" style="height:150px">
+                <?php if($show_shop){ ?>
+					<li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>"><?php echo $this->language->get('text_shop'); ?></a></li>
+				<?php } ?>
+			</ul>
+			
 		</div>
-		<div>
-			<div id="pseudokoszyk">KOSZYK</div>
-		</div>
-*/?>
+	
+	</div>
+
 	<?/*
 	<?php echo $cart; ?>    
 
@@ -245,6 +279,37 @@ DD_belatedPNG.fix('#logo img');
 	</div>
 </div>
 
+	<div id="head2">	
+		<div id="menlogo">	
+			<?php if ($logo) { ?>
+				<div id="logo"><a href="./"><img src="<?php echo $logo; ?>" title="<?php echo $name; ?>" alt="<?php echo $name; ?>" /></a></div>
+			<?php } ?>  
+		</div>
+
+		<div>
+			<div id="bomb" class="tohide">
+                <?php $campaign = $this->document->getCampaign(); ?>
+				<small>
+                    <?php if($campaign AND $campaign['campaign_type'] == 'current'){ ?>
+                    <?php echo $this->language->get('text_timeleft'); ?>
+                    <?php }elseif($campaign AND $campaign['campaign_type'] == 'last_chanve'){ ?>
+                    <?php echo $this->language->get('text_timeleft_last_chance'); ?>
+                    <?php } ?>
+
+                </small>
+				<div id="bomba"><div id="pageTimer" >00:00</div></div>
+			</div>
+			<div id="kont-central" class="toshow">
+				<small>Masz jakieś pytania lub sugestie?</small><br/>
+				<strong><?php echo $this->config->get('config_telephone'); ?></strong>
+			</div>
+		</div>		
+		
+		<div id="koszykos">
+			<?php echo $cart; ?>    
+		</div>		
+	</div>
+
 
 <div id="notification"></div>
 
@@ -256,5 +321,9 @@ DD_belatedPNG.fix('#logo img');
       <input type="hidden" name="active_controller[]" value="<?php echo $controller; ?>.php" />
 <?php } */ ?>
 
+<div id="stars">
+	<div id="stars1"></div>
+	<div id="stars2"></div>
+</div>
 
 <div <?php if(!in_array('common/home',Utilities::getControllerList() )) { ?> class="poziom" <?php } else { ?> id="poziomhome" <?php } ?> >

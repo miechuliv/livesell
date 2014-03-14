@@ -117,7 +117,9 @@ class ModelProjectCampaign extends Model{
 
         if(isset($data['filter_name']) AND $data['filter_name'])
         {
-            $sql .= " AND cdes.name LIKE '%".$this->db->escape($data['filter_name'])."%' ";
+            $sql .= " AND (cdes.name LIKE '%".$this->db->escape($data['filter_name'])."%'
+            OR cu.firstname LIKE '%".$this->db->escape($data['filter_name'])."%'
+            OR cdes.tag LIKE '%".$this->db->escape($data['filter_name'])."%' ) ";
         }
 
         if(isset($data['filter_author']) AND $data['filter_author'])

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Akcja zwrotu';
+$_['heading_title']    = 'Akcje zwrotu';
 
 // Text
 $_['text_success']     = 'Sukces: Zmieniłeś akcje zwrotów!';

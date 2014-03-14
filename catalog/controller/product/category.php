@@ -232,10 +232,10 @@ class ControllerProductCategory extends Controller {
 
             if($all)
             {
-                $this->document->setTitle('Alle Kategorien');
-                $this->document->setDescription('Alle Kategorien');
-                $this->document->setKeywords('Alle Kategorien');
-                $this->data['heading_title'] = 'Alle Kategorien';
+                $this->document->setTitle($this->config->get('config_name'));
+                $this->document->setDescription($this->config->get('config_name'));
+                $this->document->setKeywords($this->config->get('config_name'));
+                $this->data['heading_title'] = $this->config->get('config_name');
             }
             else
             {
@@ -372,6 +372,7 @@ class ControllerProductCategory extends Controller {
                     'start'              => ($page - 1) * ($limit),
                     'limit'              => $limit,
                     'filter_show_on_store' => 1,
+                    'filter_campaign_status' => 'ended',
                     'quantity' => 1,
                 );
 
@@ -427,6 +428,7 @@ class ControllerProductCategory extends Controller {
                     'start'              => ($page - 1) * $limit,
                     'limit'              => $limit,
                     'filter_show_on_store' => 1,
+                    'filter_campaign_status' => 'ended',
                     'quantity' => 1,
                 );
 
@@ -472,12 +474,13 @@ class ControllerProductCategory extends Controller {
 
 
 
-				if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+				/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')));
 				} else {
 					$price = false;
-				}
+				}*/
 
+                $price = $this->model_catalog_product->getProductsPrice($result['product_id'],$this->currency->getId(),false);
 
 				
 				if ((float)$result['special']) {

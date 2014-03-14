@@ -25,7 +25,7 @@ class ModelAccountCustomer extends Model {
       	 ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "',
       	 status = '1',
       	 approved = '1',
-      	 avatar = 'data/avatars/default_avatar.jpg',
+      	 avatar = '".(isset($data['avatar'])?$this->db->escape($data['avatar']):'data/avatars/default_avatar.jpg')."',
       	 author_allowed = '1',
       	 date_added = NOW()");
       	

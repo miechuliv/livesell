@@ -18,7 +18,7 @@ class ControllerModuleAccount extends Controller {
 		$this->data['text_download'] = $this->language->get('text_download');
 		$this->data['text_return'] = $this->language->get('text_return');
 		$this->data['text_transaction'] = $this->language->get('text_transaction');
-		$this->data['text_newsletter'] = $this->language->get('text_newsletter');
+		$this->data['text_newsletter'] = $this->language->get('text_newsletter');				 $this->data['text_project_submit'] = $this->language->get('text_project_submit');        $this->data['text_projects'] = $this->language->get('text_projects');				$this->data['text_author_transaction'] = $this->language->get('text_author_transaction');
 		
 		$this->data['logged'] = $this->customer->isLogged();
 		$this->data['register'] = $this->url->link('account/register', '', 'SSL');
@@ -34,7 +34,7 @@ class ControllerModuleAccount extends Controller {
 		$this->data['download'] = $this->url->link('account/download', '', 'SSL');
 		$this->data['return'] = $this->url->link('account/return', '', 'SSL');
 		$this->data['transaction'] = $this->url->link('account/transaction', '', 'SSL');
-		$this->data['newsletter'] = $this->url->link('account/newsletter', '', 'SSL');
+		$this->data['newsletter'] = $this->url->link('account/newsletter', '', 'SSL');				 $this->data['project_submit'] = $this->url->link('account/project/submit', '', 'SSL');        $this->data['projects'] = $this->url->link('account/project/showList', '', 'SSL');				$this->data['author_transaction'] = $this->url->link('account/author_transaction', '', 'SSL');
 
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/account.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/module/account.tpl';

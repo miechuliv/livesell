@@ -8,9 +8,7 @@
   </div>
   */?>
   <h1><?php echo $heading_title; ?></h1>  
- 
-  <iframe width="730" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.pl/maps?f=q&amp;source=s_q&amp;hl=pl&amp;geocode=&amp;q=gda%C5%84sk,+wrzeszcz&amp;aq=&amp;sll=54.359257,18.693752&amp;sspn=0.071519,0.198441&amp;t=m&amp;ie=UTF8&amp;hq=&amp;hnear=Wrzeszcz+Gda%C5%84sk,+pomorskie&amp;ll=54.359257,18.693752&amp;spn=0.017505,0.062056&amp;z=14&amp;iwloc=A&amp;output=embed"></iframe>
- 
+
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
     <h2 style="margin-top:10px;"><?php echo $text_location; ?></h2>
     <div class="contact-info" style="padding:10px 0;">
@@ -33,36 +31,32 @@
     <h2><?php echo $text_contact; ?></h2>
     <div class="content">
     <b><?php echo $entry_name; ?></b><br />
-    <input type="text" name="name" value="<?php echo $name; ?>" />
+    <input type="text" name="name" id="name" value="<?php echo $name; ?>" />
     <br />
     <?php if ($error_name) { ?>
     <span class="error"><?php echo $error_name; ?></span>
     <?php } ?>
     <br />
     <b><?php echo $entry_email; ?></b><br />
-    <input type="text" name="email" value="<?php echo $email; ?>" />
+    <input type="text" name="email" id="email" value="<?php echo $email; ?>" />
     <br />
     <?php if ($error_email) { ?>
     <span class="error"><?php echo $error_email; ?></span>
     <?php } ?>
     <br />
     <b><?php echo $entry_enquiry; ?></b><br />
-    <textarea name="enquiry" cols="40" rows="10" style="width: 99%;"><?php echo $enquiry; ?></textarea>
+    <textarea id="message" name="enquiry" cols="40" rows="10" style="width: 99%;"><?php echo $enquiry; ?></textarea>
     <br />
     <?php if ($error_enquiry) { ?>
     <span class="error"><?php echo $error_enquiry; ?></span>
     <?php } ?>
     <br />
-    <b><?php echo $entry_captcha; ?></b><br />
-    <input type="text" name="captcha" value="<?php echo $captcha; ?>" />
-    <br />
-    <img src="index.php?route=information/contact/captcha" alt="" />
-    <?php if ($error_captcha) { ?>
-    <span class="error"><?php echo $error_captcha; ?></span>
-    <?php } ?>
+
     </div>
     <div class="buttons">
-      <div class="right"><input type="submit" value="<?php echo $button_continue; ?>" class="button" /></div>
+     <?php /* <div class="right"><input type="submit" value="<?php echo $button_continue; ?>" class="button" /></div> */ ?>
+
+        <a class="button" onclick="javascript:window.location='mailto:help@teeglobe.com?subject='+$('#name').val()+'  '+$('#email').val()+'&body='+$('#message').val()+''" ><?php echo $button_continue; ?></a>
     </div>
   </form>
   <?php echo $content_bottom; ?></div>

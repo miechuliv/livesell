@@ -1,54 +1,58 @@
-<?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
-<div id="content"><?php echo $content_top; ?>
-    <?php /* <div class="breadcrumb">
-        <?php foreach ($breadcrumbs as $breadcrumb) { ?>
-        <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
-        <?php } ?>
-    </div> */ ?>
+<?php echo $header; ?><?php //echo $column_left; ?><?php //echo $column_right; ?>
+<div id="content" class="galeria"><?php echo $content_top; ?>
+<div class="breadcrumb">        
+	<a href="./index.php?route=common/home">Strona główna</a>         
+	» <a href="./index.php?route=product/gallery/showList"><?php echo $this->language->get('text_gallery'); ?></a>    
+</div>	  
 
-<div>
+<div class="fff podstr">
+<div>	  
+
+<h1><?php echo $this->language->get('text_gallery'); ?></h1>
+
+
     <div class="campaign-filter" >
-        <label for="filter_author" ><?php echo $this->language->get('text_filter_author'); ?></label>
-        <input name="filter_author" value="<?php echo $filter_author; ?>">
+		<div>
+			<div>
+				<strong><?php echo $this->language->get('text_search'); ?>:</strong>
+			</div>
+			<div>
+				<?php /* <label for="filter_author" ><?php echo $this->language->get('text_filter_author'); ?></label>
+				<input name="filter_author" value="<?php echo $filter_author; ?>"> */ ?>
 
-        <label for="filter_name" ><?php echo $this->language->get('text_filter_name'); ?></label>
-        <input name="filter_name" value="<?php echo $filter_name; ?>">
+				 <label for="filter_name" ><?php echo $this->language->get('text_filter_name'); ?></label>
+				<input name="filter_name" value="<?php echo $filter_name; ?>">
 
-        <label for="filter_tag" ><?php echo $this->language->get('text_filter_tag'); ?></label>
-        <input name="filter_tag" value="<?php echo $filter_tag; ?>">
+				<?php /* <label for="filter_tag" ><?php echo $this->language->get('text_filter_tag'); ?></label>
+				<input name="filter_tag" value="<?php echo $filter_tag; ?>"> */ ?>
 
-        <input onclick="filter();" type="submit" value="<?php echo $this->language->get('text_filter'); ?>" >
-
+				<input onclick="filter();" type="submit" class="button" value="<?php echo $this->language->get('text_filter'); ?>" >
+			</div>
+			<div>
+				<div class="sort">
+					<b><?php echo $this->language->get('text_sort'); ?></b>
+					<select name="date_sort" onchange="filter();">
+						<?php foreach ($date_sorts as $sorts) { ?>
+						<?php if ($sorts['value'] == $sort_date) { ?>
+						<option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
+						<?php } else { ?>
+						<option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
+						<?php } ?>
+						<?php } ?>
+					</select>
+					<select name="vote_sort" onchange="filter();">
+						<?php foreach ($vote_sorts as $sorts) { ?>
+						<?php if ($sorts['value'] == $sort_vote) { ?>
+						<option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
+						<?php } else { ?>
+						<option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
+						<?php } ?>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+		</div>
     </div>
-
-
-
-    <div class="product-filter" style="margin-bottom:10px; border:none; float:right; margin:5px 0; width:520px;">
-
-        <div class="sort"><b><?php echo $this->language->get('text_sort'); ?></b>
-            <select name="date_sort" onchange="filter();">
-                <?php foreach ($date_sorts as $sorts) { ?>
-                <?php if ($sorts['value'] == $sort_date) { ?>
-                <option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
-                <?php } else { ?>
-                <option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
-                <?php } ?>
-                <?php } ?>
-            </select>
-            <select name="vote_sort" onchange="filter();">
-                <?php foreach ($vote_sorts as $sorts) { ?>
-                <?php if ($sorts['value'] == $sort_vote) { ?>
-                <option value="<?php echo $sorts['href']; ?>" selected="selected"><?php echo $sorts['text']; ?></option>
-                <?php } else { ?>
-                <option value="<?php echo $sorts['href']; ?>"><?php echo $sorts['text']; ?></option>
-                <?php } ?>
-                <?php } ?>
-            </select>
-
-        </div>
-
-    </div>
-</div>
 
     <?php if ($campaigns) { ?>
 
@@ -66,20 +70,19 @@
 
         <?php } ?>
 
-        <div class="name"><a href="<?php echo $campaign['show']; ?>"><?php echo $campaign['name']; ?></a></div>
+       <div class="name"><a href="<?php echo $campaign['show']; ?>"><?php echo $campaign['name']; ?></a></div>
         <div class="description">
-            <?php echo $this->language->get('text_author'); ?>: <?php echo $campaign['author']; ?>
-            <div class="image"><img  src="<?php echo $campaign['author_avatar']; ?>" title="<?php echo $campaign['author']; ?>" alt="<?php echo $campaign['author']; ?>" /></div>
+            <?php echo $this->language->get('text_author'); ?>: <?php echo $campaign['author']; ?><br/>
+            <?/*<div class="image"><img  src="<?php echo $campaign['author_avatar']; ?>" title="<?php echo $campaign['author']; ?>" alt="<?php echo $campaign['author']; ?>" /></div>*/?>
             <?php echo $this->language->get('text_date'); ?>:  <?php echo $campaign['date_start']; ?> - <?php echo $campaign['date_end']; ?>
         </div>
 
         <?php if ($campaign['vote']) { ?>
-        <div class="rating"><?php echo $campaign['vote']; ?></div>
+        <div class="rating"><?php echo $this->language->get('text_vote').': '.$campaign['vote']; ?></div>
         <?php } ?>
         <?php if($this->customer->isLogged()){ ?>
         <div class="vote" onclick="upvote(this,'<?php echo $campaign["campaign_id"]; ?>');">+ <?php echo $this->language->get('text_upvote'); ?></div>
         <?php } ?>
-
 </div>
 <?php } ?>
 
@@ -93,7 +96,8 @@
 <?php } ?>
 
 <?php echo $content_bottom; ?></div>
-
+</div>
+</div>
 </div>
 <script type="text/javascript"><!--
 
@@ -104,7 +108,8 @@
             if($(window).scrollTop() + $(window).height() == $(document).height()) {
 
                 loadMore();
-            }
+				
+            } 
         });
     });
 
@@ -122,7 +127,7 @@
                         var html = '<div>';
                         html += '<div class="image"><a href="'+elem["show"]+'"><img  src="'+elem["image"]+'" title="'+elem["name"]+'" alt="'+elem["name"]+'" /></a></div>';
 
-                        html += '<div class="name"><a href="'+elem["show"]+'">'+elem["name"]+'</a></div>';
+                        html += '<div><div class="name"><a href="'+elem["show"]+'">'+elem["name"]+'</a></div>';
                         html += '<div class="description">';
                         html += '        <?php echo $this->language->get("text_author"); ?>: '+ elem["author"];
                         html += '<div class="image"><img  src="'+elem["author_avatar"]+'" title="'+elem["author"]+'" alt="'+elem["author"]+'" /></div>';
@@ -132,7 +137,7 @@
                         html += '<div class="rating">'+elem["vote"]+'</div>';
 
                         html += '<div class="vote" onclick="upvote(this,\''+elem["campaign_id"]+'\');">+ <?php echo $this->language->get("text_upvote"); ?></div>';
-                        html += '</div>';
+                        html += '</div></div>';
 
                         $('.product-list').append(html);
 

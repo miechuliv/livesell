@@ -1,10 +1,9 @@
 <?php
 // Heading
-$_['heading_title']          = 'Produkty'; 
-
-// Text  
-$_['text_success']           = 'Sukces: Zmodyfikowałeś produkty!';
-$_['text_plus']              = '+';
+$_['heading_title']          = 'Produkty';
+// Text
+$_['text_success']           = 'Sukces: Zmodyfikowałeś produkty!'
+;$_['text_plus']              = '+';
 $_['text_minus']             = '-';
 $_['text_default']           = 'Domyślny';
 $_['text_image_manager']     = 'Menedżer obrazów';
@@ -14,6 +13,18 @@ $_['text_option']            = 'Opcja';
 $_['text_option_value']      = 'Wartość opcji';
 $_['text_percent']           = 'Procent';
 $_['text_amount']            = 'Wartość stała';
+$_['text_basic']      = 'Produkt podstawowy';
+$_['text_current']           = 'Produkt trwającej kampanii';
+$_['text_ended']            = 'Produkt zakończonej kampanii';
+$_['text_future']            = 'Produkt przyszłej kampanii';
+
+$_['tab_prices']            = 'Ustawienia cen';
+$_['text_currency_price']            = 'Cena w: ';
+$_['text_currency_price_last_chance']            = 'Cena statnia szansa w: ';
+$_['text_show_on_store']            = 'Pokaż na sklepie w ramach wyprzedaży nadwyżek';
+
+$_['text_currency_price_shop'] = 'Cena na sklepie przy wyprzedaży nadwyżek ';
+
 
 // Column
 $_['column_name']            = 'Nazwa';
@@ -23,7 +34,6 @@ $_['column_price']           = 'Cena';
 $_['column_quantity']        = 'Ilość';
 $_['column_status']          = 'Status';
 $_['column_action']          = 'Akcja';
-
 // Entry
 $_['entry_name']             = 'Nazwa produktu:';
 $_['entry_meta_keyword'] 	 = 'Słowa kluczowe znacznika meta:';
@@ -40,7 +50,7 @@ $_['entry_isbn']             = 'ISBN:<br/><span class="help">Międzynarodowy Zno
 $_['entry_mpn']              = 'MPN:<br/><span class="help">Numer Katalogowy Producenta</span>';
 $_['entry_location']         = 'Lokalizacja:';
 $_['entry_manufacturer']     = 'Producent:<br /><span class="help">(Autouzupełnianie)</span>';
-$_['entry_shipping']         = 'Wymaga wysyłki:'; 
+$_['entry_shipping']         = 'Wymaga wysyłki:';
 $_['entry_date_available']   = 'Dostępne od:';
 $_['entry_quantity']         = 'Ilość:';
 $_['entry_minimum']          = 'Minimalna ilość:<br/><span class="help">Narzucaj minimalną kwotę zamówienia</span>';
@@ -74,10 +84,8 @@ $_['entry_related']          = 'Produkty powiązane:<br /><span class="help">(Au
 $_['entry_tag']          	 = 'Znaczniki produktu:<br /><span class="help">oddzielone przecinkami</span>';
 $_['entry_reward']           = 'Punkty lojalnościowe:';
 $_['entry_layout']           = 'Przełączanie układu graficznego:';
-
 // Error
 $_['error_warning']          = 'Uwaga: Proszę sprawdzić dokładnie formularz pod kątem błędów!';
 $_['error_permission']       = 'Uwaga: Nie masz uprawnień do modyfikowania produktów!';
 $_['error_name']             = 'Uwaga: Nazwa produktu musi zawierać od 3 do 255 znaków!';
-$_['error_model']            = 'Uwaga: Model produktu musi zawierać od 3 do 64 znaków!';
-?>
+$_['error_model']            = 'Uwaga: Model produktu musi zawierać od 3 do 64 znaków!';?>

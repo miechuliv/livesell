@@ -2,18 +2,23 @@
 <?php if ($error_warning) { ?>
 <div class="warning"><?php echo $error_warning; ?></div>
 <?php } ?>
-<?php echo $column_left; ?><?php echo $column_right; ?>
+<?php // echo $column_left; ?><?php // echo $column_right; ?>
 <div id="content"><?php echo $content_top; ?>
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
-  <h1><?php echo $heading_title; ?></h1>
-  <p><?php echo $text_account_already; ?></p>
+  
+ 
+
+	
+<?/*	 <p><?php echo $text_account_already; ?></p>*/?>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
+  <div style="float:left; width:50%;"><h1><?php echo $heading_title; ?></h1>
     <h2><?php echo $text_your_details; ?></h2>
-    <div class="content">
+    <div class="logon content">
+
       <table class="form">
         <tr>
           <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
@@ -136,7 +141,7 @@
       </table>
     </div> */ ?>
     <h2><?php echo $text_your_password; ?></h2>
-    <div class="content">
+    <div class="content logon">
       <table class="form">
         <tr>
           <td><span class="required">*</span> <?php echo $entry_password; ?></td>
@@ -175,23 +180,63 @@
     </div>
     <?php if ($text_agree) { ?>
     <div class="buttons">
-      <div class="right"><?php echo $text_agree; ?>
+      <div class="left">
         <?php if ($agree) { ?>
         <input type="checkbox" name="agree" value="1" checked="checked" />
         <?php } else { ?>
         <input type="checkbox" name="agree" value="1" />
         <?php } ?>
-        <input type="submit" value="<?php echo $button_continue; ?>" class="button" />
+       <?php echo $text_agree; ?>
       </div>
-    </div>
+    </div> 
+	<div class="buttons" style="float:left; width:100%; margin:0 0 30px;">
+		<input type="submit" value="<?php echo $button_continue; ?>" class="button action" />
+	</div>
     <?php } else { ?>
-    <div class="buttons">
+    <div class="buttons" style="float:left; width:100%; margin:0 0 30px;">
       <div class="right">
-        <input type="submit" value="<?php echo $button_continue; ?>" class="button" />
+        <input type="submit" value="<?php echo $button_continue; ?>" class="button action" />
       </div>
     </div>
     <?php } ?>
+	
+	</div>
+	<div style="width:50%; float:left;">
+	
+	<a href="javascript:void(0);" id="fbbut" style="margin-left:50px;"></a>
+	
+	<div id="fbregi" style="margin-left:50px;">
+	    <fb:registration width="300px" scope="email,name" redirect_uri="<?php echo HTTP_SERVER; ?>index.php?route=account/register/fb" />
+        <?php /* <fb:registration width="300px" onvalidate="validateRegister" fields="[{'name':'name'},{'name':'email_shop','type':'text','description':'email'},{'name':'password'}]" redirect_uri="<?php echo HTTP_SERVER; ?>index.php?route=account/register/fb" /> */ ?>
+       <?php /*  <script type="text/javascript" >
+            function validateRegister(form)
+            {
+                console.log(form);
+
+                err = {};
+
+                $.ajax({
+                    url: 'index.php?route=account/register/checkEmail&email='+form.email_shop,
+                    type: 'get',
+                    dataType: 'json',
+                    async: false,
+                    success: function(json)
+                    {
+                        if(json['res'] != 'success')
+                        {
+                            err.email_shop = json['res'];
+                        }
+                    }
+                });
+
+                return err;
+
+            }
+        </script>	*/ ?>
+	</div>
+	</div>
   </form>
+
   <?php echo $content_bottom; ?></div>
 <script type="text/javascript"><!--
 $('input[name=\'customer_group_id\']:checked').live('change', function() {
@@ -233,6 +278,11 @@ $('input[name=\'customer_group_id\']:checked').live('change', function() {
 });
 
 $('input[name=\'customer_group_id\']:checked').trigger('change');
+
+$('#fbbut').click(function(){
+	$("#fbregi").css('height','100%');
+});
+
 //--></script>
 <?php /*
 <script type="text/javascript"><!--

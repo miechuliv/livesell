@@ -31,12 +31,16 @@ class ControllerCommonHome extends Controller {
 			'common/column_right',
 			'common/content_top',
 			'common/content_bottom',
-			'common/footer',
+
             'module/campaign',
-			'common/header',
+            'common/header',
+            'common/footer',
+
 
 
 		);
+
+
 										
 		$this->response->setOutput($this->render());
 	}

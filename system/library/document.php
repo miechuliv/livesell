@@ -5,7 +5,39 @@ class Document {
 	private $keywords;	
 	private $links = array();		
 	private $styles = array();
-	private $scripts = array();
+	private $scripts = array();	
+	private $opengraph = array();
+
+    public function setCampaign($campaign)
+    {
+        $this->campaign = $campaign;
+    }
+
+    public function getCampaign()
+    {
+        return $this->campaign;
+    }
+
+    private $campaign= array();
+	
+	public function setOpengraph($graph)	
+	{				
+		$this->opengraph = $graph;	
+	}
+	
+	public function getOpengraph()	
+	{				
+		
+		if(!empty($this->opengraph))
+		{
+		   return $this->opengraph;
+		   
+		}else
+		{
+			return false;
+		}
+			
+	}
 	
 	public function setTitle($title) {
 		$this->title = $title;

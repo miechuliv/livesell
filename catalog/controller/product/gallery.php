@@ -20,10 +20,10 @@ class ControllerProductGallery extends Controller{
             'filter_date_start',
             'filter_date_end',
             'filter_name',
-            'filter_author',
+           // 'filter_author',
             'filter_status',
 
-        ));
+        ));				$this->language->load('product/gallery');				$this->document->setTitle($this->language->get('text_title'));
     }
 
 
@@ -83,8 +83,8 @@ class ControllerProductGallery extends Controller{
         $this->setFields(array(
 
                 'filter_name',
-                'filter_author',
-                'filter_tag',
+                //'filter_author',
+               // 'filter_tag',
                 'sort_date',
                 'sort_vote',
 
@@ -149,8 +149,8 @@ class ControllerProductGallery extends Controller{
         $total_campaigns = $this->model_project_campaign->getTotalCampaigns($data);
 
 
-        $data['start'] = ($page-1)*1;
-        $data['limit'] = $page*1;
+        $data['start'] = ($page-1)*20;
+        $data['limit'] = $page*20;
 
         $this->data['campaigns'] =  $this->model_project_campaign->getCampaigns($data);
 

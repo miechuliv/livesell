@@ -3,6 +3,9 @@
 $_['heading_title']         = 'Klient';
 
 // Text
+$_['text_author']          = 'Dane autora ( jeśli klient jest też autorem )';
+$_['text_about']          = 'O autorze';
+
 $_['text_success']          = 'Sukces: Zmodyfikowałeś klientów!';
 $_['text_default']          = 'Domyślna';
 $_['text_approved']         = 'Zatwierdziłeś %s kont!';

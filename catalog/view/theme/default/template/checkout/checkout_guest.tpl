@@ -1,12 +1,12 @@
 <?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
 <div id="content" class="kasa"><?php echo $content_top; ?>
-
+<?/*
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
-
+*/?>
  <?/*<h1 style="color:#aaa;"><?php echo $heading_title; ?></h1> */?>
 
 <div id="login" class="right">
@@ -269,7 +269,7 @@ $('#button-register').live('click', function() {
 
 //--></script>
 <div id="payment-address">
-<h1>1. <?php echo $this->language->get('text_checkout_payment_address'); ?></h1>
+<h1><?php echo $this->language->get('text_checkout_payment_address'); ?></h1>
 <?/*
 <div class="left">
     <h2><?php echo $text_your_details; ?></h2>
@@ -436,7 +436,7 @@ $('#button-register').live('click', function() {
     <br />
 	</div>
 
-	<div style="display:none">
+	<div>
 	<div class="lab"><span class="required">*</span> <?php echo $entry_country; ?></div>
     <select name="country_id" class="large-field">
         <option value=""><?php echo $text_select; ?></option>
@@ -462,7 +462,7 @@ $('#button-register').live('click', function() {
 <?php if ($shipping_required) { ?>
 <div style="float:left; width:100%; margin:20px 0">
     <?php if ($shipping_address) { ?>
-    <input type="checkbox" name="shipping_address" value="1" id="shipping" checked="checked" onchange="toogleShipping()" style="margin-left:15px;"/>
+    <input type="checkbox" name="shipping_address" value="1" id="shipping" checked="checked" onchange="toogleShipping()" />
     <?php } else { ?>
     <input type="checkbox" name="shipping_address" value="1" id="shipping" onchange="toogleShipping()" style="margin-left:15px;" />
     <?php } ?>
@@ -494,10 +494,24 @@ $('#button-register').live('click', function() {
         if(state)
         {
             $('#shipping-address').css('display','none');
+
+            var v = $('#shipping-calculator select[name=\'country_id\']').val() ;
+
+            if (v == '') return;
+
+            $('#payment-address  select[name=\'country_id\']').val(v);
         }
         else
         {
             $('#shipping-address').css('display','block');
+
+
+                var v = $('#shipping-calculator select[name=\'country_id\']').val() ;
+
+                if (v == '') return;
+
+                $('#shipping-address  select[name=\'shipping_country_id\']').val(v);
+
         }
 
     }
@@ -541,51 +555,7 @@ $('#button-register').live('click', function() {
 
     $('#payment-address input[name=\'customer_group_id\']:checked').trigger('change');
     //--></script>
-<script type="text/javascript"><!--
-    $('#payment-address select[name=\'country_id\']').bind('change', function() {
-        if (this.value == '') return;
-        $.ajax({
-            url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
-            dataType: 'json',
-            beforeSend: function() {
-                $('#payment-address select[name=\'country_id\']').after('<span class="wait">&nbsp;<img src="catalog/view/theme/default/image/loading.gif" alt="" /></span>');
-            },
-            complete: function() {
-                $('.wait').remove();
-            },
-            success: function(json) {
-                if (json['postcode_required'] == '1') {
-                    $('#payment-postcode-required').show();
-                } else {
-                    $('#payment-postcode-required').hide();
-                }
 
-                html = '<option value=""><?php echo $text_select; ?></option>';
-
-                if (json['zone'] != '') {
-                    for (i = 0; i < json['zone'].length; i++) {
-                        html += '<option value="' + json['zone'][i]['zone_id'] + '"';
-
-                        if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
-                            html += ' selected="selected"';
-                        }
-
-                        html += '>' + json['zone'][i]['name'] + '</option>';
-                    }
-                } else {
-                    html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
-                }
-
-                $('#payment-address select[name=\'zone_id\']').html(html);
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
-        });
-    });
-
-    $('#payment-address select[name=\'country_id\']').trigger('change');
-    //--></script>
 
 <?php if ($shipping_address) { ?>
 <div id="shipping-address" style="display:none;">
@@ -621,7 +591,7 @@ $('#button-register').live('click', function() {
         <td><span id="shipping-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></td>
         <td><input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="large-field" /></td>
     </tr>
-    <tr>
+    <tr >
         <td><span class="required">*</span> <?php echo $entry_country; ?></td>
         <td><select name="shipping_country_id" class="large-field">
                 <option value=""><?php echo $text_select; ?></option>
@@ -634,9 +604,10 @@ $('#button-register').live('click', function() {
                 <?php } ?>
             </select></td>
     </tr>
-    <tr>
+    <tr style="display: none">
         <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
         <td><select name="shipping_zone_id" class="large-field">
+                <option value="4033" selected="selected" ></option>
             </select></td>
     </tr>
 </table>
@@ -697,9 +668,141 @@ $('#button-register').live('click', function() {
 <?php } ?>
 <?php if ($shipping_methods) { ?>
 <div id="shipping-methods">
-<h1>2. <?php echo $this->language->get('text_shipping'); ?></h1>
+
+    <script type="text/javascript"><!--
+
+        function reloadShipping()
+        {
+
+            $.ajax({
+                url: 'index.php?route=checkout/checkout/reloadShipping&country_id=' + $('#shipping-calculator select[name="country_id"] option:selected').val() +'&zone_id=0',
+                dataType: 'json',
+                beforeSend: function() {
+                    // $('#payment-address select[name=\'country_id\']').after('<span class="wait">&nbsp;<img src="catalog/view/theme/default/image/loading.gif" alt="" /></span>');
+                },
+                complete: function() {
+                    //   $('.wait').remove();
+                },
+                success: function(json) {
+
+                    html = '';
+                    $.each(json,function(index,item){
+
+                        var error = '';
+                        if(item['error'])
+                        {
+                            error = item['error'];
+                        }
+
+
+                        html+=  '<tr>';
+                        //     html+=  '<td colspan="3"><b>'+item['title']+'</b></td>';
+                        html+=  '</tr>';
+
+                        $.each(item['quote'],function(index2,quote){
+
+                            html+=  '<tr class="highlight">';
+
+                            html+=  '<td><input type="radio" checked="checked" onchange="reloadTotals()" name="shipping_method" value="'+quote['code']+'" id="'+quote['code']+'" /></td>';
+
+                            html+=  '<td><label  for="'+quote['code']+'">'+quote['title']+'</label></td>';
+                            html+=  '<td style="text-align: right;"><label for="'+quote['code']+'">'+quote['text']+'</label></td>';
+                            html+=  '</tr>';
+
+                        });
+
+
+                        html+=  '<tr>';
+                        html+=  '<td colspan="3"><div class="error">'+error+'</div></td>';
+                        html+=  '</tr>';
+
+
+                    });
+
+
+
+                    target = $('#shipping-methods table');
+
+                    $(target).html(html);
+
+                    reloadTotals();
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+
+        }
+
+
+        $('#payment-address select[name=\'country_id\']').bind('change', function() {
+            if (this.value == '') return;
+
+            var v = this.value;
+
+            if($('#shipping').prop('checked') == true)
+            {
+                $('#shipping-calculator select[name=\'country_id\']').val(v);
+                reloadShipping();
+            }
+
+        });
+
+        $('#shipping-address select[name=\'shipping_country_id\']').bind('change', function() {
+            if (this.value == '') return;
+
+            var v = this.value;
+
+            $('#shipping-calculator select[name=\'country_id\']').val(v);
+            reloadShipping();
+        });
+
+        $('#shipping-calculator select[name=\'country_id\']').bind('change', function() {
+            if (this.value == '') return;
+
+            var v = this.value;
+
+            if($('#shipping').prop('checked') == true)
+            {
+                $('#payment-address select[name=\'country_id\']').val(v);
+
+
+                $('#shipping-address select[name=\'shipping_country_id\']').val(v);
+
+            }
+            else
+            {
+                $('#shipping-address select[name=\'shipping_country_id\']').val(v);
+
+            }
+
+            reloadShipping();
+        });
+
+
+        $('#shipping-calculator select[name=\'country_id\']').trigger('change');
+        //--></script>
+<h1><?php echo $this->language->get('text_shipping'); ?></h1>
 
 <p><?php echo $text_shipping_method; ?></p>
+
+    <div id="shipping-calculator" style="margin:10px;">
+             <p><?php echo $this->language->get('text_shipping_calculator'); ?></p>
+        <select name="country_id" class="large-field">
+            <option value=""><?php echo $text_select; ?></option>
+            <?php foreach ($countries as $country) { ?>
+            <?php if ($country['country_id'] == $country_id) { ?>
+            <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
+            <?php } else { ?>
+            <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+            <?php } ?>
+            <?php } ?>
+        </select>
+
+
+        </div>
+
 <table class="radio">
     <?php foreach ($shipping_methods as $shipping_method) { ?>
     <tr>
@@ -738,7 +841,7 @@ $('#button-register').live('click', function() {
 <?php } ?>
 <?php if ($payment_methods) { ?>
 <div id="payment-methods">
-<h1>3. <?php echo $this->language->get('text_payment_method_short'); ?></h1>
+<h1><?php echo $this->language->get('text_payment_method_short'); ?></h1>
 
 <p><?php echo $text_payment_method; ?></p>
 <table class="radio">
@@ -759,7 +862,7 @@ $('#button-register').live('click', function() {
 <?php } ?>
 
 <div class="checkout-product">
-<h1>4. <?php echo $text_comments; ?></h1>
+<h1><?php echo $text_comments; ?></h1>
 <textarea name="comment" rows="3" style="width:99%; border:1px solid #ddd; margin:10px auto; display:block;"><?php echo $comment; ?></textarea>
 </div>
 
@@ -808,7 +911,7 @@ $('#button-register').live('click', function() {
 
 <?php if (!isset($redirect)) { ?>
 <div class="checkout-product">
-<h1>5. <?php echo $this->language->get('text_total'); ?></h1>
+<h1><?php echo $this->language->get('text_total'); ?></h1>
 
     <table>
         <thead>

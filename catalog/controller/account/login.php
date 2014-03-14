@@ -1,6 +1,102 @@
 <?php 
 class ControllerAccountLogin extends Controller {
 	private $error = array();
+
+
+
+    function getUserData()
+    {
+
+
+
+        $facebook = new Facebook(array(
+            'appId'  => '495578190494203',
+            'secret' => 'b2fb2f21fb9b1b72994237a31fc72aca',
+        ));
+
+        $facebook->destroySession();
+
+        $access_token = $facebook->getAccessTokenFromCode($this->request->get['code'],
+            HTTP_SERVER.'index.php?route='.urlencode('account/login/loginFacebook') ) ;
+
+        $facebook->setAccessToken($access_token);
+
+
+
+
+        $access_token = $facebook->getAccessToken();
+
+
+
+        $userId = $facebook->getUser();
+
+
+
+        $userInfo = $facebook->api('/me');
+
+
+        return $userInfo;
+
+
+    }
+
+    function parse_signed_request($signed_request) {
+        list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+
+        $secret = "b2fb2f21fb9b1b72994237a31fc72aca"; // Use your app secret here
+
+        // decode the data
+        $sig = $this->base64_url_decode($encoded_sig);
+        $data = json_decode($this->base64_url_decode($payload), true);
+
+        // confirm the signature
+        $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+        if ($sig !== $expected_sig) {
+            error_log('Bad Signed JSON signature!');
+            return null;
+        }
+
+        return $data;
+    }
+
+
+
+    public function loginFacebook()
+    {
+        $uData = $this->getUserData();
+
+        try
+        {
+            $uData = $this->getUserData();
+
+
+        }
+        catch(Exception $e)
+        {
+
+        }
+
+
+
+        $this->request->post['fb'] = true;
+
+        if(isset($uData) AND !empty($uData))
+        {
+            $this->request->post['email'] = $uData['email'];
+            $this->request->post['password'] = false;
+
+
+            $this->request->server['REQUEST_METHOD'] = 'POST';
+        }
+
+
+
+
+
+
+        $this->index();
+
+    }
 	
 	public function index() {
 		$this->load->model('account/customer');
@@ -178,6 +274,20 @@ class ControllerAccountLogin extends Controller {
 		} else {
 			$this->data['password'] = '';
 		}
+
+        $this->data['fb'] = isset($this->request->post['fb'])?true:false;
+
+        $facebook = new Facebook(array(
+            'appId'  => '495578190494203',
+            'secret' => 'b2fb2f21fb9b1b72994237a31fc72aca',
+        ));
+        $this->data['loginUrl'] =  $facebook->getLoginUrl(array(
+            'scope' => 'basic_info,email',
+            'redirect_uri' => HTTP_SERVER.'index.php?route='.urlencode('account/login/loginFacebook')
+        ));
+
+        //str_ireplace('/login','/login/loginFacebook', $url);
+
 				
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/account/login.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/account/login.tpl';
@@ -198,7 +308,7 @@ class ControllerAccountLogin extends Controller {
   	}
   
   	protected function validate() {
-    	if (!$this->customer->login($this->request->post['email'], $this->request->post['password'])) {
+    	if (!$this->customer->login($this->request->post['email'], $this->request->post['password'], (isset($this->request->post['fb'])?true:false) )) {
       		$this->error['warning'] = $this->language->get('error_login');
     	}
 	

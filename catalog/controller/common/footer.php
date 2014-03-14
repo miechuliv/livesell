@@ -17,6 +17,39 @@ class ControllerCommonFooter extends Controller {
 		$this->data['text_order'] = $this->language->get('text_order');
 		$this->data['text_wishlist'] = $this->language->get('text_wishlist');
 		$this->data['text_newsletter'] = $this->language->get('text_newsletter');
+
+        // jeśli kampania nie została załadowana to ładujemy ją teraz do licznika
+        $campaign = $this->document->getCampaign();
+
+        if(!$campaign)
+        {
+            $this->load->model('project/campaign');
+            $campaign = $this->model_project_campaign->showActualCampaign($this->config->get('config_language_id'));
+
+            $campaign['no_buy'] = false;
+            $campaign['campaign_type'] = 'current';
+
+            $date = new DateTime($campaign['date_start']);
+
+            $i = new DateInterval('P1D');
+
+
+            $date->add($i);
+
+            $campaign['date_end'] = $date->format('Y-m-d H:i:s');
+
+
+            $campaign['split_date'] = array(
+                'year' => $date->format('Y'),
+                'month' => (int)$date->format('m')-1,
+                'day' => $date->format('d'),
+                'hour' => $date->format('H'),
+                'minute' => $date->format('i'),
+                'second' => $date->format('s'),
+            );
+
+            $this->document->setCampaign($campaign);
+        }
 		
 		$this->load->model('catalog/information');
 		

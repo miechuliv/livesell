@@ -480,7 +480,7 @@ class ControllerCatalogProduct extends Controller {
         if (isset($this->request->get['filter_campaign_status'])) {
             $filter_campaign_status = $this->request->get['filter_campaign_status'];
         } else {
-            $filter_campaign_status = null;
+            $filter_campaign_status = 'basic';
         }
 
         $this->data['filter_campaign_status'] = $filter_campaign_status;
@@ -1423,7 +1423,7 @@ class ControllerCatalogProduct extends Controller {
         // ceny produktu
         if(isset($this->request->get['product_id']))
         {
-            $this->data['product_prices'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],false);
+            $this->data['product_prices'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],'current');
         }
         else
         {
@@ -1438,7 +1438,7 @@ class ControllerCatalogProduct extends Controller {
 
         if(isset($this->request->get['product_id']))
         {
-            $this->data['product_prices_last_chance'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],true);
+            $this->data['product_prices_last_chance'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],'last_chance');
         }
         else
         {
@@ -1447,6 +1447,23 @@ class ControllerCatalogProduct extends Controller {
             foreach($this->data['currencies'] as $currency)
             {
                 $this->data['product_prices_last_chance'][$currency['currency_id']] = false;
+            }
+
+
+        }
+
+
+        if(isset($this->request->get['product_id']))
+        {
+            $this->data['product_prices_shop'] = $this->model_catalog_product->getProductsPrices($this->request->get['product_id'],false);
+        }
+        else
+        {
+            $this->data['product_prices_shop'] = array();
+
+            foreach($this->data['currencies'] as $currency)
+            {
+                $this->data['product_prices_shop'][$currency['currency_id']] = false;
             }
 
 

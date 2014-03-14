@@ -89,6 +89,8 @@ require_once($vqmod->modCheck(DIR_SYSTEM . 'library/debugger.php'));
 $debugger = new Debugger($time,false);
 
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/extra/firephp/FirePHP.class.php'));
+
+require_once($vqmod->modCheck(DIR_SYSTEM . 'library/extra/facebook.php'));
 $firePHP = new FirePHP();
 
 $registry->set('firephp', $firePHP);
@@ -207,10 +209,14 @@ function error_handler($errno, $errstr, $errfile, $errline) {
             else
             {
 
-                ob_end_clean();
+                if(ob_get_status())
+                {
+                    ob_end_clean();
+                }
+
                 echo $debugger->displayError($msg);
 
-              //  die();
+                die();
             }
 
         }

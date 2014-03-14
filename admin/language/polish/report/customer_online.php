@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']     = 'Raport Klientów Online';
+$_['heading_title']     = 'Raport klientów online';
 
 // Text 
 $_['text_guest']        = 'Gość';

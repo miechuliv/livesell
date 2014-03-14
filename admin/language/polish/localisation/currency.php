@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']        = 'Waluta';  
+$_['heading_title']        = 'Waluty';  
 
 // Text
 $_['text_success']         = 'Sukces: Zmodyfikowałeś waluty!';

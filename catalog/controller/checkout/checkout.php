@@ -316,7 +316,6 @@ class ControllerCheckoutCheckout extends Controller {
             $this->load->model('setting/extension');
 
             $results = $this->model_setting_extension->getExtensions('shipping');
-
             foreach ($results as $result) {
                 if ($this->config->get($result['code'] . '_status')) {
                     $this->load->model('shipping/' . $result['code']);
@@ -332,7 +331,7 @@ class ControllerCheckoutCheckout extends Controller {
                         );
                     }
                 }
-            }
+            }						
 
             $sort_order = array();
 
@@ -490,6 +489,8 @@ class ControllerCheckoutCheckout extends Controller {
 
         $this->data['products'] = array();
 
+        $this->load->model('catalog/product');
+
         foreach ($this->cart->getProducts() as $product) {
             $option_data = array();
 
@@ -509,6 +510,14 @@ class ControllerCheckoutCheckout extends Controller {
             }
 
 
+            $price_raw = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),$product['campaign_type']);
+
+            $price = $this->currency->format($price_raw,'',1);
+
+            $total = $price_raw * $product['quantity'];
+
+            $total = $this->currency->format($total,'',1);
+
 
             $this->data['products'][] = array(
                 'product_id' => $product['product_id'],
@@ -517,8 +526,10 @@ class ControllerCheckoutCheckout extends Controller {
                 'option'     => $option_data,
                 'quantity'   => $product['quantity'],
                 'subtract'   => $product['subtract'],
-                'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
-                'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
+               // 'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
+                'price' => $price,
+               // 'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
+                'total' => $total,
                 'href'       => $this->url->link('product/product', 'product_id=' . $product['product_id']),
 
             );
@@ -969,6 +980,7 @@ class ControllerCheckoutCheckout extends Controller {
         }
 
         // confirm populate
+        $this->load->model('catalog/product');
 
         $this->data['products'] = array();
 
@@ -991,6 +1003,14 @@ class ControllerCheckoutCheckout extends Controller {
             }
 
 
+            $price_raw = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),$product['campaign_type']);
+
+            $price = $this->currency->format($price_raw,'',1);
+
+            $total = $price_raw * $product['quantity'];
+
+            $total = $this->currency->format($total,'',1);
+
 
             $this->data['products'][] = array(
                 'product_id' => $product['product_id'],
@@ -999,8 +1019,10 @@ class ControllerCheckoutCheckout extends Controller {
                 'option'     => $option_data,
                 'quantity'   => $product['quantity'],
                 'subtract'   => $product['subtract'],
-                'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
-                'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
+              // 'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
+                'price' => $price,
+                'total' => $total,
+               // 'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
                 'href'       => $this->url->link('product/product', 'product_id=' . $product['product_id']),
 
 
@@ -1278,7 +1300,7 @@ class ControllerCheckoutCheckout extends Controller {
     private function shippingAddressStub(){
 
        $data = array(
-           'country_id' => 1,
+           'country_id' => 170,
            'zone_id' => 1,
            'postcode' => 00000,
        );
@@ -1437,9 +1459,7 @@ class ControllerCheckoutCheckout extends Controller {
                 if ($information_info && !isset($this->request->post['agree'])) {
                     $json['error']['agree'] = sprintf($this->language->get('error_agree'), $information_info['title']);
                 }
-				if ($information_info && !isset($this->request->post['agree2'])) {
-                    $json['error']['agree2'] = sprintf($this->language->get('error_agree'), $information_info['title']);
-                }
+				
             }
             //
 
@@ -1618,6 +1638,8 @@ class ControllerCheckoutCheckout extends Controller {
         if ((!$this->cart->hasProducts() && (!isset($this->session->data['vouchers']) || !$this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
             $json['redirect'] = $this->url->link('checkout/cart');
         }
+		
+		
 
         // shipping and payemnt address validate
         if (!$json) {
@@ -1662,9 +1684,7 @@ class ControllerCheckoutCheckout extends Controller {
                     $json['error']['agree'] = sprintf($this->language->get('error_agree'), $information_info['title']);
                 }
 				
-				if ($information_info && !isset($this->request->post['agree2'])) {
-                    $json['error']['agree2'] = sprintf($this->language->get('error_agree'), $information_info['title']);
-                }
+				
             }
             //
 
@@ -1845,6 +1865,8 @@ class ControllerCheckoutCheckout extends Controller {
                 }
             }
         }
+		
+		
 
 
         if(!$json)
@@ -2135,6 +2157,10 @@ class ControllerCheckoutCheckout extends Controller {
             }
 
             $product_data = array();
+			
+			$this->load->model('project/campaign');
+
+            $this->load->model('catalog/product');
 
             foreach ($this->cart->getProducts() as $product) {
                 $option_data = array();
@@ -2157,11 +2183,13 @@ class ControllerCheckoutCheckout extends Controller {
                     );
                 }
 
-                $kaucje = array(
-                    'zw' => 'zwrotna',
-                    'bzw' => 'bezzwrotna',
-                    0 => false,
-                );
+
+
+				
+				// dopisujemy autora do zamówienia, najpierw znajdujemy autora po kampanii
+				$cam = $this->model_project_campaign->getCampaign($product['campaign_id'],2);
+
+
 
 
                 $product_data[] = array(
@@ -2176,8 +2204,15 @@ class ControllerCheckoutCheckout extends Controller {
                     'total'      => $product['total'],
                     'tax'        => $this->tax->getTax($product['price'], $product['tax_class_id']),
                     'reward'     => $product['reward'],
+					'campaign_id'     => $product['campaign_id'],
+					'author_id' => isset($cam['author_id'])?$cam['author_id']:0,
 
                 );
+				
+				
+				
+				
+				
             }
 
             // Gift Voucher
@@ -2374,6 +2409,69 @@ class ControllerCheckoutCheckout extends Controller {
         }
 
         $this->response->setOutput($output);
+    }
+	
+	public function reloadShippingByAddress()
+    {
+
+	
+	   $this->load->model('account/address');
+	   
+	   $shipping_address = $this->model_account_address->getAddress($this->request->get['address_id']);
+       
+	   $json = array(
+	      'country_id' => $shipping_address['country_id'],
+	   );
+         
+
+
+        echo  json_encode($json);
+    }
+
+    public function reloadShipping()
+    {
+
+        // potrzeba zone_id i country_id
+        $shipping_address = array();
+        $shipping_address['country_id'] = $this->request->get['country_id'];
+        $shipping_address['zone_id'] = $this->request->get['country_id'];
+
+        // Shipping Methods
+        // Shipping Methods
+        $quote_data = array();
+
+        $this->load->model('setting/extension');
+
+        $results = $this->model_setting_extension->getExtensions('shipping');
+
+        foreach ($results as $result) {
+            if ($this->config->get($result['code'] . '_status')) {
+                $this->load->model('shipping/' . $result['code']);
+
+                $quote = $this->{'model_shipping_' . $result['code']}->getQuote($shipping_address);
+
+                if ($quote) {
+                    $quote_data[$result['code']] = array(
+                        'title'      => $quote['title'],
+                        'quote'      => $quote['quote'],
+                        'sort_order' => $quote['sort_order'],
+                        'error'      => $quote['error']
+                    );
+                }
+            }
+        }
+
+        $sort_order = array();
+
+        foreach ($quote_data as $key => $value) {
+            $sort_order[$key] = $value['sort_order'];
+        }
+
+        array_multisort($sort_order, SORT_ASC, $quote_data);
+
+        $this->session->data['shipping_methods'] = $quote_data;;
+
+        echo  json_encode($this->session->data['shipping_methods']);
     }
 
 }

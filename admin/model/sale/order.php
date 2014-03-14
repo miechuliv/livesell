@@ -486,13 +486,18 @@ class ModelSaleOrder extends Model {
 	}
 	
 	public function getOrders($data = array()) {
-		$sql = "SELECT o.order_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, o.auction FROM `" . DB_PREFIX . "order` o";
+
+		$sql = "SELECT o.order_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, o.auction, cam.campaign_id as campaign_id, cdes.name as campaign_name FROM `" . DB_PREFIX . "order` o		LEFT JOIN order_product op ON(o.order_id = op.order_id) LEFT JOIN campaign cam ON(op.campaign_id = cam.campaign_id) LEFT JOIN campaign_description as cdes ON(cam.campaign_id = cdes.campaign_id) ";
 
 		if (isset($data['filter_order_status_id']) && !is_null($data['filter_order_status_id'])) {
 			$sql .= " WHERE o.order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
 		} else {
 			$sql .= " WHERE o.order_status_id > '0'";
 		}
+
+        $sql .= " AND cdes.language_id = '".(int)$this->config->get('config_language_id')."' ";
+
+        if(isset($data['filter_campaign_name']) AND $data['filter_campaign_name'])		{				$sql .= " AND cdes.language_id = '2' AND cdes.name LIKE '%".$data['filter_campaign_name']."%' ";		}
 
 		if (!empty($data['filter_order_id'])) {
 			$sql .= " AND o.order_id = '" . (int)$data['filter_order_id'] . "'";
@@ -558,6 +563,12 @@ class ModelSaleOrder extends Model {
 		return $query->rows;
 	}
 	
+	public function getOrderProduct($order_product_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_product WHERE order_product_id = '" . (int)$order_product_id . "'");
+		
+		return $query->row;
+	}
+	
 	public function getOrderOption($order_id, $order_option_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_option WHERE order_id = '" . (int)$order_id . "' AND order_option_id = '" . (int)$order_option_id . "'");
 
@@ -595,13 +606,13 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function getTotalOrders($data = array()) {
-      	$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order`";
+      	$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` o		LEFT JOIN order_product op ON(o.order_id = op.order_id) LEFT JOIN campaign cam ON(op.campaign_id = cam.campaign_id) LEFT JOIN campaign_description as cdes ON(cam.campaign_id = cdes.campaign_id)";
 
 		if (isset($data['filter_order_status_id']) && !is_null($data['filter_order_status_id'])) {
 			$sql .= " WHERE order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
 		} else {
 			$sql .= " WHERE order_status_id > '0'";
-		}
+		}				if(isset($data['filter_campaign_name']) AND $data['filter_campaign_name'])		{				$sql .= " AND cdes.language_id = '2' AND cdes.name LIKE '%".$data['filter_campaign_name']."%' ";		}
 
 		if (!empty($data['filter_order_id'])) {
 			$sql .= " AND order_id = '" . (int)$data['filter_order_id'] . "'";

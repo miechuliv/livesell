@@ -155,7 +155,7 @@
             <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
               <td><?php echo $entry_quantity; ?></td>
               <td>
-
+                  
                   <input type="text" name="quantity" value="100000" size="2" />
 
 
@@ -850,7 +850,7 @@
           </table>
         </div> */ ?>
     <div id="tab-prices">
-        <table>
+        <table style="margin:10px;">
             <?php foreach($currencies as $currency){ ?>
                     <tr>
                         <td>
@@ -868,6 +868,16 @@
                 </td>
                 <td>
                     <input type="text" name="product_prices_last_chance[<?php echo $currency['currency_id']; ?>]" value="<?php echo (isset($product_prices_last_chance[$currency['currency_id']])?$product_prices_last_chance[$currency['currency_id']]:''); ?>" >
+                </td>
+            </tr>
+            <?php } ?>
+            <?php foreach($currencies as $currency){ ?>
+            <tr>
+                <td>
+                    <?php echo $this->language->get('text_currency_price_shop'); ?> <?php echo $currency['code']; ?>
+                </td>
+                <td>
+                    <input type="text" name="product_prices_shop[<?php echo $currency['currency_id']; ?>]" value="<?php echo (isset($product_prices_shop[$currency['currency_id']])?$product_prices_shop[$currency['currency_id']]:''); ?>" >
                 </td>
             </tr>
             <?php } ?>

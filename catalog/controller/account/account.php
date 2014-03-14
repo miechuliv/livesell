@@ -50,7 +50,7 @@ class ControllerAccountAccount extends Controller {
 		$this->data['text_newsletter'] = $this->language->get('text_newsletter');
         $this->data['text_avatar'] = $this->language->get('text_avatar');
         $this->data['text_project_submit'] = $this->language->get('text_project_submit');
-        $this->data['text_projects'] = $this->language->get('text_projects');
+        $this->data['text_projects'] = $this->language->get('text_projects');				$this->data['text_author_transaction'] = $this->language->get('text_author_transaction');				
 
     	$this->data['edit'] = $this->url->link('account/edit', '', 'SSL');
     	$this->data['password'] = $this->url->link('account/password', '', 'SSL');
@@ -63,7 +63,7 @@ class ControllerAccountAccount extends Controller {
 		$this->data['newsletter'] = $this->url->link('account/newsletter', '', 'SSL');
         $this->data['avatar'] = $this->url->link('account/avatar', '', 'SSL');
         $this->data['project_submit'] = $this->url->link('account/project/submit', '', 'SSL');
-        $this->data['projects'] = $this->url->link('account/project/showList', '', 'SSL');
+        $this->data['projects'] = $this->url->link('account/project/showList', '', 'SSL');				$this->data['author_transaction'] = $this->url->link('account/author_transaction', '', 'SSL');
 		
 		if ($this->config->get('reward_status')) {
 			$this->data['reward'] = $this->url->link('account/reward', '', 'SSL');

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Klasa długości';
+$_['heading_title']    = 'Klasy długości';
 
 // Text
 $_['text_success']     = 'Sukces: Zmodyfikowałeś klasy długości!';

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']      = 'DPD za pobraniem';
+$_['heading_title']      = 'Paczkomaty 24/7';
 
 // Text
 $_['text_shipping']      = 'Dostawa';

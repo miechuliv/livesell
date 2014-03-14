@@ -10,6 +10,20 @@
 class ControllerAccountProject extends Controller{
 
     private $design;
+	
+	public function __construct($register)
+	{
+			parent::__construct($register);
+			
+			if (!$this->customer->isLogged()) {
+	  		$this->session->data['redirect'] = $this->url->link('account/account', '', 'SSL');
+	  
+	  		$this->redirect($this->url->link('account/login', '', 'SSL'));
+			
+    	    } 
+			
+			$this->language->load('account/project');
+	}
 
     public function submit()
     {
@@ -60,6 +74,14 @@ class ControllerAccountProject extends Controller{
 
 
         }
+
+        $this->data['author_regulamin'] = $this->url->link('information/information','&information_id='.$this->config->get('config_author_account_id'));
+
+        $this->load->model('catalog/information');
+
+        $info = $this->model_catalog_information->getInformation($this->config->get('config_author_account_id'));
+
+        $this->data['regulamin'] = $info['title'];
 
         $this->data['action'] = $this->url->link('account/project/submit');
 
@@ -160,7 +182,7 @@ class ControllerAccountProject extends Controller{
 
 
         $repo = new AccountProjectRepo($res);
-        $this->data['projects'] = $repo->projects;
+        $this->data['projects'] = $repo->projects;				$this->load->model('project/status');		 $this->data['statuses'] = $this->model_project_status->getStatuses(2);		 		
 
         $url = $this->url;
         $this->data['edit'] = function($project_id) use ($url){
@@ -170,8 +192,6 @@ class ControllerAccountProject extends Controller{
         $this->load->model('tool/image');
         $image = $this->model_tool_image;
         $config = $this->config;
-
-
 
         $this->data['prepare_image'] = function($design) use ($image,$config)
         {
@@ -217,7 +237,7 @@ class ControllerAccountProject extends Controller{
         {
             $project = false;
         }
-
+		$this->load->model('project/status');		 $this->data['statuses'] = $this->model_project_status->getStatuses(2);  
         $this->data['project'] = $project;
 
         $this->load->model('tool/image');

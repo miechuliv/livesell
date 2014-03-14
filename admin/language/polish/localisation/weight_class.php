@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Klasa wagi';
+$_['heading_title']    = 'Klasy wagi';
 
 // Text
 $_['text_success']     = 'Sukces: Zmodyfikowałeś klasy wagi!';

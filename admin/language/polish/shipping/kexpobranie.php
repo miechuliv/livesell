@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']      = 'Kurier KEX za pobraniem';
+$_['heading_title']      = 'Paczkomaty 24/7';
 
 // Text
 $_['text_shipping']      = 'Dostawa';

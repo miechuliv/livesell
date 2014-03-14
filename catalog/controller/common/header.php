@@ -1,4 +1,4 @@
-<?php   
+<?php
 class ControllerCommonHeader extends Controller {
 	protected function index() {
 		$this->data['title'] = $this->document->getTitle();
@@ -17,6 +17,58 @@ class ControllerCommonHeader extends Controller {
 
         if( $this->browser->getBrowser() == Browser::BROWSER_IE  ) {
             $this->data['is_ie'] =  true;
+        }
+
+        // jeśli kampania nie została załadowana to ładujemy ją teraz do licznika
+        $campaign = $this->document->getCampaign();
+
+        $this->load->model('project/campaign');
+        $this->data['last_chance'] = $this->model_project_campaign->showLastChanceCampaign($this->config->get('config_language_id'));
+
+       // kampanie - galeria
+        $this->load->model('project/campaign');
+        $t =array();
+
+            $date = new DateTime();
+            $in = new DateInterval('P2D');
+
+            $date->sub($in);
+
+            $t['filter_date_stop'] = $date->format('Y-m-d H:i:s');
+
+        $this->data['total_campaigns'] = $this->model_project_campaign->getTotalCampaigns($t);
+
+
+
+
+        if(!$campaign)
+        {
+
+
+
+            $campaign['no_buy'] = false;
+            $campaign['campaign_type'] = 'current';
+
+            $date = new DateTime($campaign['date_start']);
+
+            $i = new DateInterval('P1D');
+
+
+            $date->add($i);
+
+            $campaign['date_end'] = $date->format('Y-m-d H:i:s');
+
+
+            $campaign['split_date'] = array(
+                'year' => $date->format('Y'),
+                'month' => (int)$date->format('m')-1,
+                'day' => $date->format('d'),
+                'hour' => $date->format('H'),
+                'minute' => $date->format('i'),
+                'second' => $date->format('s'),
+            );
+
+            $this->document->setCampaign($campaign);
         }
 
 
@@ -76,7 +128,7 @@ class ControllerCommonHeader extends Controller {
         $this->data['active'] = $this->url->link('common/home');
         $this->data['last_chance'] = $this->url->link('common/home','&last_chance=1');
         $this->data['gallery'] = $this->url->link('product/gallery/showList');
-        $this->data['register'] = $this->url->link('account/register');
+        $this->data['register'] = $this->url->link('account/project/submit');
         $this->data['contact'] = $this->url->link('information/contact');
         $this->data['cart_link'] = $this->url->link('checkout/cart');
         $this->data['shop'] = $this->url->link('product/category');
@@ -218,8 +270,8 @@ class ControllerCommonHeader extends Controller {
         {
              if($info['top'])
              {
-                 $this->data['informations'] = array(
-                     'href' => $this->url->link('catalog/information','information_id='.$info['information_id'] ),
+                 $this->data['informations'][] = array(
+                     'href' => $this->url->link('information/information','information_id='.$info['information_id'] ),
                      'name' => $info['title'],
                  );
              }

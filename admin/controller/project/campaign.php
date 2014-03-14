@@ -24,6 +24,8 @@ class ControllerProjectCampaign extends Controller{
                 'filter_status',
 
             ));
+
+        $this->language->load('project/campaign');
     }
 
     public function insert()
@@ -68,6 +70,8 @@ class ControllerProjectCampaign extends Controller{
     {
         $this->getList();
     }
+
+	public function shortReport()	{			$campaign_id = $this->request->get['campaign_id'];				$this->load->model('report/campaign');				$this->load->model('project/campaign');				$this->load->model('sale/order');				$sales = $this->model_report_campaign->getCampaignSale($campaign_id);								$product_data = array();				foreach ($sales as $product) {					$option_data = array();										$key = $product['product_id'];															$options = $this->model_sale_order->getOrderOptions($product['order_id'], $product['order_product_id']);															foreach ($options as $option) {						if ($option['type'] != 'file') {							$value = $option['value'];						} else {							$value = utf8_substr($option['value'], 0, utf8_strrpos($option['value'], '.'));						}												$key .= '_'.$option['product_option_value_id'];												$option_data[] = array(							'name'  => $option['name'],							'value' => $value						);													}																				if(isset($product_data[$key]))					{						$product_data[$key]['sold'] += $product['sold'];					}					else					{					    $product_data[$key] = array(						'name'     => $product['name'],												'option'   => $option_data,						'sold' => $product['sold'],											);					}									}																				$this->data['products'] = $product_data;				$this->data['campaign'] = $this->model_project_campaign->getCampaign($campaign_id);				$this->template = 'project/short_report.tpl';        $this->children = array(            'common/footer',            'common/header'        );		        $this->response->setOutput($this->render());						}
 
     private function getList()
     {
@@ -131,7 +135,7 @@ ini_set('display_errors', '1');
 
         $this->data['campaigns'] =  $this->model_project_campaign->getCampaigns($this->request->get);
 
-        $this->load->model('tool/image');
+        $this->load->model('tool/image');		$this->load->model('report/campaign');
 
         foreach($this->data['campaigns'] as $key => $campaign)
         {
@@ -139,12 +143,42 @@ ini_set('display_errors', '1');
             $this->data['campaigns'][$key]['selected'] = isset($this->request->post['selected']) && in_array($campaign['campaign_id'], $this->request->post['selected']);
             $this->data['campaigns'][$key]['edit_author'] = $this->url->link('sale/customer/update', $this->baseUrl.'&token='.$this->session->data['token'] . '&customer_id='.$campaign['author_id'], 'SSL');
             //$this->image->resize($campaign[''], $config->get('config_image_thumb_width'), $config->get('config_image_thumb_height'));\
-            $this->data['campaigns'][$key]['preview_link'] = str_ireplace('admin','',$this->url->link('common/home','&campaign_id='.$campaign['campaign_id']));
+            $this->data['campaigns'][$key]['preview_link'] = str_ireplace('admin','',$this->url->link('common/home','&campaign_id='.$campaign['campaign_id']));						$this->data['campaigns'][$key]['sold'] = $this->model_report_campaign->getCampaigntTotalSale($campaign['campaign_id']);						$this->data['campaigns'][$key]['short_report'] = $this->url->link('project/campaign/shortReport', $this->baseUrl.'&token='.$this->session->data['token'] . '&campaign_id='.$campaign['campaign_id'], 'SSL');
 
             $date = new DateTime($campaign['date_start']);
             $in = new DateInterval('P1D');
             $date->add($in);
             $this->data['campaigns'][$key]['date_end'] = $date->format('Y-m-d H:i:s');
+
+
+
+            $now = new DateTime();
+            $date_start = new DateTime($campaign['date_start']);
+
+            $date_last_chance = new DateTime($campaign['date_start']);
+            $i = new DateInterval('P1D');
+            $date_last_chance->add($i);
+
+            $date_end = new DateTime($campaign['date_start']);
+            $i = new DateInterval('P2D');
+            $date_end->add($i);
+
+            if($now < $date_start)
+            {
+                $this->data['campaigns'][$key]['status'] = false;
+            }
+            elseif($now < $date_last_chance)
+            {
+                $this->data['campaigns'][$key]['status'] = $this->model_tool_image->resize('green_ball.png',20,20);
+            }
+            elseif($now < $date_end)
+            {
+                $this->data['campaigns'][$key]['status'] = $this->model_tool_image->resize('yellow_ball.png',20,20);
+            }
+            elseif($now > $date_end)
+            {
+                $this->data['campaigns'][$key]['status'] = $this->model_tool_image->resize('red_ball.png',20,20);
+            }
         }
 
 

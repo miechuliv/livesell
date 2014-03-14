@@ -199,12 +199,12 @@
     </div>
     <?php if ($text_agree) { ?>
     <div class="buttons">
-      <div class="right"><?php echo $text_agree; ?>
-        <?php if ($agree) { ?>
+      <div class="right"><div style="float:left;width:100%"><?php echo $text_agree; ?>
+        <?php if ($agree) { ?> 
         <input type="checkbox" name="agree" value="1" checked="checked" />
         <?php } else { ?>
         <input type="checkbox" name="agree" value="1" />
-        <?php } ?>
+        <?php } ?></div>
         <input type="submit" value="<?php echo $button_continue; ?>" class="button" />
       </div>
     </div>

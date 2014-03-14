@@ -1,7 +1,11 @@
 <?php echo $header; ?>
 
 <div id="content">
-
+  <div class="breadcrumb">
+	<a href="./index.php?route=common/home&token=<?php echo $this->session->data['token']; ?>">Strona główna</a> 
+	::
+	<a href="http://<?php echo $_SERVER['HTTP_HOST']; echo $_SERVER['REQUEST_URI']; ?>">Kampanie</a>	
+  </div>
 
   <?php if ($success) { ?>
   <div class="success"><?php echo $success; ?></div>
@@ -11,17 +15,23 @@
     <?php } ?>
   <div class="box">
     <div class="heading">
-      <h1><img src="view/image/product.png" alt="" /> <?php echo $this->language->get('heading_title'); ?></h1>
+      <h1><span class="fa fa-pencil"></span> Kampanie</h1>
       <div class="buttons">
           <?php /* <a href="<?php echo $insert; ?>" class="button"><?php echo $this->language->get('button_insert'); ?></a> */ ?>
           <a onclick="$('form').submit();" class="button"><?php echo $this->language->get('button_delete'); ?></a></div>
     </div>
     <div class="content">
       <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
-        <table class="list" style="table-layout:fixed;">
+        <table class="list projekty">
           <thead>
             <tr>
-              <td  style="text-align: center;width:44px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" /></td>
+                <td>Status: <br/>
+                Zielony - właśnie trwa<br/>
+                    Żółty - ostatnia szansa<br/>
+                    Czerwony - zakończona<br/>
+                </td>
+              <td class="right"><input type="checkbox" onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" /></td>
+
                 <?php /* <td class="center"><?php echo $this->language->get('column_image'); ?></td> */ ?>
 
                 <td class="left"><?php echo $this->language->get('column_name'); ?></td>
@@ -30,7 +40,7 @@
 
                 <td class="left"><?php echo $this->language->get('column_date_start'); ?></td>
                 <td class="left"><?php echo $this->language->get('column_date_end'); ?></td>
-
+				<td class="left"><?php echo $this->language->get('column_sold'); ?></td>
 
                <td class="right">Akcja</td>
             </tr>
@@ -38,39 +48,35 @@
           <tbody>
             <tr class="filter">
               <td></td>
+                <td></td>
                 <?php /* <td></td> */ ?>
 
                 <td class="left">
-                    <input name="filter_name" value="<?php echo $filter_name; ?>" />
+                    <input name="filter_name" type="text" value="<?php echo $filter_name; ?>" />
                 </td>
                 <td class="left">
-                    <input name="filter_author" value="<?php echo $filter_author; ?>" />
+                    <input name="filter_author" type="text" value="<?php echo $filter_author; ?>" />
                 </td>
                 <td class="left">
 
                 </td>
                 <td class="left">
-                    <input class="datetime" name="filter_date_start" value="<?php echo $filter_date_start; ?>" />
+                    <input class="datetime" type="text" name="filter_date_start" value="<?php echo $filter_date_start; ?>" />
                 </td>
                 <td class="left">
-                    <input class="datetime" name="filter_date_stop" value="<?php echo $filter_date_stop; ?>" />
+                    <input class="datetime" type="text" name="filter_date_stop" value="<?php echo $filter_date_stop; ?>" />
                 </td>
+			<td></td>
 
-
-              <td align="right"><a onclick="filter();" class="button filtr"><?php echo $this->language->get('button_filter'); ?></a></td>
+              <td align="left"><a onclick="filter();" class="button"><?php echo $this->language->get('button_filter'); ?></a></td>
             </tr>
             <!-- dodatkowe wyszukiwanie np: opcje, atrybuty -->
-
-
-
-
-
-
 
 
             <?php if ($campaigns) { ?>
             <?php foreach ($campaigns as $campaign) { ?>
             <tr>
+              <td class="left" ><img src="<?php echo $campaign['status']; ?>"   /></td>
               <td style="text-align: center;"><?php if ($campaign['selected']) { ?>
                 <input type="checkbox" name="selected[]" value="<?php echo $campaign['campaign_id']; ?>" checked="checked" />
                 <?php } else { ?>
@@ -82,11 +88,12 @@
                 <td class="left" ><?php echo $campaign['project']; ?></td>
                 <td class="left" ><?php echo $campaign['date_start']; ?></td>
                 <td class="left" ><?php echo $campaign['date_end']; ?></td>
+				<td class="left" ><?php echo $campaign['sold']; ?></td>
 
-
-              <td id="action-td" class="right">
-                 <a href="<?php echo $campaign['edit']; ?>"  ><?php echo $this->language->get('text_edit'); ?></a>
-                  <a target="_blank" href="<?php echo $campaign['preview_link']; ?>"  ><?php echo $this->language->get('text_preview'); ?></a>
+              <td id="action-td" class="left">
+                 <a href="<?php echo $campaign['edit']; ?>"  ><?php echo $this->language->get('text_edit'); ?></a><br/>
+                  <a target="_blank" href="<?php echo $campaign['preview_link']; ?>"  ><?php echo $this->language->get('text_preview'); ?></a><br/>				  				  
+				  <a  href="<?php echo $campaign['short_report']; ?>"  ><?php echo $this->language->get('text_short_report'); ?></a>
               </td>
             </tr>
             <?php } ?>

@@ -4,12 +4,30 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
 	}
 
-    public function getProductsPrice($product_id,$currency_id,$last_chance)
+    public function getProductsPrice($product_id,$currency_id,$type = false)
     {
-        $q = $this->db->query("SELECT * FROM ".DB_PREFIX."product_price
+
+        $sql = "SELECT * FROM ".DB_PREFIX."product_price
           WHERE product_id = '".(int)$product_id."'
            AND currency_id = '".(int)$currency_id."'
-           AND last_chance = '".(int)$last_chance."' ");
+            ";
+
+        if($type == 'current')
+        {
+            $sql .= " AND last_chance = '1' ";
+        }
+        elseif($type == 'last_chance')
+        {
+            $sql .= " AND last_chance = '0' ";
+        }
+        else
+        {
+            $sql .= " AND shop = '1' ";
+        }
+
+
+
+        $q = $this->db->query($sql);
 
         return isset($q->row['price'])?$q->row['price']:false;
     }
@@ -120,11 +138,11 @@ class ModelCatalogProduct extends Model {
         // miechu options join
 
         if (isset($filtry['options']) AND $this->checkArrayEmpty($filtry['options'])) {
-            $sql .= "LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
+            $sql .= " LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
         }
 
-        if (isset($filtry['filter_campaign_status']) ) {
-            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        if (isset($data['filter_campaign_status']) ) {
+            $sql .= " LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
         }
 
 
@@ -555,6 +573,7 @@ class ModelCatalogProduct extends Model {
 				);				
 			}
       	}
+
 		
 		return $product_option_data;
 	}
@@ -635,11 +654,11 @@ class ModelCatalogProduct extends Model {
         // miechu options join
 
         if (isset($filtry['options']) AND $this->checkArrayEmpty($filtry['options'])) {
-            $sql .= "LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
+            $sql .= " LEFT JOIN `" . DB_PREFIX . "product_option_value` pov ON (p.product_id=pov.product_id) LEFT JOIN `" . DB_PREFIX . "product_option` po ON (pov.product_option_id=po.product_option_id) LEFT JOIN `" . DB_PREFIX . "option_value` ov ON (pov.option_value_id=ov.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_value_description` ovd ON (ov.option_value_id=ovd.option_value_id) LEFT JOIN `" . DB_PREFIX . "option_description` od ON (ovd.option_id=od.option_id) ";
         }
 
-        if (isset($filtry['filter_campaign_status']) ) {
-            $sql .= "LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
+        if (isset($data['filter_campaign_status']) ) {
+            $sql .= " LEFT JOIN `" . DB_PREFIX . "campaign` cam ON (p.campaign_id=cam.campaign_id)  ";
         }
 
 

@@ -21,7 +21,7 @@ $_['text_shipping_estimate'] = 'Oszacuj wysyłkę i podatki';
 $_['text_shipping_detail']   = 'Wprowadź miejsce przeznaczenia, aby uzyskać kalulację wysyłki.';
 $_['text_shipping_method']   = 'Proszę wybrać preferowany sposób wysyłki do zastosowania w tym zamówieniu.';
 $_['text_empty']             = 'Twój koszyk jest pusty!';
-
+$_['text_platnosci'] = 'Płatność za pomocą:';$_['text_zalety'] = '<strong class="ok">Lorem ipsum</strong> Lorem ipsum opis<br>			<strong class="ok">Lorem ipsum</strong> Inny opis lorem ipsum<br>			<strong class="ok">Lorem ipsum</strong> Lorem ipsum lorem ipsum	';
 // miechu
 $_['text_continue']='Kontynuuj zakupy';
 $_['text_see_cart']='Do koszyka';
