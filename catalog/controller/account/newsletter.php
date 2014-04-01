@@ -14,7 +14,7 @@ class ControllerAccountNewsletter extends Controller {
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 			$this->load->model('account/customer');
 			
-			$this->model_account_customer->editNewsletter($this->request->post['newsletter']);
+			$this->model_account_customer->editNewsletter($this->request->post['newsletter'],$this->request->post['newsletter_daily']);
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 			
@@ -54,6 +54,8 @@ class ControllerAccountNewsletter extends Controller {
     	$this->data['action'] = $this->url->link('account/newsletter', '', 'SSL');
 		
 		$this->data['newsletter'] = $this->customer->getNewsletter();
+		
+		$this->data['newsletter_daily'] = $this->customer->getNewsletterDaily();
 		
 		$this->data['back'] = $this->url->link('account/account', '', 'SSL');
 

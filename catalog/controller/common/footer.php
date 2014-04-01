@@ -26,6 +26,7 @@ class ControllerCommonFooter extends Controller {
             $this->load->model('project/campaign');
             $campaign = $this->model_project_campaign->showActualCampaign($this->config->get('config_language_id'));
 
+            if($campaign){
             $campaign['no_buy'] = false;
             $campaign['campaign_type'] = 'current';
 
@@ -49,6 +50,7 @@ class ControllerCommonFooter extends Controller {
             );
 
             $this->document->setCampaign($campaign);
+            }
         }
 		
 		$this->load->model('catalog/information');

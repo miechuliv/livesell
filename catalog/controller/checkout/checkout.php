@@ -2301,8 +2301,12 @@ class ControllerCheckoutCheckout extends Controller {
                 return $p;
             };
 
+            // sprawdzym czy jest już taki customer
+            $this->load->model('account/customer');
+
+            $exists = $this->model_account_customer->getCustomerByEmail($data['email']);
             //zapisanie konta usera
-            if(isset($this->session->data['auto_account']))
+            if(isset($this->session->data['auto_account']) AND empty($exists))
             {
                 $uData = array(
                     'store_id' => $this->config->get('config_store_id'),

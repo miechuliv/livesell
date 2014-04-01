@@ -83,6 +83,7 @@ require_once($vqmod->modCheck(DIR_SYSTEM . 'library/debugger.php'));
 $debugger = new Debugger($time);
 
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/extra/firephp/FirePHP.class.php'));
+require_once(DIR_SYSTEM . 'library/extra/MailChimp.php');
 $firePHP = new FirePHP();
 
 $registry->set('firephp', $firePHP);

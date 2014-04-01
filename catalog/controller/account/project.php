@@ -52,7 +52,7 @@ class ControllerAccountProject extends Controller{
 
 
             $project = new AccountProjectRow();
-            $project->accepted = 0;
+            $project->accepted = 1;
             $project->author_id = $this->customer->getId();
             $project->colors = $this->request->post['colors'];
             $project->design = $this->design;

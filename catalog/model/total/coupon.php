@@ -75,13 +75,30 @@ class ModelTotalCoupon extends Model {
 					$discount_total += $this->session->data['shipping_method']['cost'];				
 				}				
       			
-				$total_data[] = array(
-					'code'       => 'coupon',
-        			'title'      => sprintf($this->language->get('text_coupon'), $this->session->data['coupon']),
-	    			'text'       => $this->currency->format(-$discount_total),
-        			'value'      => -$discount_total,
-					'sort_order' => $this->config->get('coupon_sort_order')
-      			);
+				$text = '';
+
+                if($coupon_info['type'] == 'F')
+                {
+                    $text = $this->currency->format(-$discount_total);
+
+                    $discount_total = $this->currency->format($discount_total,'',false,false);
+                }
+                elseif($coupon_info['type'] == 'P')
+                {
+                    $text = $this->currency->format(-$discount_total,'',1);
+
+
+
+                }
+
+
+                $total_data[] = array(
+                    'code'       => 'coupon',
+                    'title'      => sprintf($this->language->get('text_coupon'), $this->session->data['coupon']),
+                    'text'       => $text,
+                    'value'      => -$discount_total,
+                    'sort_order' => $this->config->get('coupon_sort_order')
+                );
 
 				$total -= $discount_total;
 			} 

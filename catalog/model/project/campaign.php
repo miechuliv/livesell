@@ -132,6 +132,11 @@ class ModelProjectCampaign extends Model{
             $sql .= " AND cdes.tag LIKE '%".$this->db->escape($data['filter_tag'])."%' ";
         }
 
+        if(isset($data['filter_sell']))
+        {
+            $sql .= " AND c.show_archiwe_sell = '".(int)$data['filter_sell']."' ";
+        }
+
         if(isset($data['sort_date']) OR isset($data['sort_vote']))
         {
             $sql .= " ORDER BY ";

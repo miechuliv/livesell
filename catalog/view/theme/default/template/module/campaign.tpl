@@ -9,6 +9,7 @@
 <div class="fff">		
 		 
 <div id="oferta">
+<div id="size-chart"><img src="./image/size_chart.jpg" alt="" /></div>
 	<div>
 		<div id="tableoff">
 			<div>
@@ -17,7 +18,11 @@
 					<div id="next"></div>
 				</div>
 				<div class="homeslide">
+                    <?php if(!empty($campaign_products)) { ?>
 					<img id="main-foto" src="" class="meska" alt="" />
+                    <?php }else{ ?>
+                    <img id="main-foto" src="<?php echo $campaign_image_small; ?>" class="meska" alt="" />
+                    <?php } ?>
 
 				</div>
 			</div>
@@ -28,32 +33,26 @@
                     <input type="hidden" name="campaign_type" value="<?php echo $campaign_type; ?>" />
 					
 					<h1 class="camp" style="width:300px;">		
-						<span><?php echo $campaign['name']; ?></span> <a href="<?php echo $campaign['author_href']; ?>"><?php echo $this->language->get('text_by'); ?><small><?php echo $campaign['author']; ?></small></a>
+						<span><?php echo $campaign['name']; ?></span> <small><?php echo $this->language->get('text_by'); ?><?php echo $campaign['author']; ?></small>
 					</h1>	
-					
+
+                    <?php if(!empty($campaign_products)) { ?>
 					<table id="faken" >
 						<tr>
 							<td>
 								<h2>1. <?php echo $this->language->get('text_pick_product'); ?></h2>
 								<?php foreach($campaign_products as $product){ ?>
-									<input onclick="reloadOptions('<?php echo $product["product_id"]; ?>')" type="radio" name="rodzaj" id="<?php echo $product['name']; ?>" value="<?php echo $product['product_id']; ?>"><label for="<?php echo $product['name']; ?>" class="<?php echo $product['name']; ?>"><?php if(!$no_buy){ echo'<span></span>'; echo number_format($product['price'],2); /*echo' '; echo $this->config->get('config_currency');*/ }else{ echo '----'; } ?></label>
+									<input onclick="reloadOptions('<?php echo $product["product_id"]; ?>')" type="radio" name="rodzaj" id="<?php echo $product['name']; ?>" value="<?php echo $product['product_id']; ?>"><label for="<?php echo $product['name']; ?>" class="<?php echo $product['model']; ?> item"><?php  echo'<span></span>'; echo $product['price'];  ?></label>
 								<?php } ?>    
 							</td>
 						</tr>
 					</table>
-					<?/*
 					<div>
-						<?php echo $campaign['description']; ?>
+						<a href="javascript:void(0);" id="chart-show"><?php echo $this->language->get('text_chart'); ?></a>
 					</div>
-						*/?>            
-						
-					<?php if(!$no_buy){ ?>
-					<a  class="action margintop line25 full" <?php if(!isset($preview)){ ?> id="button-cart" <?php } ?> ><?php echo $this->language->get('text_buy_now'); ?></a>
-				   
-					<?php } ?>
-					
-					<?php /* <div class="fb-like" data-href="<?php echo $like_url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> */ ?>
-					
+
+					<a  class="action margintop line25 full"  id="button-cart" ><?php echo $this->language->get('text_buy_now'); ?></a>			
+										
 
 					<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
 					<script type="text/javascript">
@@ -79,31 +78,104 @@
 					<span class='st_twitter_large' displayText='Tweet' st_url='<?php echo $like_url; ?>'></span>
 					<span class='st_googleplus_large' displayText='Google +' st_url='<?php echo $like_url; ?>'></span>
 					<span class='st_linkedin_large' displayText='LinkedIn' st_url='<?php echo $like_url; ?>'></span>
-					<span class='st_pinterest_large' displayText='Pinterest' st_url='<?php echo $like_url; ?>'></span>
+					<span class='st_pinterest_large' displayText='Pinterest' st_url='<?php echo $like_url; ?>'></span>					
 					
+                    <?php }else{ ?>									
+
+						<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+						<script type="text/javascript">
+							stLight.options({
+								publisher: "d86370c7-306a-4ae7-a9c4-fec51c5c11f1", 
+								doNotHash: false, 
+								doNotCopy: false, 
+								hashAddressBar: false
+							});
+								function myCallbackFunction (event,service)
+									{					
+										if(service=='facebook'){
+											$.ajax({
+												url: 'index.php?route=module/campaign/facelike&campaign_id=<?php echo $campaign['campaign_id']; ?>',
+												type: 'get'
+											})
+										} 
+									}
+								stLight.subscribe("click",myCallbackFunction);
+						</script>
+						
+						<span class='st_facebook_large' displayText='Facebook' st_url='<?php echo $like_url; ?>'></span>
+						<span class='st_twitter_large' displayText='Tweet' st_url='<?php echo $like_url; ?>'></span>
+						<span class='st_googleplus_large' displayText='Google +' st_url='<?php echo $like_url; ?>'></span>
+						<span class='st_linkedin_large' displayText='LinkedIn' st_url='<?php echo $like_url; ?>'></span>
+						<span class='st_pinterest_large' displayText='Pinterest' st_url='<?php echo $like_url; ?>'></span>
+						
+						
+					<table>
+						<thead>
+						<tr>
+							<td colspan="2">
+							<?/*	<a href="<?php echo $campaign['author_href']; ?>" class="ahead"> */?>
+							<div class="ahead">
+									<img src="<?php echo $campaign['author_avatar']; ?>" alt="<?php echo $campaign['author']; ?>"/>
+									<h1 class="lite nomargin"><strong><?php echo $campaign['author']; ?></strong></h1>
+							</div>
+							<?/*	</a> */?>
+							</td>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="justify">								
+								<?php // echo html_entity_decode($campaign['author_about']); ?>
+								<?php echo html_entity_decode($campaign['description']); ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+						
+                    <?php } ?>
+
+					<?/*
+					<div>
+						<?php echo $campaign['description']; ?>
+					</div>
+						*/?>            
+
+					<?php /* <div class="fb-like" data-href="<?php echo $like_url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> */ ?>
+
 				</div>			
 			</div>
 		</div>
 	</div>
+<?php if(!empty($campaign_products)) { ?>
 	<div id="newslet-home">
 		<div>
 			<div>
+
 				<div>
 					<img src="./image/data/logo/logo-small.png" alt="" id="logos"/> <h3><?php echo $this->language->get('news_submitnew'); ?></h3>
 				</div>
 				<div>
-					<form>
-						<input type="text" placeholder="<?php echo $this->language->get('news_email'); ?>">
+                    <?php if(isset($this->session->data['newsletter_success'])){ ?>
+                        <?php echo $this->session->data['newsletter_success']; ?><br/>
+                    <?php unset($this->session->data['newsletter_success']); ?>
+                    <?php } ?>
+                    <?php if(isset($this->session->data['newsletter_error'])){ ?>
+                    <?php echo $this->session->data['newsletter_error']; ?><br/>
+                    <?php unset($this->session->data['newsletter_error']); ?>
+                    <?php } ?>
+					<form action="<?php echo $this->url->link('account/newslettervisitor'); ?>" method="post" >
+						<input name="email_newsletter" type="text" placeholder="<?php echo $this->language->get('news_email'); ?>">
 						<input type="submit" value="<?php echo $this->language->get('news_submit'); ?>" class="button action">
 						<div id="czeki">
-							<div><input type="checkbox" id="news-regular" checked="checked"><label for="news-regular"><?php echo $this->language->get('news_regular'); ?></label></div>
-							<div><input type="checkbox" id="news-okazj" checked="checked"><label for="news-okazj"><?php echo $this->language->get('news_okazja'); ?></label></div>
+							<div><input name="newsletter_daily" type="checkbox" id="news-regular" checked="checked"><label for="news-regular"><?php echo $this->language->get('news_regular'); ?></label></div>
+							<div><input name="newsletter" type="checkbox" id="news-okazj" checked="checked"><label for="news-okazj"><?php echo $this->language->get('news_okazja'); ?></label></div>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+	<?php } ?>
 </div>
 
 
@@ -123,38 +195,44 @@
 					<img src="<?php echo $campaign_image; ?>" alt="<?php echo $campaign['name']; ?>"/>			
 				</div>
 				<div class="prawa">
+				<?php if(!empty($campaign_products)) { ?>
 					<table>
 						<thead>
 						<tr>
 							<td colspan="2">
-								<a href="<?php echo $campaign['author_href']; ?>" class="ahead">
+							<?/*	<a href="<?php echo $campaign['author_href']; ?>" class="ahead"> */?>
+							<div class="ahead">
 									<img src="<?php echo $campaign['author_avatar']; ?>" alt="<?php echo $campaign['author']; ?>"/>
 									<h1 class="lite nomargin"><strong><?php echo $campaign['author']; ?></strong></h1>
-								</a>
+							</div>
+							<?/*	</a> */?>
 							</td>
 						</tr>
 						</thead>
 						<tbody>
 						<tr>
 							<td class="justify">								
-								<?php echo html_entity_decode($campaign['author_about']); ?>
+								<?php // echo html_entity_decode($campaign['author_about']); ?>
+								<?php echo html_entity_decode($campaign['description']); ?>
 							</td>
 						</tr>
 						</tbody>
 					</table>
+				<?php } ?>
 				</div>
 			</div>
 		</div>
     <?php } ?>	
 
 
-<?php if(!$no_buy){ ?>
+
 <div id="morehome" class="fff">
 	<div id="tablemore">
 		<div class="lewa">
 			
 			<div class="table">
 				<div class="col-left">
+				
 					<div style="display:table-cell; text-align:center;">
 						<img src="<?php echo $alt_offer_preview; ?>" style="max-width:90%;" alt=""/>
 					</div>
@@ -163,6 +241,7 @@
 						<h1 style="border:none; font-size:20px; padding:0; margin:0;"><?php echo $alt_name; ?></h1>
 						<a href="<?php echo $alt_link; ?>" class="action margintop"><?php echo $this->language->get('text_buy_now'); ?></a>
 					</div>
+					
 				</div>
 				<div class="col-right">
 					<div>
@@ -174,9 +253,10 @@
 					<div>
 						<h1><?php echo $this->language->get('text_headpay'); ?></h1>
 						<p>
-							<img alt="" src="./image/data/payment icons/mastercard_curved_32px.png">
-							<img alt="" src="./image/data/payment icons/visa_straight_32px.png">
-							<img alt="" src="./image/data/payment icons/paypal_curved_32px.png">
+							<img alt="PayPal" src="./image/data/payment icons/paypal_curved_32px.png">
+							<img alt="Visa" src="./image/data/payment icons/visa_straight_32px.png">
+							<img alt="MasterCard" src="./image/data/payment icons/mastercard_curved_32px.png"><br/>
+							<img alt="PayU - przelewy z ponad 20 polskich banków" src="/resources/belka-dolna-wybrane-banki.png">
 						</p>
 					</div>
 				</div>
@@ -185,7 +265,7 @@
 
 	</div>
 </div>
-<?php } ?>
+
 
     <div id="komhome" class="fff">
 		<div>
@@ -193,7 +273,7 @@
             <div id="disqus_thread"></div>
             <script type="text/javascript">
                 /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-                var disqus_shortname = 'd4livesell'; // required: replace example with your forum shortname
+                var disqus_shortname = 'teeglobecom'; // required: replace example with your forum shortname
                 var disqus_identifier =  'campaign_id=<?php echo $campaign["campaign_id"]; ?>';
                 var disqus_url = '<?php echo HTTP_SERVER; ?>index.php?route=common/home/#!/<?php echo $campaign["campaign_id"]; ?>';
 
@@ -221,7 +301,7 @@
 	
 		<?php }else{ ?>
 			<div>
-				<?php echo $this->language->get('text_no_campaign'); ?>
+				<br/><strong><?php echo $this->language->get('text_no_campaign'); ?>. Zapraszamy po 22!</strong><br/><br/><br/>
 			</div>
 		<?php } ?>
     </div>	
@@ -233,7 +313,7 @@
     {
         this.option_id;
         this.option_name;
-        this.values = {};
+        this.values = [];
 
         this.product_id;
 
@@ -250,6 +330,69 @@
         this.product_option_value_id;
     }
 
+    var OptionCombinations = [];
+
+    function OptionCombination()
+    {
+        this.combination;
+        this.image;
+    }
+
+
+     function getOptionCombination()
+    {
+           var activeOptions = $('.activ');
+
+            var comb = '';
+
+       
+
+
+        var combinations = OptionCombinations[$("input[name=\'product_id\']").val()];
+
+         $.each(combinations,function(key,elem){
+
+            
+            var t = elem.combination.split('_');
+
+			var count = t.length;
+
+			var actual = 0;
+
+            $.each(activeOptions,function(key,elem){
+                var r = $(elem).prev('.opt').attr('val_id');
+				
+
+				if(r != undefined)
+				{
+					var res = jQuery.inArray(r,t);
+				
+					if(res >= 0)
+					{
+
+						actual++;
+					}
+				}
+				
+
+                
+
+            });
+
+
+
+            if(actual == count)
+            {
+
+                var image = elem.image;
+                $('#main-foto').attr('src',image);
+            }
+
+
+        })
+    }
+
+
 
     var im = '';
 
@@ -265,11 +408,20 @@
 
             $.each(opt,function(key,elem){
 
-                ;
+
                 if(option_id == elem.option_id)
                 {
-                 
-                    im = elem.values[option_value_id].option_value_image;
+                    // wartosci opcji
+                    var vals = elem.values;
+
+                    $.each(vals , function(key,elem){
+                        if(elem.option_value_id == option_value_id)
+                        {
+                            im = elem.option_value_image;
+                        }
+                    })
+
+
                 }
             })
 
@@ -305,7 +457,7 @@
                     html += '<tr><td><h2 id="option-'+elem.option_id+'">'+i+'. <?php echo $this->language->get('text_wybierz'); ?> '+elem.option_name+'</h2><div class="opt-'+elem.product_option_id+' error-popup"><?php echo $this->language->get('text_wybierz'); ?> '+elem.option_name+'!</div>';
                     $.each(elem.values,function(key2,value)
                     {
-                        html += '<input pro_id="'+product_id+'" op_id="'+elem.option_id+'" val_id="'+value.option_value_id+'" type="radio" name="option['+elem.product_option_id+']" id="'+value.option_value_name+'" value="'+value.product_option_value_id+'"><label for="'+elem.option_name+'" class="'+value.option_value_name+' op">'+value.option_value_name+'</label>';
+                        html += '<input class="opt" pro_id="'+product_id+'" op_id="'+elem.option_id+'" val_id="'+value.option_value_id+'" type="radio" name="option['+elem.product_option_id+']" id="'+value.option_value_name+'" value="'+value.product_option_value_id+'"><label for="'+elem.option_name+'" class="'+value.option_value_name+' op">'+value.option_value_name+'</label>';
                     })
                     html += '</td></tr>';
 
@@ -337,6 +489,15 @@
            images['<?php echo $product['product_id']; ?>'] = '<?php echo $product['image']; ?>';
            var repo = new OptionRepo();
 
+           OptionCombinations['<?php echo $product['product_id']; ?>'] = [];
+
+           <?php foreach($product['combinations'] as $combination){ ?>
+                var x = new OptionCombination();
+                x.combination = '<?php echo $combination['combination']; ?>';
+                x.image = '<?php echo $combination['image']; ?>';
+                OptionCombinations['<?php echo $product['product_id']; ?>'].push(x);
+           <?php } ?>
+
            <?php foreach($product['options'] as $option){ ?>
                 var op = new Option();
                 op.option_id = '<?php echo $option['option_id']; ?>';
@@ -350,11 +511,11 @@
                     var v = new OptionValue();
                     v.option_value_name = '<?php echo $value['name']; ?>';
                     v.option_value_image = '<?php echo $value['image_value']; ?>';
-                    v.option_value_price = '<?php echo number_format($value['price'],2); ?>';
+                    v.option_value_price = '<?php echo $value['price']; ?>';
                     v.option_value_id = '<?php echo $value['option_value_id']; ?>';
                     v.product_option_value_id = '<?php echo $value['product_option_value_id']; ?>';
 
-                    op.values['<?php echo $value['option_value_id']; ?>'] = v;
+                    op.values.push(v);
                 <?php } ?>
 
                 repo.options[i] = op;
@@ -367,13 +528,13 @@
 
 
 
-    function reloadOptions(product_id)
+    function reloadOptions(product_id)   
     {
 
-        <?php if(!$no_buy){ ?>
+
         set[product_id].getOptionsByProduct(product_id);
         $('input[name=\'product_id\']').val(product_id);
-        <?php } ?>
+
 
         var image = images[product_id];
 
@@ -385,8 +546,32 @@
         set[product_id].getOptionValuesImage(option_id,option_value_id);
     }
 	
+	function chartclose() {
+		$('#size-chart').fadeTo(500,0,function(){
+			$('#size-chart').css('display','none');
+		});
+		$('#chart-close').css('display','none');
+	}	
+	
+	function bodyclose() {
+		$('#chart-close').css('display','block');
+		$('#chart-close').click(function(){
+			chartclose();
+		});
+	}
+	
     $(document).ready(function(){	 
-	  
+	
+		$('#chart-show').bind('click',function(){
+			$('#size-chart').css('display','block');
+			$('#size-chart').fadeTo(500,1);
+			bodyclose();
+		});
+		
+		$('#size-chart').bind('click',function(){
+			chartclose();
+		});
+		
 			$('#tableoff label').live('click',function(){
             $(this).parent().find('label').removeClass('activ');
             $(this).parent().find('input').attr('checked',false);
@@ -399,11 +584,16 @@
         $('.op').live('click',function(){
 
             reloadPhoto($(this).prev('input').attr('pro_id'),$(this).prev('input').attr('op_id'),$(this).prev('input').attr('val_id'));
-
+            getOptionCombination();
         });
 
 
         $('#faken tr td input:first').click();
 
-    });
+    });	
+		$(document).keyup(function(e) {
+			if (e.keyCode == 27) { chartclose(); }   // esc
+		});
+		
+		
 </script>

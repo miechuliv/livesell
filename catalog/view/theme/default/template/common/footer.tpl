@@ -20,8 +20,6 @@
     <h3><?php echo $text_service; ?></h3>
     <ul>
       <li><a href="<?php echo $contact; ?>"><?php echo $text_contact; ?></a></li>
-      <li><a href="<?php echo $return; ?>"><?php echo $text_return; ?></a></li>
-      <li><a href="<?php echo $sitemap; ?>"><?php echo $text_sitemap; ?></a></li>
     </ul>
   </div>
   <div class="column">
@@ -34,9 +32,7 @@
   </div>
   <div class="column">
   <h3>TeeGlobe @</h3>
-	<div style="margin:0 0 10px;" class="fb-like" data-href="https://www.facebook.com/TeeGlobeDotCom" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
-		<a href="https://twitter.com/teeglobe" class="twitter-follow-button" data-show-count="false">Follow @teeglobe</a>
-		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+	<div id="social-footer"></div>
   </div>
   <div class="column">
 	<h3><?php echo $text_contact; ?></h3>
@@ -108,6 +104,16 @@
     });
 
 
+	$(document).ready(function(){
+		var wysokoscstr = $(window).height();
+		var wysokosckontenera = $('#container');
+		wysokosckontenera.css('min-height',wysokoscstr-400);
+	});
+
+	$(window).load(function(){
+		$('#social-footer').html('<div style="margin:0 0 10px;" class="fb-like" data-href="https://www.facebook.com/TeeGlobeDotCom" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div><br/><a href="https://twitter.com/teeglobe" target="_blanl"><img src="./follow-tg.png" alt="@teeglobe" /></a>');
+	});
+
 
     //--></script>
 
@@ -129,7 +135,21 @@
 
                     end,
                     function(ts) {
-                        document.getElementById('pageTimer').innerHTML = ts.toString("strong");
+
+                        if(ts.value < 0)
+                        {
+                            document.getElementById('pageTimer').innerHTML = ts.toString("strong");
+                        }
+                        else
+                        {
+
+                            document.getElementById('pageTimer').innerHTML = ts.toString("strong");
+                            window.clearInterval(timerId);
+                            location.reload();
+
+                        }
+
+
                     },
                     countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
 </script>

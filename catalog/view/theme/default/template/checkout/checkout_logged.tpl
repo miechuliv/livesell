@@ -1,12 +1,16 @@
-<?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
-<div id="content"><?php echo $content_top; ?>
+<?php echo $header; ?><?php // echo $column_left; ?><?php // echo $column_right; ?>
+<div id="content" class="kasa"><?php echo $content_top; ?>
 <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
 </div>
-<h1><?php echo $heading_title; ?></h1>
 
+
+<div class="fff podstr" style="width:70%">
+<h1 style="margin:0 15px"><?php echo $this->language->get('text_checkout_payment_address'); ?></h1>
+
+<div style="padding:10px;">
 <?php $type='payment'; ?>
 
 
@@ -31,56 +35,55 @@
 <?php } ?>
 <div id="payment-new" style="display: <?php echo ($addresses ? 'none' : 'block'); ?>;">
 <?php if(!$addresses){ ?> <input type="hidden" name="payment_address" value="new"  /> <?php } ?>
-    <table class="form">
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
-            <td><input type="text" name="payment_firstname" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
-            <td><input type="text" name="payment_lastname" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><?php echo $entry_company; ?></td>
-            <td><input type="text" name="payment_company" value="" class="large-field" /></td>
-        </tr>
+    <div class="left">
+            <div class="lab"><?php echo $entry_firstname; ?> <span class="required">*</span> </div>
+            <input type="text" name="payment_firstname" value="" class="large-field" />
+        </div>
+        <div class="right">
+           <div class="lab"><?php echo $entry_lastname; ?> <span class="required">*</span></div>
+            <input type="text" name="payment_lastname" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_company; ?></div>
+            <input type="text" name="payment_company" value="" class="large-field" />
+        </div>
         <?php if ($company_id_display) { ?>
-        <tr>
-            <td><?php if ($company_id_required) { ?>
+        <div class="right">
+            <?php if ($company_id_required) { ?>
                 <span class="required">*</span>
                 <?php } ?>
-                <?php echo $entry_company_id; ?></td>
-            <td><input type="text" name="payment_company_id" value="" class="large-field" /></td>
-        </tr>
+                <?php echo $entry_company_id; ?>
+            <input type="text" name="payment_company_id" value="" class="large-field" />
+        </div>
         <?php } ?>
         <?php if ($tax_id_display) { ?>
-        <tr>
-            <td><?php if ($tax_id_required) { ?>
+        <div class="left">
+            <?php if ($tax_id_required) { ?>
                 <span class="required">*</span>
                 <?php } ?>
-                <?php echo $entry_tax_id; ?></td>
-            <td><input type="text" name="payment_tax_id" value="" class="large-field" /></td>
-        </tr>
+                <?php echo $entry_tax_id; ?>
+            <input type="text" name="payment_tax_id" value="" class="large-field" />
+        </div>
         <?php } ?>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_address_1; ?></td>
-            <td><input type="text" name="payment_address_1" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><?php echo $entry_address_2; ?></td>
-            <td><input type="text" name="payment_address_2" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_city; ?></td>
-            <td><input type="text" name="payment_city" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span id="payment-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></td>
-            <td><input type="text" name="payment_postcode" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_country; ?></td>
-            <td><select id="payment_country_id" name="payment_country_id" class="large-field">
+        <div class="right">
+            <div class="lab"><?php echo $entry_address_1; ?> <span class="required">*</span> </div>
+            <input type="text" name="payment_address_1" value="" class="large-field" />
+        </div>
+        <div class="left">
+           <div class="lab"><?php echo $entry_address_2; ?></div>
+            <input type="text" name="payment_address_2" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_city; ?> <span class="required">*</span></div>
+            <input type="text" name="payment_city" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_postcode; ?> <span id="payment-postcode-required" class="required">*</span></div>
+            <input type="text" name="payment_postcode" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_country; ?> <span class="required">*</span> </div>
+            <select id="payment_country_id" name="payment_country_id" class="large-field">
                     <option value=""><?php echo $text_select; ?></option>
                     <?php foreach ($countries as $country) { ?>
                     <?php if ($country['country_id'] == $payment_country_id) { ?>
@@ -89,15 +92,14 @@
                     <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
                     <?php } ?>
                     <?php } ?>
-                </select></td>
-        </tr>
-        <tr style="display:none">
-            <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
-            <td><select id="payment_zone_id" name="payment_zone_id" class="large-field">
+                </select>
+        </div>
+        <div style="display:none">
+            <span class="required">*</span> <?php echo $entry_zone; ?>
+            <select id="payment_zone_id" name="payment_zone_id" class="large-field">
 					<option value="1" selected="selected" ></option>
-                </select></td>
-        </tr>
-    </table>
+                </select>
+        </div>
 </div>
 <br />
 
@@ -170,6 +172,8 @@
     $('#payment_country_id').trigger('change');
     //--></script>
 
+<strong><?php echo $this->language->get('text_shipping2'); ?></strong>
+<br/></br>
 
 <?php $type='shipping'; ?>
 
@@ -196,37 +200,37 @@
 <div id="shipping-new" style="display: <?php echo ($addresses ? 'none' : 'block'); ?>;">
 <?php if(!$addresses){ ?> <input type="hidden" name="shipping_address" value="new"   /> <?php } ?>
     <table class="form">
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
-            <td><input type="text" name="shipping_firstname" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
-            <td><input type="text" name="shipping_lastname" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><?php echo $entry_company; ?></td>
-            <td><input type="text" name="shipping_company" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_address_1; ?></td>
-            <td><input type="text" name="shipping_address_1" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><?php echo $entry_address_2; ?></td>
-            <td><input type="text" name="shipping_address_2" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_city; ?></td>
-            <td><input type="text" name="shipping_city" value="" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span id="shipping-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></td>
-            <td><input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="large-field" /></td>
-        </tr>
-        <tr>
-            <td><span class="required">*</span> <?php echo $entry_country; ?></td>
-            <td><select id="shipping_country_id" name="shipping_country_id" class="large-field">
+        <div class="left">
+            <div class="lab"><?php echo $entry_firstname; ?> <span class="required">*</span></div>
+            <input type="text" name="shipping_firstname" value="" class="large-field" />
+        </div>
+        <div class="right">
+            <div class="lab"><?php echo $entry_lastname; ?> <span class="required">*</span> </div>
+            <input type="text" name="shipping_lastname" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_company; ?></div>
+            <input type="text" name="shipping_company" value="" class="large-field" />
+        </div>
+        <div class="right">
+             <div class="lab"><?php echo $entry_address_1; ?> <span class="required">*</span> </div>
+            <input type="text" name="shipping_address_1" value="" class="large-field" />
+        </div>
+        <div class="left">
+            <div class="lab"><?php echo $entry_address_2; ?></div>
+            <input type="text" name="shipping_address_2" value="" class="large-field" />
+        </div>
+        <div class="right">
+             <div class="lab"><?php echo $entry_city; ?> <span class="required">*</span> </div>
+            <input type="text" name="shipping_city" value="" class="large-field" />
+        </div>
+        <div class="left">
+             <div class="lab"><?php echo $entry_postcode; ?> <span id="shipping-postcode-required" class="required">*</span> </div>
+            <input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="large-field" />
+        </div>
+        <div class="right">
+             <div class="lab"><?php echo $entry_country; ?> <span class="required">*</span> </div>
+            <select id="shipping_country_id" name="shipping_country_id" class="large-field">
                     <option value=""><?php echo $text_select; ?></option>
                     <?php foreach ($countries as $country) { ?>
                     <?php if ($country['country_id'] == $shipping_country_id) { ?>
@@ -235,14 +239,14 @@
                     <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
                     <?php } ?>
                     <?php } ?>
-                </select></td>
-        </tr>
-        <tr style="display:none">
-            <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
-            <td><select id="shipping_zone_id" name="shipping_zone_id" class="large-field">
+                </select>
+        </div>
+        <div style="display:none">
+            <span class="required">*</span> <?php echo $entry_zone; ?>
+            <select id="shipping_zone_id" name="shipping_zone_id" class="large-field">
 			<option value="1" selected="selected" ></option>
-                </select></td>
-        </tr>
+                </select>
+        </div>
     </table>
 </div>
 <br />
@@ -319,6 +323,11 @@
 <div class="warning"><?php echo $error_warning; ?></div>
 <?php } ?>
 <?php if ($shipping_methods) { ?>
+
+</div>
+<h1 style="margin:0 15px"><?php echo $this->language->get('text_shipping'); ?></h1>
+<Div style="padding:10px">
+
 <div id="shipping-methods">
 <div id="shipping-calculator" style="display:none">
              <p><?php echo $this->language->get('text_shipping_calculator'); ?></p>
@@ -404,7 +413,7 @@
 
         
 
-        $('#shipping-new select[name=\'shipping_country_id\']').bind('change', function() {
+        $('#shipping-new select[name=\'shipping_country_id\']').live('change', function() {
             if (this.value == '') return;
 
             var v = this.value;
@@ -413,7 +422,7 @@
             reloadShipping();
         });
 
-        $('#shipping-calculator select[name=\'country_id\']').bind('change', function() {
+        $('#shipping-calculator select[name=\'country_id\']').live('change', function() {
             if (this.value == '') return;
 
             var v = this.value;
@@ -430,7 +439,7 @@
         $('#shipping-calculator select[name=\'country_id\']').trigger('change');
 		
 		<?php if($addresses){ ?>
-		$('select[name=\'shipping_address_id\']').bind('change',function(){
+		$('select[name=\'shipping_address_id\']').live('change',function(){
 				
 				$.ajax({
                 url: 'index.php?route=checkout/checkout/reloadShippingByAddress&address_id=' + $('select[name=\'shipping_address_id\'] option:selected').val() +'&zone_id=0',
@@ -461,7 +470,7 @@
 		$('select[name=\'shipping_address_id\']').trigger('change');
 		<?php } ?>
         //--></script>
-    <p><?php echo $text_shipping_method; ?></p>
+    <p style="padding-left:10px"><?php echo $text_shipping_method; ?></p>
     <table class="radio">
         <?php foreach ($shipping_methods as $shipping_method) { ?>
         <tr>
@@ -491,16 +500,17 @@
 </div>
 <?php } ?>
 
-
-<br />
+</div>
 
 
 <?php if ($error_warning) { ?>
 <div class="warning"><?php echo $error_warning; ?></div>
 <?php } ?>
 <?php if ($payment_methods) { ?>
+<h1 style="margin:0 15px"><?php echo $this->language->get('text_payment_method_short'); ?></h1>
+<div style="padding:10px">
 <div id="payment-methods">
-    <p><?php echo $text_payment_method; ?></p>
+    <p style="padding-left:10px;"><?php echo $text_payment_method; ?></p>
     <table class="radio">
         <?php foreach ($payment_methods as $payment_method) { ?>
         <tr class="highlight">
@@ -519,22 +529,9 @@
 <?php } ?>
 <b><?php echo $text_comments; ?></b>
 <textarea name="comment" rows="8" style="width: 98%;"><?php echo $comment; ?></textarea>
-<br />
-<br />
-<?php if ($text_agree) { ?>
-<div class="buttons" id="agree">
-    <div class="right"><?php echo $text_agree; ?>
-        <?php if ($agree) { ?>
-        <input type="checkbox" name="agree" value="1" checked="checked" />
-        <?php } else { ?>
-        <input type="checkbox" name="agree" value="1" />
-        <?php } ?>
+<br /><br/>
 
-    </div>
-</div>
-<?php } else { ?>
 
-<?php } ?>
 <script type="text/javascript"><!--
     $('input[name=\'shipping_method\']').change(function(){
 
@@ -625,9 +622,23 @@
         <?php } ?>
         </tfoot>
     </table>
+	<?php if ($text_agree) { ?>
+<div class="buttons" style="padding-bottom:5px !important;" id="agree">
+    <div class="right" style="margin:0 10px 10px; width:50%;"><?php echo $text_agree; ?>
+        <?php if ($agree) { ?>
+        <input type="checkbox" name="agree" value="1" checked="checked" />
+        <?php } else { ?>
+        <input type="checkbox" name="agree" value="1" />
+        <?php } ?>
+
+    </div>
+</div>
+<?php } else { ?>
+
+<?php } ?>
     <div class="buttons">
-        <div class="right">
-            <input type="button" onclick="finalize()"  class="button" value="<?php echo $text_order_confirm ?>" />
+        <div class="left">
+            <input type="button" onclick="finalize()" style="margin:0 10px 10px" class="button action" value="<?php echo $text_order_confirm ?>" />
         </div>
     </div>
 </div>
@@ -808,6 +819,9 @@
         reloadTotals();
     })
 </script>
+
+</div>
+</div>
 
 </div>
 

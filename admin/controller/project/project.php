@@ -24,6 +24,8 @@ class ControllerProjectProject extends Controller{
 
         ));
 
+        $this->load->language('project/project');
+
     }
 
     public function addNote()
@@ -223,8 +225,6 @@ ini_set('display_errors', '1');
         {
             $page = 1;
         }
-
-
 
 
         $total_projects = $this->model_project_project->getTotals($this->request->get);

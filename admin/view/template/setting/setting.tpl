@@ -13,7 +13,7 @@
   <?php } ?>
   <div class="box">
     <div class="heading">
-      <h1><img src="view/image/setting.png" alt="" /> <?php echo $heading_title; ?></h1>
+      <h1><span class="fa fa-wrench"></span> <?php echo $heading_title; ?></h1>
       <div class="buttons"><a onclick="$('#form').submit();" class="button"><?php echo $button_save; ?></a><a href="<?php echo $cancel; ?>" class="button"><?php echo $button_cancel; ?></a></div>
     </div>
     <div class="content">
@@ -272,12 +272,56 @@
           <h2><?php echo $text_items; ?></h2>
           <table class="form">
               <tr>
-                  <td><span class="required">*</span> <?php echo $this->language->get('config_show_store'); ?></td>
+                  <td><?php echo $this->language->get('text_author_commission'); ?></td>
+                  <td><input type="text" name="config_author_commission" value="<?php echo $config_author_commission; ?>" size="3" />
+              </tr>
+              <tr style="display: none;">
+                  <td><span class="required">*</span> <?php echo $this->language->get('text_show_store'); ?></td>
                   <td>
                       <select name="config_show_store" >
                           <option value="1" <?php if($config_show_store){ echo  'selected="selected"'; } ?> ><?php echo $this->language->get('text_yes'); ?> </option>
                           <option value="0" <?php if(!$config_show_store){ echo  'selected="selected"'; } ?> ><?php echo $this->language->get('text_no'); ?> </option>
                       </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td> <?php echo $this->language->get('text_author_rules'); ?></td>
+                  <td>
+                      <textarea id="text_author_rules" name="config_author_rules" style="width:300px;height:150px;" >
+                         <?php echo $config_author_rules; ?>
+                      </textarea>
+                  </td>
+              </tr>
+              <script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
+              <script type="text/javascript"><!--
+
+                  CKEDITOR.replace('text_author_rules', {
+                      filebrowserBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>',
+                      filebrowserImageBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>',
+                      filebrowserFlashBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>',
+                      filebrowserUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>',
+                      filebrowserImageUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>',
+                      filebrowserFlashUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $this->session->data['token']; ?>'
+                  });
+              </script>
+              <tr>
+                  <td><?php echo $this->language->get('text_author_account_id'); ?></td>
+                  <td><select name="config_author_account_id">
+                          <option value="0"><?php echo $text_none; ?></option>
+                          <?php foreach ($informations as $information) { ?>
+                          <?php if ($information['information_id'] == $config_author_account_id) { ?>
+                          <option value="<?php echo $information['information_id']; ?>" selected="selected"><?php echo $information['title']; ?></option>
+                          <?php } else { ?>
+                          <option value="<?php echo $information['information_id']; ?>"><?php echo $information['title']; ?></option>
+                          <?php } ?>
+                          <?php } ?>
+                      </select></td>
+              </tr>
+
+              <tr>
+                  <td><?php echo $this->language->get('text_submission_kit'); ?></td>
+                  <td>
+                      <input type="text" name="config_submission_kit" value="<?php echo $config_submission_kit; ?>" />
                   </td>
               </tr>
             <tr>

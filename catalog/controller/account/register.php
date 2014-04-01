@@ -46,35 +46,39 @@ class ControllerAccountRegister extends Controller {
     {
 
 
-
+        try{
         $uData = $this->getUserData();
+
 
         $this->request->post['firstname'] = $uData['first_name'];
         $f_name = str_ireplace(' ','.',strtolower(trim($this->request->post['firstname'])));
 
-        try{
-            $file = file_get_contents('http://graph.facebook.com/'.$f_name.'/picture?type=large');
 
-            $f_name = str_ireplace('.','',$f_name);
 
-            $file_dir = DIR_IMAGE.'data/avatars/'.$f_name.'.png';
+            $file = file_get_contents('http://graph.facebook.com/'.$uData['id'].'/picture?type=large');
+
+            //$f_name = str_ireplace('.','',$f_name);
+
+            $file_dir = DIR_IMAGE.'data/avatars/'.$uData['id'].'.png';
 
             file_put_contents($file_dir,$file);
 
-            $this->request->post['avatar'] = 'data/avatars/'.$f_name.'.png';
+            $this->request->post['avatar'] = 'data/avatars/'.$uData['id'].'.png';
+
+            $rid = uniqid();
+
+            $this->request->post['email'] = $uData['email'];
+            $this->request->post['password'] = $rid;
+            $this->request->post['confirm'] = $rid;
+            $this->request->post['agree'] = 1;
+            $this->request->server['REQUEST_METHOD'] = 'POST';
+
         }
         catch(Exception $e)
         {
-
+            $this->request->server['REQUEST_METHOD'] = 'GET ';
         }
 
-        $rid = uniqid();
-
-        $this->request->post['email'] = $uData['email'];
-        $this->request->post['password'] = $rid;
-        $this->request->post['confirm'] = $rid;
-        $this->request->post['agree'] = 1;
-        $this->request->server['REQUEST_METHOD'] = 'POST';
 
 
 
@@ -259,6 +263,8 @@ class ControllerAccountRegister extends Controller {
 		}*/
 		
     	$this->data['action'] = $this->url->link('account/register', '', 'SSL');
+
+        $this->data['fb_register'] = $this->url->link('account/register/fb');
 		
 		if (isset($this->request->post['firstname'])) {
     		$this->data['firstname'] = $this->request->post['firstname'];
@@ -394,9 +400,15 @@ class ControllerAccountRegister extends Controller {
     		$this->data['newsletter'] = $this->request->post['newsletter'];
 		} else {
 			$this->data['newsletter'] = '';
-		}	
+		}
 
-		if ($this->config->get('config_account_id')) {
+        if (isset($this->request->post['newsletter_daily'])) {
+            $this->data['newsletter_daily'] = $this->request->post['newsletter_daily'];
+        } else {
+            $this->data['newsletter_daily'] = '';
+        }
+
+        if ($this->config->get('config_account_id')) {
 			$this->load->model('catalog/information');
 			
 			$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));

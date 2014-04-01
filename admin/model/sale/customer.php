@@ -1,7 +1,7 @@
 <?php
 class ModelSaleCustomer extends Model {
 	public function addCustomer($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['password'])))) . "', status = '" . (int)$data['status'] . "', date_added = NOW()");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['password'])))) . "', 		status = '" . (int)$data['status'] . "', date_added = NOW(), about = '" . $this->db->escape($data['about']) . "' ");
       	
       	$customer_id = $this->db->getLastId();
       	
@@ -19,7 +19,7 @@ class ModelSaleCustomer extends Model {
 	}
 	
 	public function editCustomer($customer_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "' WHERE customer_id = '" . (int)$customer_id . "'");
+		$this->db->query("UPDATE " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "',		about = '" . $this->db->escape($data['about']) . "'		WHERE customer_id = '" . (int)$customer_id . "'");
 	
       	if ($data['password']) {
         	$this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['password'])))) . "' WHERE customer_id = '" . (int)$customer_id . "'");
@@ -45,11 +45,22 @@ class ModelSaleCustomer extends Model {
 	}
 	
 	public function deleteCustomer($customer_id) {
+
+        $customer = $this->getCustomer($customer_id);
+
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer WHERE customer_id = '" . (int)$customer_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_reward WHERE customer_id = '" . (int)$customer_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_transaction WHERE customer_id = '" . (int)$customer_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_ip WHERE customer_id = '" . (int)$customer_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "address WHERE customer_id = '" . (int)$customer_id . "'");
+
+            // całkowite usunięcie z mailchimp
+            $chimp = new OpenChimp();
+
+            $chimp->remove($customer['email'],'occasional',true);
+
+            $chimp->remove($customer['email'],'daily',true);
+
 	}
 	
 	public function getCustomer($customer_id) {
@@ -65,9 +76,15 @@ class ModelSaleCustomer extends Model {
 	}
 			
 	public function getCustomers($data = array()) {
-		$sql = "SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS name, cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS name, cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) 
+		LEFT JOIN project pro ON(c.customer_id  = pro.author_id)
+		WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
 		$implode = array();
+		
+		if (!empty($data['filter_author'])) {
+			$implode[] = "  pro.project_id NOT NULL  ";
+		}
 		
 		if (!empty($data['filter_name'])) {
 			$implode[] = "CONCAT(c.firstname, ' ', c.lastname) LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
@@ -259,9 +276,13 @@ class ModelSaleCustomer extends Model {
 	}	
 				
 	public function getTotalCustomers($data = array()) {
-      	$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer";
+      	$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer c LEFT JOIN project pro ON(c.customer_id  = pro.author_id) ";
 		
 		$implode = array();
+		
+		if (!empty($data['filter_author'])) {
+			$implode[] = "  pro.project_id NOT NULL  ";
+		}
 		
 		if (!empty($data['filter_name'])) {
 			$implode[] = "CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
@@ -531,5 +552,81 @@ class ModelSaleCustomer extends Model {
 				 
 		return $query->row['total'];
 	}	
+	
+	
+	// customer jako author
+	
+	public function addAuthorTransaction($author_id, $description = '', $amount = '', $order_product_id = 0, $order_id, $currency_code) {
+		$author_info = $this->getCustomer($author_id);
+		
+		if ($author_info) { 
+			$this->db->query("INSERT INTO " . DB_PREFIX . "author_transaction SET author_id = '" . (int)$author_id . "', order_id = '" . (int)$order_id . "', order_product_id = '" . (int)$order_product_id . "', description = '" . $this->db->escape($description) . "', amount = '" . (float)$amount . "',
+			date_added = NOW(), currency_code = '".$this->db->escape($currency_code)."' ");
+		
+			/*$this->language->load('mail/affiliate');
+							
+			$message  = sprintf($this->language->get('text_transaction_received'), $this->currency->format($amount, $this->config->get('config_currency'))) . "\n\n";
+			$message .= sprintf($this->language->get('text_transaction_total'), $this->currency->format($this->getTransactionTotal($author_id), $this->config->get('config_currency')));
+								
+			$mail = new Mail();
+			$mail->protocol = $this->config->get('config_mail_protocol');
+			$mail->parameter = $this->config->get('config_mail_parameter');
+			$mail->hostname = $this->config->get('config_smtp_host');
+			$mail->username = $this->config->get('config_smtp_username');
+			$mail->password = $this->config->get('config_smtp_password');
+			$mail->port = $this->config->get('config_smtp_port');
+			$mail->timeout = $this->config->get('config_smtp_timeout');
+			$mail->setTo($author_info['email']);
+			$mail->setFrom($this->config->get('config_email'));
+			$mail->setSender($this->config->get('config_name'));
+			$mail->setSubject(html_entity_decode(sprintf($this->language->get('text_transaction_subject'), $this->config->get('config_name')), ENT_QUOTES, 'UTF-8'));
+			$mail->setText(html_entity_decode($message, ENT_QUOTES, 'UTF-8'));
+			$mail->send();*/
+		}
+	}
+	
+	public function deleteAuthorTransaction($order_product_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "author_transaction WHERE order_product_id = '" . (int)$order_product_id . "'");
+	}
+	
+	public function getAuthorTransactions($author_id, $start = 0, $limit = 10) {
+		if ($start < 0) {
+			$start = 0;
+		}
+		
+		if ($limit < 1) {
+			$limit = 10;
+		}	
+				
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "author_transaction WHERE author_id = '" . (int)$author_id . "' ORDER BY date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+	
+		return $query->rows;
+	}
+
+	public function getAuthorTotalTransactions($author_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total  FROM " . DB_PREFIX . "author_transaction WHERE author_id = '" . (int)$author_id . "'");
+	
+		return $query->row['total'];
+	}
+			
+	public function getAuthorTransactionTotal($author_id) {
+		$query = $this->db->query("SELECT SUM(amount) AS total FROM " . DB_PREFIX . "author_transaction WHERE author_id = '" . (int)$author_id . "'");
+	
+		return $query->row['total'];
+	}	
+	
+	public function getAuthorTotalTransactionsByOrderId($order_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "author_transaction WHERE order_id = '" . (int)$order_id . "'");
+	
+		return $query->row['total'];
+	}
+
+	public function getAuthorTotalTransactionsByProductOrderId($order_id,$order_product_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "author_transaction WHERE order_product_id = '" . (int)$order_product_id . "' AND order_id = '".(int)$order_id."' ");
+	
+		return $query->row['total'];
+	}	
+	
+	
 }
 ?>

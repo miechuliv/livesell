@@ -187,7 +187,7 @@ class Cart {
 						}
 					}
 					
-					$product_discount_query = $this->db->query("SELECT price FROM " . DB_PREFIX . "product_discount WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$customer_group_id . "' AND quantity <= '" . (int)$discount_quantity . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY quantity DESC, priority ASC, price ASC LIMIT 1");
+					/*$product_discount_query = $this->db->query("SELECT price FROM " . DB_PREFIX . "product_discount WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$customer_group_id . "' AND quantity <= '" . (int)$discount_quantity . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY quantity DESC, priority ASC, price ASC LIMIT 1");
 					
 					if ($product_discount_query->num_rows) {
 						$price = $product_discount_query->row['price'];
@@ -198,7 +198,7 @@ class Cart {
 				
 					if ($product_special_query->num_rows) {
 						$price = $product_special_query->row['price'];
-					}
+					}*/
 
                     // cena na sztywno
                     $price = $this->getProductsPrice($product_id,$this->currency->getId(),(isset($campaign_type)?$campaign_type:false));
@@ -288,8 +288,13 @@ class Cart {
     	
 		if ((int)$qty && ((int)$qty > 0)) {
     		if (!isset($this->session->data['cart'][$key])) {
-      			$this->session->data['cart'][$key] = (int)$qty;
+                if(!$lower)
+                {
+                    $this->session->data['cart'][$key] = (int)$qty;
+                }
+
     		} else {
+
                 if($lower)
                 {
                     $this->session->data['cart'][$key] -= (int)$qty;
@@ -463,11 +468,11 @@ class Cart {
 
         if($type == 'current')
         {
-            $sql .= " AND last_chance = '1' ";
+            $sql .= " AND last_chance = '0' AND shop = '0' ";
         }
         elseif($type == 'last_chance')
         {
-            $sql .= " AND last_chance = '0' ";
+            $sql .= " AND last_chance = '1' AND shop = '0'  ";
         }
         else
         {

@@ -417,7 +417,7 @@ $('select[name=\'country_id\']').bind('change', function() {
                     currentQuantity--;
                     if(currentQuantity <= 0)
                     {
-                        $(targetElem).parent().parent().remove();
+                        $(targetElem).parent().parent().parent().remove();
 
                     }
                     $(targetElem).val(currentQuantity);
@@ -433,7 +433,7 @@ $('select[name=\'country_id\']').bind('change', function() {
 
                 $('#total').html(html);
 
-                var newTarget = $(targetElem).parent().nextAll('.total');
+                var newTarget = $(targetElem).parent().parent().nextAll('.total');
 
                 $(newTarget).html(json['product_total']);
 

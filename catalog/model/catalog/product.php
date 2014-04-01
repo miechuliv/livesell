@@ -4,6 +4,68 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
 	}
 
+
+    public function getProductsOptionCombinations($product_id,$image_id = false)
+    {
+        if($image_id)
+        {
+            $sql = "SELECT * FROM ".DB_PREFIX."option_combination WHERE product_id = '".(int)$product_id."' AND image_id = '".(int)$image_id."' ";
+        }
+        else
+        {
+            $sql = "SELECT * FROM ".DB_PREFIX."option_combination WHERE product_id = '".(int)$product_id."'  ";
+        }
+
+
+        $results = $this->db->query($sql);
+
+        $combinations = array();
+
+        if($results->num_rows){
+            foreach($results->rows as $result)
+            {
+                $sql = " SELECT * FROM ".DB_PREFIX."option_to_option_combination WHERE option_combination_id = '".$result['option_combination_id']."' ";
+
+                $combination_query = $this->db->query($sql);
+
+                $options = array();
+
+                foreach($combination_query->rows as $q)
+                {
+                    $sql = "SELECT * FROM `".DB_PREFIX."option` o  LEFT JOIN option_description od ON(o.option_id=od.option_id)
+            WHERE od.language_id = '".(int)$this->config->get('config_language_id')."' AND o.option_id = '".(int)$q['option_id']."'  ";
+
+                    $option_query = $this->db->query($sql);
+
+                    $sql = "SELECT * FROM ".DB_PREFIX."option_value ov  LEFT JOIN option_value_description ovd ON(ov.option_value_id=ovd.option_value_id)
+            WHERE ovd.language_id = '".(int)$this->config->get('config_language_id')."' AND ov.option_value_id = '".(int)$q['option_value_id']."'  ";
+
+                    $option_value_query = $this->db->query($sql);
+
+                    $options[] = array(
+                        'option_id' => $q['option_id'],
+                        'option_value_id' => $q['option_value_id'],
+                        'option_name' => $option_query->row['name'],
+                        'option_value_name' => $option_value_query->row['name'],
+                    );
+                }
+
+
+
+                $combinations[] = array(
+                    'option_combination_id' => $result['option_combination_id'],
+                    'product_id' => $result['product_id'],
+                    'image_id' => $result['image_id'],
+                    'options' => $options
+                );
+            }
+        }
+
+        return $combinations;
+
+
+    }
+
     public function getProductsPrice($product_id,$currency_id,$type = false)
     {
 
@@ -14,15 +76,15 @@ class ModelCatalogProduct extends Model {
 
         if($type == 'current')
         {
-            $sql .= " AND last_chance = '1' ";
+            $sql .= " AND last_chance = '0' AND shop = '0' ";
         }
         elseif($type == 'last_chance')
         {
-            $sql .= " AND last_chance = '0' ";
+            $sql .= " AND last_chance = '1' AND shop = '0'  ";
         }
-        else
+        elseif($type == false)
         {
-            $sql .= " AND shop = '1' ";
+            $sql .= "  AND shop = '1' ";
         }
 
 

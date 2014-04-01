@@ -11,7 +11,6 @@
   </div>
   
  
-
 	
 <?/*	 <p><?php echo $text_account_already; ?></p>*/?>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
@@ -176,6 +175,20 @@
             <?php echo $text_no; ?>
             <?php } ?></td>
         </tr>
+          <tr>
+              <td><?php echo $this->language->get('text_newsletter_daily'); ?></td>
+              <td><?php if ($newsletter_daily) { ?>
+                  <input type="radio" name="newsletter_daily" value="1" checked="checked" />
+                  <?php echo $text_yes; ?>
+                  <input type="radio" name="newslette_dailyr" value="0" />
+                  <?php echo $text_no; ?>
+                  <?php } else { ?>
+                  <input type="radio" name="newsletter_daily" value="1" />
+                  <?php echo $text_yes; ?>
+                  <input type="radio" name="newsletter_daily" value="0" checked="checked" />
+                  <?php echo $text_no; ?>
+                  <?php } ?></td>
+          </tr>
       </table>
     </div>
     <?php if ($text_agree) { ?>
@@ -190,23 +203,23 @@
       </div>
     </div> 
 	<div class="buttons" style="float:left; width:100%; margin:0 0 30px;">
-		<input type="submit" value="<?php echo $button_continue; ?>" class="button action" />
+		<input type="submit" value="<?php echo $heading_title; ?>!" class="button action" />
 	</div>
     <?php } else { ?>
     <div class="buttons" style="float:left; width:100%; margin:0 0 30px;">
       <div class="right">
-        <input type="submit" value="<?php echo $button_continue; ?>" class="button action" />
+        <input type="submit" value="<?php echo $heading_title; ?>!" class="button action" />
       </div>
     </div>
     <?php } ?>
 	
 	</div>
 	<div style="width:50%; float:left;">
-	
+
 	<a href="javascript:void(0);" id="fbbut" style="margin-left:50px;"></a>
 	
 	<div id="fbregi" style="margin-left:50px;">
-	    <fb:registration width="300px" scope="email,name" redirect_uri="<?php echo HTTP_SERVER; ?>index.php?route=account/register/fb" />
+	   <fb:registration width="300px" fields="" scope="email,name" redirect_uri="<?php echo $fb_register; ?>" />
         <?php /* <fb:registration width="300px" onvalidate="validateRegister" fields="[{'name':'name'},{'name':'email_shop','type':'text','description':'email'},{'name':'password'}]" redirect_uri="<?php echo HTTP_SERVER; ?>index.php?route=account/register/fb" /> */ ?>
        <?php /*  <script type="text/javascript" >
             function validateRegister(form)
@@ -232,8 +245,8 @@
                 return err;
 
             }
-        </script>	*/ ?>
-	</div>
+        </script>
+	</div>	*/ ?>
 	</div>
   </form>
 

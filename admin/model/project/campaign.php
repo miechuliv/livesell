@@ -31,6 +31,7 @@ class ModelProjectCampaign extends Model{
         project_id = '".(int)$data['project_id']."',
         date_start = '".$this->db->escape($data['date_start'])."',
         show_archiwe = '".(int)$data['show_archiwe']."',
+         show_archiwe_sell = '".(int)$data['show_archiwe_sell']."',
          vote = '0' ";
 
         $this->db->query($sql);
@@ -74,8 +75,8 @@ class ModelProjectCampaign extends Model{
         $sql = "UPDATE ".DB_PREFIX.".campaign SET
 
         show_archiwe = '".(int)$data['show_archiwe']."',
-        date_start = '".$this->db->escape($data['date_start'])."'
-
+        date_start = '".$this->db->escape($data['date_start'])."',
+         show_archiwe_sell = '".(int)$data['show_archiwe_sell']."'
         WHERE campaign_id = '".(int)$campaign_id."' ";
 
         $this->db->query($sql);

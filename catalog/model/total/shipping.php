@@ -6,7 +6,7 @@ class ModelTotalShipping extends Model {
 				'code'       => 'shipping',
         		'title'      => $this->session->data['shipping_method']['title'],
         		'text'       => $this->currency->format($this->session->data['shipping_method']['cost']),
-        		'value'      => $this->session->data['shipping_method']['cost'],
+        		'value'      => $this->currency->format($this->session->data['shipping_method']['cost'],'','',false),
 				'sort_order' => $this->config->get('shipping_sort_order')
 			);
 
@@ -21,8 +21,10 @@ class ModelTotalShipping extends Model {
 					}
 				}
 			}
-			
-			$total += $this->session->data['shipping_method']['cost'];
+
+            // podajemy już koszt przeliczony w walute żeby nie robić tego potem
+           // $total += $this->session->data['shipping_method']['cost'];
+			$total += $this->currency->format($this->session->data['shipping_method']['cost'],'','',false);
 		}			
 	}
 }

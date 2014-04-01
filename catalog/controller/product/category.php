@@ -529,7 +529,7 @@ class ControllerProductCategory extends Controller {
                     // CodeHouse: END
 					'name'        => $result['name'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, 100) . '..',
-					'price'       => $price,
+					'price'       => $this->currency->format($price,'',1,true),
 					'special'     => $special,
 					'tax'         => $tax,
 					'rating'      => $result['rating'],

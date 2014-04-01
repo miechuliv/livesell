@@ -1,17 +1,17 @@
 <?php echo $header; ?>
 <div id="content">
-
+  <div class="breadcrumb">	<a href="./index.php?route=common/home&token=<?php echo $this->session->data['token']; ?>">Strona główna</a> 	::	<a href="http://<?php echo $_SERVER['HTTP_HOST']; echo $_SERVER['REQUEST_URI']; ?>">Kampanie</a>	  </div>
 <div class="box">
 <div class="heading">
-    <h1><img src="view/image/product.png" alt="" /> <?php echo $this->language->get('heading_title'); ?>
+    <h1><span class="fa fa-pencil"></span> Kampania
         <?php if($release_status){ ?>
-        Status: <?php echo $release_status; ?>
+        <small>(<?php echo $release_status; ?>)</small>
         <?php } ?></h1>
 
-    <div class="buttons"><a onclick="$('#form').submit();" class="button"><?php echo $this->language->get('button_save'); ?></a><a href="<?php echo $cancel; ?>" class="button"><?php echo $this->language->get('button_cancel'); ?></a></div>
+    <div class="buttons"><a onclick="$('#form').submit();" class="button action"><?php echo $this->language->get('button_save'); ?></a><a href="<?php echo $cancel; ?>" class="button"><?php echo $this->language->get('button_cancel'); ?></a></div>
 </div>
 <div class="content">
-<div id="tabs" class="htabs"><a href="#tab-general"><?php echo $this->language->get('tab_general'); ?></a><a href="#tab-image"><?php echo $this->language->get('tab_image'); ?></a><a href="#tab-products"><?php echo $this->language->get('tab_product'); ?></a>
+<div id="tabs" class="htabs"><a href="#tab-general"><?php echo $this->language->get('tab_general'); ?></a><a href="#tab-image"><?php echo $this->language->get('tab_image'); ?> <strong>(mockup)</strong></a><a href="#tab-products"><?php echo $this->language->get('tab_product'); ?></a>
     <a href="#tab-settings"><?php echo $this->language->get('tab_settings'); ?></a></div>
 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 <div id="tab-general">
@@ -98,15 +98,15 @@
             <?php $product_row = 0; ?>
             <?php foreach ($campaign_products as $id => $campaign_product) { ?>
 
-            <tbody id="product-row<?php echo $product_row; ?>">
+            <tbody id="product-row<?php echo $product_row; ?>" class="haka">
             <tr>
                 <td class="left" >
                     <input type="hidden" class="idek" name="campaign_products[<?php echo $product_row; ?>][product_id]" value="<?php echo $campaign_product['product_id']; ?>" />
                     <input type="hidden" name="campaign_products[<?php echo $product_row; ?>][parent_product]" value="<?php echo $campaign_product['parent_product']; ?>" />
                     <?php echo $product_templates[$campaign_product['parent_product']]['name']; ?>
                 </td>
-                <td>
-                    <a class="button" target="_blank" href="<?php echo $campaign_product['edit']; ?>" ><?php echo $this->language->get('button_product_edit'); ?></a><br/>
+                <td class="left" >
+                    <a class="button" target="_blank" href="<?php echo $campaign_product['edit']; ?>" ><?php echo $this->language->get('button_product_edit'); ?></a>
                   <?php /*  <a class="button" target="_blank" href="<?php echo $campaign_product['show']; ?>" ><?php echo $this->language->get('button_product_show'); ?></a><br/> */ ?>
                     <a class="button" onclick="productDelete(this);return false;" ><?php echo $this->language->get('button_product_delete'); ?></a>
                 </td>
@@ -121,7 +121,7 @@
                          <option value="<?php echo $template["product_id"]; ?>" ><?php echo $template["name"]; ?></option>';
                    <?php } ?>
                 </select></td>
-                <td class="left"><a onclick="addProduct(this);" class="button"><?php echo $this->language->get('button_add_product'); ?></a></td>
+                <td class="left"><a onclick="addProduct(this);" class="button action"><?php echo $this->language->get('button_add_product'); ?></a></td>
             </tr>
             </tfoot>
         </table>
@@ -129,10 +129,10 @@
     <div id="tab-settings">
         <table id="settings" class="list">
             <tr>
-                <td>
+                <td style="padding:20px 10px;">
                     <?php echo $this->language->get('text_show_archiwe'); ?>
                 </td>
-                <td>
+                <td style="padding:0 10px;">
                     <select name="show_archiwe" >
                          <?php if($show_archiwe){ ?>
                                 <option value="1" selected="selected" ><?php echo $this->language->get('text_yes'); ?></option>
@@ -143,12 +143,29 @@
                         <?php } ?>
                     </select>
                 </td>
+
             </tr>
             <tr>
-                <td>
+                <td style="padding:20px 10px;">
+                    Umożliw kupno w galerii
+                </td>
+                <td style="padding:0 10px;">
+                    <select name="show_archiwe_sell" >
+                        <?php if($show_archiwe_sell){ ?>
+                        <option value="1" selected="selected" ><?php echo $this->language->get('text_yes'); ?></option>
+                        <option value="0"  ><?php echo $this->language->get('text_no'); ?></option>
+                        <?php }else{ ?>
+                        <option value="1"  ><?php echo $this->language->get('text_yes'); ?></option>
+                        <option value="0" selected="selected"  ><?php echo $this->language->get('text_no'); ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:20px 10px;">
                     <?php echo $this->language->get('text_date_start'); ?>
                 </td>
-                <td>
+               <td style="padding:0 10px;">
                     <input class="datetime"  type="text" name="date_start" value="<?php echo $date_start; ?>" />
                     <div class="error" ><?php echo $error_date_start; ?></div>
                 </td>
@@ -279,13 +296,13 @@
 
 
                 //html += '<input type="hidden" name="campaign_products['+product_row+'][parent_id]" value="" />';
-                html = '<tbody id="product-row' + product_row + '">';
+                html = '<tbody class="haka" id="product-row' + product_row + '">';
                 html += '  <tr>';
-                html += '<td>'+parent;
+                html += '<td class="left">'+parent;
                 html += '<input type="hidden" name="campaign_products['+product_row+'][product_id]" value="'+product_id+'" />';
                 html += '<input type="hidden" name="campaign_products['+product_row+'][parent_product]" value="'+parent_id+'" />';
                 html += '</td>';
-                html +=    '<td><a class="button" target="_blank" href="'+product_edit+'" ><?php echo $this->language->get("button_product_edit"); ?></a><br/>';
+                html +=    '<td class="left"><a class="button" target="_blank" href="'+product_edit+'" ><?php echo $this->language->get("button_product_edit"); ?></a>';
                // html +=    '<a class="button" target="_blank" href="'+product_show+'" ><?php echo $this->language->get("button_product_show"); ?></a><br/>';
                 html +=    '<a class="button" onclick="productDelete(this);return false;" ><?php echo $this->language->get("button_product_delete"); ?></a></td>';
                 html += '  </tr>';
@@ -310,7 +327,7 @@
     {
 
 
-        var pproduct_id = $(elem).parents('tbody').find('.idek').val();
+        var product_id = $(elem).parents('tbody').find('.idek').val();
 
         $.ajax({
             type: 'post',
@@ -327,7 +344,7 @@
 
         });
 
-        $(elem).parents('tbody').remove();
+        $(elem).parents('.haka').remove();
         return false;
     }
 

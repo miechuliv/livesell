@@ -183,6 +183,8 @@ class ControllerCheckoutCart extends Controller {
 			
 			$products = $this->cart->getProducts();
 
+            $this->load->model('catalog/product');
+
       		foreach ($products as $product) {
 				$product_total = 0;
 					
@@ -194,13 +196,9 @@ class ControllerCheckoutCart extends Controller {
 				
 				if ($product['minimum'] > $product_total) {
 					$this->data['error_warning'] = sprintf($this->language->get('error_minimum'), $product['name'], $product['minimum']);
-				}				
-					
-				if ($product['image']) {
-					$image = $this->model_tool_image->resize($product['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
-				} else {
-					$image = '';
 				}
+
+
 
 
 
@@ -221,16 +219,94 @@ class ControllerCheckoutCart extends Controller {
 					);
         		}
 
+                // image wg. wybranych opcji
+
+                $vals = array();
+
+                foreach($product['option'] as $option)
+                {
+                    $vals[] = $option['option_value_id'];
+                }
+
+
+                $image = false;
+
+                // wg kombinacji
+                $combinations = $this->model_catalog_product->getProductsOptionCombinations($product['product_id']);
+
+
+                foreach($combinations as $combination)
+                {
+                    $c = count($combination['options']);
+
+                    $res = 0;
+
+                    foreach($combination['options'] as $option)
+                    {
+                        if(in_array($option['option_value_id'],$vals))
+                        {
+                            $res++;
+                        }
+                    }
+
+                    if($res == $c)
+                    {
+                        $image_id = $combination['image_id'];
+
+                        if($image_id)
+                        {
+                            $im = $this->db->query("SELECT * FROM ".DB_PREFIX."product_image WHERE product_image_id = '".(int)$image_id."' ");
+
+                            if($im->num_rows)
+                            {
+                                $image = $this->model_tool_image->resize($im->row['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
+                            }
+                        }
+
+
+                    }
+
+                }
+
+
+                // jesli nie to wg pojedynczych opcji
+
+                if(!$image)
+                {
+                    foreach($product['option'] as $option)
+                    {
+                        $sql = " SELECT * FROM ".DB_PREFIX."product_option_value WHERE product_option_value_id = '".(int)$option['product_option_value_id']."'  ";
+
+                        $opv = $this->db->query($sql);
+
+                        if($opv->num_rows)
+                        {
+                            $image = $this->model_tool_image->resize($opv->row['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
+                    }
+
+                    }
+                }
+
+
+                // jesli nie to wg produktu
+
+                if(!$image)
+                {
+                    if ($product['image']) {
+                        $image = $this->model_tool_image->resize($product['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
+                    } else {
+                        $image = '';
+                    }
+                }
+
+
+
                 // bierzemy prawidłowa cena
                 $this->load->model('catalog/product');
 
                 $price_raw = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),$product['campaign_type']);
 
                 $price = $this->currency->format($price_raw,'',1);
-
-                $total = $price_raw * $product['quantity'];
-
-                $total = $this->currency->format($total,'',1);
 				// Display prices
 				/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 					$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')));
@@ -238,14 +314,15 @@ class ControllerCheckoutCart extends Controller {
 					$price = false;
 				}*/
 
+                $total = $price_raw * $product['quantity'];
 
+                $total = $this->currency->format($total,'',1);
 				// Display prices
 				/*if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
 					$total = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']);
 				} else {
 					$total = false;
 				}*/
-
 
 
 				
@@ -265,6 +342,8 @@ class ControllerCheckoutCart extends Controller {
 
 				);
       		}
+
+
 			
 			// Gift Voucher
 			$this->data['vouchers'] = array();
@@ -542,6 +621,15 @@ class ControllerCheckoutCart extends Controller {
 
         $this->load->model('catalog/product');
 
+        $product = explode('__', $product_id);
+
+        $campaign_type = false;
+
+        if (isset($product[1])) {
+            $campaign_type = $product[1];
+            $product = $product[0];
+        }
+
         $t = explode(':',$product_id);
 
         $product_id = (int)$t[0];
@@ -561,13 +649,13 @@ class ControllerCheckoutCart extends Controller {
             if($this->request->post['change']=='dodaj')
             {
                 $quantity  = 1;
-                $this->cart->add($this->request->post['product_id'], $quantity , $options);
+                $this->cart->add($this->request->post['product_id'], $quantity , $options , false, $campaign_type);
             }
 
             if($this->request->post['change']=='odejmij')
             {
                 $quantity  = 1;
-                $this->cart->add($this->request->post['product_id'], $quantity , $options , true);
+                $this->cart->add($this->request->post['product_id'], $quantity , $options , true, $campaign_type);
             }
 
 
@@ -617,8 +705,10 @@ class ControllerCheckoutCart extends Controller {
                 $this->cart->remove($this->request->post['product_id']);
             }
 
+            $price = $this->model_catalog_product->getProductsPrice($this->request->post['product_id'],$this->currency->getId(),$campaign_type);
+
             if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
-                $json['product_total'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')) * $current_quantity);
+                $json['product_total'] = $this->currency->format($price*$current_quantity,'',1);
             } else {
                 $json['product_total'] = false;
             }

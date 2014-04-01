@@ -3,6 +3,9 @@
 define('VERSION', '1.5.5.1');
 $time = microtime(true);
 
+
+
+
 // Configuration
 if (file_exists('config.php')) {
 	require_once('config.php');
@@ -91,6 +94,7 @@ $debugger = new Debugger($time,false);
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/extra/firephp/FirePHP.class.php'));
 
 require_once($vqmod->modCheck(DIR_SYSTEM . 'library/extra/facebook.php'));
+require_once(DIR_SYSTEM . 'library/extra/MailChimp.php');
 $firePHP = new FirePHP();
 
 $registry->set('firephp', $firePHP);
@@ -145,7 +149,11 @@ if ($store_query->num_rows) {
 
 $logger = new Logger($config);
 
+
+
 $registry->set('logger',$logger);
+
+
 
 // Settings
 $query = $db->query("SELECT * FROM " . DB_PREFIX . "setting WHERE store_id = '0' OR store_id = '" . (int)$config->get('config_store_id') . "' ORDER BY store_id ASC");
@@ -249,7 +257,18 @@ $debugger->setRequest($request);
 $response = new Response();
 $response->addHeader('Content-Type: text/html; charset=utf-8');
 $response->setCompression($config->get('config_compression'));
-$registry->set('response', $response); 
+$registry->set('response', $response);
+
+
+// zezwolenie na ajaxy z wersji www strony
+if(isset($request->server['HTTP_ORIGIN']) AND stripos($request->server['HTTP_ORIGIN'],'www.')!==false)
+{
+
+    $response->addHeader('Access-Control-Allow-Origin: '.$request->server['HTTP_ORIGIN']);
+    $response->addHeader('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+
+}
+
 		
 // Cache
 $cache = new Cache();
@@ -357,6 +376,8 @@ $registry->set('encryption', new Encryption($config->get('config_encryption')));
 // Front Controller 
 $controller = new Front($registry);
 
+
+
 // SEO URL's
 //$controller->addPreAction(new Action('common/seo_url'));
 $controller->addPreAction(new Action('common/oneslashseo'));
@@ -382,6 +403,8 @@ if(isset($_GET['debug']))
     ob_end_clean();
     $debugger->displayError();
 }
+
+
 
 // Output
 $response->output();

@@ -12,6 +12,12 @@ define('HTTP_SUB', 'livesell/');
 define('HTTPS_SERVER', 'http://demo.stronazen.pl/livesell/');
 define('HTTPS_IMAGE', 'http://demo.stronazen.pl/livesell/image/');
 
+define('MAIL_CHIMP_API', '3c7652b09ebbb28082b07347d31ad381-us3');
+define('MAIL_CHIMP_LIST_DAILY', '9057eef015');
+define('MAIL_CHIMP_LIST_OCCASIONAL', '9cd30ac7e0');
+
+
+
 // DIR
 define('DIR_APPLICATION', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/catalog/');
 define('DIR_SYSTEM', '/home/demostrona/domains/demo.stronazen.pl/public_html/livesell/system/');

@@ -19,6 +19,7 @@ class ControllerCommonHeader extends Controller {
             $this->data['is_ie'] =  true;
         }
 
+
         // jeśli kampania nie została załadowana to ładujemy ją teraz do licznika
         $campaign = $this->document->getCampaign();
 
@@ -45,6 +46,9 @@ class ControllerCommonHeader extends Controller {
         {
 
 
+            $campaign = $this->model_project_campaign->showActualCampaign($this->config->get('config_language_id'));
+
+            if($campaign){
 
             $campaign['no_buy'] = false;
             $campaign['campaign_type'] = 'current';
@@ -69,6 +73,8 @@ class ControllerCommonHeader extends Controller {
             );
 
             $this->document->setCampaign($campaign);
+
+            }
         }
 
 

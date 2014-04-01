@@ -19,7 +19,7 @@
       <div class="content">
         <p><?php echo $text_new_customer; ?></p>
         <p><?php echo $text_register_account; ?></p>
-        <a href="<?php echo $register; ?>" class="button"><?php echo $text_register; ?>!</a></div>
+        <a href="<?php echo $register; ?>" class="button action"><?php echo $text_register; ?>!</a></div>
 <?/*
 	<a href="javascript:void(0);" id="fbbut"></a>
 	
@@ -68,11 +68,11 @@
           <b><?php echo $entry_password; ?></b><br />
           <input type="password" name="password" value="<?php echo $password; ?>" />
           <br /><br/>
-          <a href="<?php echo $forgotten; ?>"><?php echo $text_forgotten; ?></a><br />
+          <a href="<?php echo $forgotten; ?>" style="text-decoration:underline"><?php echo $text_forgotten; ?></a><br />
           <br />
-
-          <input type="submit" value="<?php echo $button_login; ?>" class="button action" />
-          <a  href="<?php echo $loginUrl; ?>" class="button action" ><?php echo $this->language->get('text_facebook_login'); ?></a>
+          
+          <input type="submit" value="<?php echo $button_login; ?>" class="button action" style="margin-bottom:10px" />
+          <a  href="<?php echo $loginUrl; ?>" class="button fb" ><?php echo $this->language->get('text_facebook_login'); ?></a>
           <?php if ($redirect) { ?>
           <input type="hidden" name="redirect" value="<?php echo $redirect; ?>" />
           <?php } ?>

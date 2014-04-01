@@ -404,7 +404,7 @@ class ControllerCatalogProduct extends Controller {
 			$filter_quantity = null;
 		}
 
-		if (isset($this->request->get['filter_status'])) {
+		if (isset($this->request->get['filter_status']) AND $this->request->get['filter_status']!=='*') {
 			$filter_status = $this->request->get['filter_status'];
 		} else {
 			$filter_status = null;
@@ -535,7 +535,7 @@ class ControllerCatalogProduct extends Controller {
 			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
 		}		
 
-		if (isset($this->request->get['filter_status'])) {
+		if (isset($this->request->get['filter_status']) AND $this->request->get['filter_status']!=='*') {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
@@ -554,7 +554,7 @@ class ControllerCatalogProduct extends Controller {
 
         // koniec miechu
 
-        if (isset($this->request->get['filter_status'])) {
+        if (isset($this->request->get['filter_status']) AND $this->request->get['filter_status']!=='*') {
             $url .= '&filter_status=' . $this->request->get['filter_status'];
         }
 						
@@ -814,7 +814,7 @@ class ControllerCatalogProduct extends Controller {
 			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
 		}
 		
-		if (isset($this->request->get['filter_status'])) {
+		if (isset($this->request->get['filter_status']) AND $this->request->get['filter_status']!=='*') {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 								
@@ -857,7 +857,7 @@ class ControllerCatalogProduct extends Controller {
 			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
 		}
 
-		if (isset($this->request->get['filter_status'])) {
+		if (isset($this->request->get['filter_status']) AND $this->request->get['filter_status']!=='*') {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
@@ -1146,6 +1146,8 @@ class ControllerCatalogProduct extends Controller {
         );
 
 
+
+
         $this->setFields($fields,(isset($product_info)?$product_info:array()) );
 
 		$this->load->model('setting/store');
@@ -1230,7 +1232,7 @@ class ControllerCatalogProduct extends Controller {
     	} elseif (!empty($product_info)) {
       		$this->data['quantity'] = $product_info['quantity'];
     	} else {
-			$this->data['quantity'] = 1;
+			$this->data['quantity'] = false;
 		}
 		
 		if (isset($this->request->post['minimum'])) {
@@ -1597,11 +1599,15 @@ class ControllerCatalogProduct extends Controller {
 			} else {
 				$image = 'no_image.jpg';
 			}
-			
+
+            // ładujemy kobinacje opcji powiązane z produktem
+            $combinations = $this->model_catalog_product->getProductsOptionCombinations($this->request->get['product_id'],$product_image['product_image_id']);
+
 			$this->data['product_images'][] = array(
 				'image'      => $image,
 				'thumb'      => $this->model_tool_image->resize($image, 100, 100),
-				'sort_order' => $product_image['sort_order']
+				'sort_order' => $product_image['sort_order'],
+                'product_option_combination' => $combinations
 			);
 		}
 

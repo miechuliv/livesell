@@ -75,7 +75,15 @@ class ControllerModuleCampaign extends Controller{
 
             $this->data['campaign_products'] = $this->model_project_campaign->getCampaignProducts($campaign['campaign_id']);
 
+            // special
+            $p = array_shift($this->data['campaign_products']);
 
+            $images = $this->model_catalog_product->getProductImages($p['product_id']);
+
+
+            $im = array_shift($images);
+
+            $this->data['campaign_image_small'] = $this->model_tool_image->resize($im['image'],590,590);
 
 
             $campaign['author_href'] = $this->url->link('author/profile','&author_id='.$campaign['author_id']);
@@ -99,7 +107,32 @@ class ControllerModuleCampaign extends Controller{
             }
 
             $date->add($i);
+            $now = new DateTime();
+            // kampania zakończone, trzeba sprawdzić czy jest dostępna jako galeria i czy dostępne są produkty
+            $after_sell = false;
+            if($date < $now)
+            {
+                $this->data['no_sell'] = false;
 
+                $after_sell = true;
+                if(!$campaign['show_archiwe'])
+                {
+                    $campaign = false;
+                }
+                else
+                {
+                    /*
+                    nie pozwalamy na kupno
+                    */
+                    if(!$campaign['show_archiwe_sell'])
+                    {
+                        $this->data['campaign_products'] = array();
+                        $this->data['no_sell'] = true;
+                    }
+                }
+            }
+
+            if($campaign){
             $campaign['date_end'] = $date->format('Y-m-d H:i:s');
 
 
@@ -129,9 +162,9 @@ class ControllerModuleCampaign extends Controller{
                 $this->data['campaign_images'][] =  $this->model_tool_image->resize($image['image'],200,200);
             }
 
-            $image = array_shift($campaign_images);
 
-            $this->data['campaign_image'] =  $this->model_tool_image->resize($image['image'],800,800);						
+            $this->data['campaign_image'] =  $this->model_tool_image->resize($image['image'],800,800);
+
 			
 			$this->document->setOpengraph(array(				
 			'title' => $campaign['name'],				
@@ -190,19 +223,75 @@ class ControllerModuleCampaign extends Controller{
 
 
 
+
+
+
+
             foreach($this->data['campaign_products'] as $key => $product)
             {
+                if($after_sell AND !$product['show_on_store'])
+                {
+                        unset($this->data['campaign_products'][$key]);
+                        continue;
+                }
+
                 $im = $this->model_tool_image;
                 $config = $this->config;
                 $f = function($image) use ($im,$config) {
                      return $im->resize($image,$config->get('config_image_thumb_width'),$config->get('config_image_thumb_height'));
                 };
+
                 $this->data['campaign_products'][$key]['options'] = $this->model_catalog_product->getProductOptions($product['product_id'],$f);
+
+
+                $images = $this->model_catalog_product->getProductImages($product['product_id']);
+
+                $comb = array();
+
+                foreach($images as $image)
+                {
+
+                    $combinations = $this->model_catalog_product->getProductsOptionCombinations($product['product_id'],$image['product_image_id']);
+
+
+                    $image = $this->model_tool_image->resize($image['image'],$this->config->get('config_image_thumb_width'),$this->config->get('config_image_thumb_height'));
+
+
+                    foreach($combinations as $combination)
+                    {
+                        $values =array();
+
+                        foreach($combination['options'] as $option)
+                        {
+                            $values[] = $option['option_value_id'];
+                        }
+
+                        $comb[] = array(
+                            'combination' => implode('_',$values),
+                            'image' => $image,
+                             );
+
+                    }
+                }
+
+
+
+
+                $this->data['campaign_products'][$key]['combinations'] = $comb;
+
 
                 $this->data['campaign_products'][$key]['price'] = $this->model_catalog_product->getProductsPrice($product['product_id'],$this->currency->getId(),isset($this->request->get['last_chance'])?'last_chance':'current');
 
+                $this->data['campaign_products'][$key]['price'] = str_ireplace(' ','',$this->currency->format($this->data['campaign_products'][$key]['price'],'',1,true));
+
 
                 $this->data['campaign_products'][$key]['image'] = $this->model_tool_image->resize($product['image'],$this->config->get('config_image_thumb_width'),$this->config->get('config_image_thumb_height'));
+            }
+
+                /* jesli nie ma nic w sprzedazy to usuwamy przycisk kup teraz */
+            if(empty($this->data['campaign_products']))
+            {
+                $this->data['no_sell'] = true;
             }
 
             // zapisujemy to do dokumentu żeby było dostępne z headerze
@@ -210,6 +299,12 @@ class ControllerModuleCampaign extends Controller{
             $this->data['campaign']['campaign_type'] = $this->data['campaign_type'];
 
             $this->document->setCampaign($this->data['campaign']);
+
+            }
+            else
+            {
+                $this->data['campaign'] = false;
+            }
 
         }
         else

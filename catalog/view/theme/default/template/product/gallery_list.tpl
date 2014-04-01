@@ -14,23 +14,36 @@
     <div class="campaign-filter" >
 		<div>
 			<div>
-				<strong><?php echo $this->language->get('text_search'); ?>:</strong>
+				<strong><?php // echo $this->language->get('text_search'); ?><?php echo $this->language->get('text_filter'); ?>:</strong>
 			</div>
 			<div>
 				<?php /* <label for="filter_author" ><?php echo $this->language->get('text_filter_author'); ?></label>
 				<input name="filter_author" value="<?php echo $filter_author; ?>"> */ ?>
-
+<div style="float:left">
 				 <label for="filter_name" ><?php echo $this->language->get('text_filter_name'); ?></label>
 				<input name="filter_name" value="<?php echo $filter_name; ?>">
 
+                <label for="filter_sell" ><?php echo $this->language->get('text_filter_sell'); ?></label>
+                <select name="filter_sell" onchange="filter();">
+                    <?php if($filter_sell) { ?>
+
+                    <option value="1" selected="selected" ><?php echo $this->language->get('text_yes'); ?></option>
+                    <option value="0"  ><?php echo $this->language->get('text_no'); ?></option>
+                    <?php } else { ?>
+                    <option value="1"  ><?php echo $this->language->get('text_yes'); ?></option>
+                    <option value="0" selected="selected" ><?php echo $this->language->get('text_no'); ?></option>
+                    <?php } ?>
+
+                </select>
+
 				<?php /* <label for="filter_tag" ><?php echo $this->language->get('text_filter_tag'); ?></label>
 				<input name="filter_tag" value="<?php echo $filter_tag; ?>"> */ ?>
-
-				<input onclick="filter();" type="submit" class="button" value="<?php echo $this->language->get('text_filter'); ?>" >
+</div>
+			<input onclick="filter();" type="submit" class="button" value="<?php echo $this->language->get('text_filter'); ?>" style="float:left; line-height:17px; margin:5px 0 0 10px;">
 			</div>
 			<div>
 				<div class="sort">
-					<b><?php echo $this->language->get('text_sort'); ?></b>
+					<b><?php echo $this->language->get('text_sort'); ?>:</b>&nbsp;
 					<select name="date_sort" onchange="filter();">
 						<?php foreach ($date_sorts as $sorts) { ?>
 						<?php if ($sorts['value'] == $sort_date) { ?>
@@ -75,14 +88,21 @@
             <?php echo $this->language->get('text_author'); ?>: <?php echo $campaign['author']; ?><br/>
             <?/*<div class="image"><img  src="<?php echo $campaign['author_avatar']; ?>" title="<?php echo $campaign['author']; ?>" alt="<?php echo $campaign['author']; ?>" /></div>*/?>
             <?php echo $this->language->get('text_date'); ?>:  <?php echo $campaign['date_start']; ?> - <?php echo $campaign['date_end']; ?>
-        </div>
 
         <?php if ($campaign['vote']) { ?>
-        <div class="rating"><?php echo $this->language->get('text_vote').': '.$campaign['vote']; ?></div>
+        <div class="rating"><?php echo $this->language->get('text_vote').': '.$campaign['vote']; ?> 
+		        <?php if($this->customer->isLogged()){ ?> 
+					(<a href="javascript:void(0);" class="vote" onclick="upvote(this,'<?php echo $campaign["campaign_id"]; ?>');">+ <?php echo $this->language->get('text_upvote'); ?></a>)
+				   <?php }else{ ?>
+					(<a href="javascript:void(0);" class="vote" onclick="$('#vl').css('display','block');">+ <?php echo $this->language->get('text_upvote'); ?></a>)
+				 <?php } ?>
+		</div>
         <?php } ?>
-        <?php if($this->customer->isLogged()){ ?>
-        <div class="vote" onclick="upvote(this,'<?php echo $campaign["campaign_id"]; ?>');">+ <?php echo $this->language->get('text_upvote'); ?></div>
-        <?php } ?>
+
+ 
+		   <?php if($campaign['show_archiwe_sell']=='1') { ?> <a href="<?php echo $campaign['show']; ?>" class="button action" style="width:100%; text-align:center; padding:10px 0; margin:5px 0;"><?php echo $this->language->get('text_buy'); ?></a> <? } ?>
+        </div>
+
 </div>
 <?php } ?>
 
@@ -198,6 +218,12 @@
             url += '&filter_name=' + encodeURIComponent(filter_name);
         }
 
+        var filter_sell = $('select[name=\'filter_sell\']').find(':selected').attr('value');
+
+        if (filter_sell) {
+            url += '&filter_sell=' + encodeURIComponent(filter_sell);
+        }
+
         var filter_author = $('input[name=\'filter_author\']').attr('value');
 
         if (filter_author) {
@@ -231,4 +257,22 @@
         location = url;
     }
     //--></script>
+<div id="vl">
+	<a href="javascript:void(0);" onclick="$('#vl').css('display','none');" id="close">X</a>
+    <form  action="<?php echo $login_action; ?>" method="post" > 
+		<div>
+			<h1 style="font-size:17px; margin:10px 0;"><?php echo $this->language->get('text_login_to_vote'); ?></h1>
+		</div>
+		<div>
+			<input type="hidden" name="redirect" value="<?php echo $login_redirect; ?>" />
+			<label for="email" ><?php echo $this->language->get('entry_email'); ?></label>		
+			<input type="text" name="email" />
+		</div><div>
+			<label for="password" ><?php echo $this->language->get('entry_password'); ?></label>
+			<input type="password" name="password"/>
+		</div><div>
+			<input type="submit" class="button action" value="<?php echo $this->language->get('text_login'); ?>" />
+		</div>
+    </form>
+</div>
 <?php echo $footer; ?>

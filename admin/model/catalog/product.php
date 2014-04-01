@@ -9,6 +9,59 @@ class ModelCatalogProduct extends Model {
          WHERE product_id = '".(int)$product_id."' ");
     }
 
+    public function getProductsOptionCombinations($product_id,$image_id)
+    {
+        $sql = "SELECT * FROM ".DB_PREFIX."option_combination WHERE product_id = '".(int)$product_id."' AND image_id = '".(int)$image_id."' ";
+
+        $results = $this->db->query($sql);
+
+        $combinations = array();
+
+        if($results->num_rows){
+        foreach($results->rows as $result)
+        {
+            $sql = " SELECT * FROM ".DB_PREFIX."option_to_option_combination WHERE option_combination_id = '".$result['option_combination_id']."' ";
+
+            $combination_query = $this->db->query($sql);
+
+            $options = array();
+
+            foreach($combination_query->rows as $q)
+            {
+                $sql = "SELECT * FROM `".DB_PREFIX."option` o  LEFT JOIN option_description od ON(o.option_id=od.option_id)
+            WHERE od.language_id = '".(int)$this->config->get('config_language_id')."' AND o.option_id = '".(int)$q['option_id']."'  ";
+
+                $option_query = $this->db->query($sql);
+
+                $sql = "SELECT * FROM ".DB_PREFIX."option_value ov  LEFT JOIN option_value_description ovd ON(ov.option_value_id=ovd.option_value_id)
+            WHERE ovd.language_id = '".(int)$this->config->get('config_language_id')."' AND ov.option_value_id = '".(int)$q['option_value_id']."'  ";
+
+                $option_value_query = $this->db->query($sql);
+
+                $options[] = array(
+                    'option_id' => $q['option_id'],
+                    'option_value_id' => $q['option_value_id'],
+                    'option_name' => $option_query->row['name'],
+                    'option_value_name' => $option_value_query->row['name'],
+                );
+            }
+
+
+
+            $combinations[] = array(
+                'option_combination_id' => $result['option_combination_id'],
+                'product_id' => $result['product_id'],
+                'image_id' => $result['image_id'],
+                'options' => $options
+            );
+        }
+        }
+
+        return $combinations;
+
+
+    }
+
     public function getProductsPrices($product_id , $type = false)
     {
         $sql = "SELECT * FROM ".DB_PREFIX."product_price
@@ -16,15 +69,15 @@ class ModelCatalogProduct extends Model {
 
         if($type == 'current')
         {
-            $sql .= " AND last_chance = '1' ";
+            $sql .= " AND last_chance = '0' AND shop = '0' ";
         }
         elseif($type == 'last_chance')
         {
-            $sql .= " AND last_chance = '0' ";
+            $sql .= " AND last_chance = '1' AND shop = '0' ";
         }
-        else
+        elseif($type === false)
         {
-            $sql .= " AND shop = '1' ";
+            $sql .= " AND last_chance = '0' AND shop = '1' ";
         }
 
 
@@ -72,7 +125,7 @@ class ModelCatalogProduct extends Model {
                  product_id = '".(int)$product_id."',
                  currency_id = '".(int)$currency_id."',
                  price = '".(float)$price."',
-                  last_chance = 1,
+                  last_chance = 0,
                   shop = 0 ");
                 }
                 elseif($type == 'last_chance')
@@ -81,7 +134,7 @@ class ModelCatalogProduct extends Model {
                  product_id = '".(int)$product_id."',
                  currency_id = '".(int)$currency_id."',
                  price = '".(float)$price."',
-                  last_chance = 0,
+                  last_chance = 1,
                    shop = 0 ");
                 }
                 else
@@ -413,12 +466,49 @@ class ModelCatalogProduct extends Model {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "product_special SET product_id = '" . (int)$product_id . "', customer_group_id = '" . (int)$product_special['customer_group_id'] . "', priority = '" . (int)$product_special['priority'] . "', price = '" . (float)$product_special['price'] . "', date_start = '" . $this->db->escape($product_special['date_start']) . "', date_end = '" . $this->db->escape($product_special['date_end']) . "'");
 			}
 		}
-		
-		if (isset($data['product_image'])) {
-			foreach ($data['product_image'] as $product_image) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int)$product_id . "', image = '" . $this->db->escape(html_entity_decode($product_image['image'], ENT_QUOTES, 'UTF-8')) . "', sort_order = '" . (int)$product_image['sort_order'] . "'");
-			}
-		}
+
+
+        if (isset($data['product_image'])) {
+
+            foreach ($data['product_image'] as $product_image) {
+
+                if(!isset($product_image['image']))
+                {
+                    continue;
+                }
+                $this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int)$product_id . "', image = '" . $this->db->escape(html_entity_decode($product_image['image'], ENT_QUOTES, 'UTF-8')) . "', sort_order = '" . (int)$product_image['sort_order'] . "'");
+
+                $image_id = $this->db->getLastId();
+                //zapisujemy kombinacje opcji
+                if(isset($product_image['option_combination']))
+                {
+
+
+                    foreach($product_image['option_combination'] as $combination)
+                    {
+
+
+                        // dodajemy kobinacje
+                        $this->db->query("INSERT INTO ".DB_PREFIX."option_combination SET
+                        product_id = '".(int)$product_id."',
+                           image_id = '".(int)$image_id."' ");
+
+                        $combination_id = $this->db->getLastId();
+
+                        // dodajemy opcje do kobinacji
+                        foreach($combination['options'] as $option)
+
+                            $this->db->query("INSERT INTO ".DB_PREFIX."option_to_option_combination SET
+                        option_combination_id = '".(int)$combination_id."',
+                        option_id = '".(int)$option['option_id']."',
+                        option_value_id = '".(int)$option['option_value_id']."' ");
+
+                    }
+
+
+                }
+            }
+        }
 		
 		if (isset($data['product_download'])) {
 			foreach ($data['product_download'] as $download_id) {
@@ -492,6 +582,8 @@ class ModelCatalogProduct extends Model {
 	}
 	
 	public function editProduct($product_id, $data) {
+
+
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "',
 		sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "',
 		 ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "',
@@ -540,7 +632,9 @@ class ModelCatalogProduct extends Model {
 
 		if (isset($data['image'])) {
 			$this->db->query("UPDATE " . DB_PREFIX . "product SET image = '" . $this->db->escape(html_entity_decode($data['image'], ENT_QUOTES, 'UTF-8')) . "' WHERE product_id = '" . (int)$product_id . "'");
-		}
+
+
+    	}
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "'");
 		
@@ -615,11 +709,55 @@ class ModelCatalogProduct extends Model {
 		}
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "'");
-		
-		if (isset($data['product_image'])) {
+
+        // czyścimy kobinacji
+        $this->db->query("DELETE FROM ".DB_PREFIX."option_combination WHERE product_id = '".(int)$product_id."'   ");
+
+
+        if (isset($data['product_image'])) {
+
 			foreach ($data['product_image'] as $product_image) {
+
+                if(!isset($product_image['image']))
+                {
+                    continue;
+                }
 				$this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int)$product_id . "', image = '" . $this->db->escape(html_entity_decode($product_image['image'], ENT_QUOTES, 'UTF-8')) . "', sort_order = '" . (int)$product_image['sort_order'] . "'");
-			}
+
+                $image_id = $this->db->getLastId();
+                //zapisujemy kombinacje opcji
+                if(isset($product_image['option_combination']))
+                {
+
+
+                    foreach($product_image['option_combination'] as $combination)
+                    {
+                        // jeśli istnieje już ta kobinacja to czyścimy jej opcje
+                        if(isset($combination['option_combination_id']))
+                        {
+                            $this->db->query("DELETE FROM ".DB_PREFIX."option_to_option_combination WHERE option_combination_id = '".(int)$combination['option_combination_id']."'   ");
+                        }
+
+                        // dodajemy kobinacje
+                        $this->db->query("INSERT INTO ".DB_PREFIX."option_combination SET
+                        product_id = '".(int)$product_id."',
+                           image_id = '".(int)$image_id."' ");
+
+                        $combination_id = $this->db->getLastId();
+
+                        // dodajemy opcje do kobinacji
+                        foreach($combination['options'] as $option)
+
+                        $this->db->query("INSERT INTO ".DB_PREFIX."option_to_option_combination SET
+                        option_combination_id = '".(int)$combination_id."',
+                        option_id = '".(int)$option['option_id']."',
+                        option_value_id = '".(int)$option['option_value_id']."' ");
+
+                    }
+
+
+                }
+            }
 		}
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_to_download WHERE product_id = '" . (int)$product_id . "'");
@@ -738,9 +876,9 @@ class ModelCatalogProduct extends Model {
 			$data = array_merge($data, array('product_download' => $this->getProductDownloads($product_id)));
 			$data = array_merge($data, array('product_layout' => $this->getProductLayouts($product_id)));
 			$data = array_merge($data, array('product_store' => $this->getProductStores($product_id)));
-            $data = array_merge($data, array('product_prices' => $this->getProductsPrices($product_id,false)));
-            $data = array_merge($data, array('product_prices_last_chance' => $this->getProductsPrices($product_id,true)));
-
+            $data = array_merge($data, array('product_prices' => $this->getProductsPrices($product_id,'current')));
+            $data = array_merge($data, array('product_prices_last_chance' => $this->getProductsPrices($product_id,'last_chance')));
+            $data = array_merge($data, array('product_prices_shop' => $this->getProductsPrices($product_id,false)));
 			
 			$id =  $this->addProduct($data);
 

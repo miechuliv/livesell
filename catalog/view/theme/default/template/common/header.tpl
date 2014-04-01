@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="google-site-verification" content="l9N6oDorNSlFCx2E8tWfMUJdjAN_yZ5aPOCz62X0COw" />
-<title><?php echo $title; ?></title>
+<title><?php echo $title; ?> - TeeGlobe - limited edition tees and more!</title>
 <link rel="alternate" type="application/rss+xml"  href="<?php echo $rss_link; ?>" title="<?php echo $this->language->get('text_rss'); ?>">
 <base href="<?php echo $base; ?>" />
 <?php if(($d = $this->document->getOpengraph())!=false){ ?>
@@ -36,6 +36,11 @@
 <script type="text/javascript" src="catalog/view/javascript/common.js"></script>
 <script type="text/javascript" src="http://www.geoplugin.net/javascript.gp"></script>
 
+
+    <script type="text/javascript">(function(s,o,g,a,m){a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.defer=1;a.src=g;m.parentNode.insertBefore(a,m)})(document,'script','https://usabilitytools.com/nuvr-tracker/82914/tracker.js');</script>
+
+	
+	
 <?php foreach ($scripts as $script) { ?>
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
@@ -114,71 +119,18 @@ DD_belatedPNG.fix('#logo img');
 });
 </script>
 */?>
-<?/*
-    <script>
-        $(document).ready(function(){
-            $('.kill-filter span').click(function(){
-                var elem = $(this).parents('.kill-filter');
-
-
-                killFilter(elem);
-            });
-        });
-
-
-
-
-        function killFilter(elem)
-        {
-            var input_name = $(elem).find('input[name="input_name"]').val();
-
-
-            var def_value = $(elem).find('.filter-name').text();
-
-
-            var target = $('select[name="'+input_name+'"] option:eq(0)');
-
-            if(target.length)
-            {
-                $(target).prop('selected', true);
-                $(target).attr('selected', 'selected');
-
-                $('select[name="'+input_name+'"]').next('.select').html(def_value);
-            }
-            else
-            {
-                target = $('input[name="'+input_name+'"]');
-
-                $.each(target,function(key,elem){
-
-                            $(elem).attr('checked',false);
-
-                            $(elem).parent().removeClass('active');
-
-                }
-                )
-
-
-
-            }
-
-
-            $(elem).remove();
-        }
-    </script>
-*/?>
-
 
 <?php echo $google_analytics; ?>
 
 </head>
 <body>
+<div id="chart-close" style="position:fixed; z-index:1; top:0; left:0; width:100%; height:100%; display:none;"></div>
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=112173815552215";
+  js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=495578190494203";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
 
@@ -196,12 +148,12 @@ DD_belatedPNG.fix('#logo img');
 		<div id="men2">
 			<ul>
 				<li class="toshow"><a href="mailto:<?php echo $this->config->get('config_email'); ?>"><?php echo $this->config->get('config_email'); ?></a></li>
-				<li <?php if($selected=='active'){ ?> class="active" <?php } ?> class="tohide"><a href="/livesell/"><?php echo $this->language->get('text_today_offer'); ?></a></li>
-                <?php if($last_chance){ ?>
+				<li <?php if($selected=='active'){ ?> class="active" <?php } ?> class="tohide"><a href="/"><?php echo $this->language->get('text_today_offer'); ?></a></li>
+                <?php if(!empty($last_chance)){ ?>
 				<li <?php if($selected=='last_chance'){ ?> class="active" <?php } ?> ><a href="<?php echo $last_chance; ?>" class="tohide"><?php echo $this->language->get('text_last_chance'); ?></a></li>
-                <?php } ?>
-                <?php if($total_campaigns){ ?>
-				<li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>" class="tohide"><?php echo $this->language->get('text_gallery'); ?></a></li>
+				<?php } ?>
+                <?php if($gallery){ ?>
+                <li <?php if($selected=='gallery'){ ?> class="active" <?php } ?> ><a href="<?php echo $gallery; ?>" class="tohide"><?php echo $this->language->get('text_gallery'); ?></a></li>
 				<?php } ?>
                 <?php foreach($informations as $information){ ?>
 					<li><a href="<?php echo $information['href']; ?>"><?php echo $information['name']; ?></a></li>
@@ -213,7 +165,7 @@ DD_belatedPNG.fix('#logo img');
 			
 			<ul style="float:right;">				
 				<?php if($this->customer->isLogged()){ ?>
-					<li><a href="./index.php?route=account/account"><?php echo $this->language->get('text_account'); ?></a></li>
+					<li><a href="./index.php?route=account/order"><?php echo $this->language->get('text_account'); ?></a></li>
 				<?php } else { ?>
 					<li><a href="./index.php?route=account/login"><?php echo $this->language->get('text_loginreg'); ?></a></li>
 				<?php } ?>
@@ -223,9 +175,7 @@ DD_belatedPNG.fix('#logo img');
 				<?/*<li <?php if($selected=='contact'){ ?> class="active" <?php } ?> ><a href="<?php echo $contact; ?>"><?php echo $this->language->get('text_contact'); ?></a></li>*/?>
 				<?/*<li <?php if($selected=='blog'){ ?> class="active" <?php } ?> ><a href="<?php echo $blog; ?>"><?php echo $this->language->get('text_blog'); ?></a></li> */ ?>
 
-                <?php if($show_shop){ ?>
-					<li <?php if($selected=='shop'){ ?> class="shop" <?php } ?> ><a href="<?php echo $shop; ?>"><?php echo $this->language->get('text_shop'); ?></a></li>
-				<?php } ?>
+
 			</ul>
 			
 		</div>
@@ -292,16 +242,16 @@ DD_belatedPNG.fix('#logo img');
 				<small>
                     <?php if($campaign AND $campaign['campaign_type'] == 'current'){ ?>
                     <?php echo $this->language->get('text_timeleft'); ?>
-                    <?php }elseif($campaign AND $campaign['campaign_type'] == 'last_chanve'){ ?>
+                    <?php }elseif($campaign AND $campaign['campaign_type'] == 'last_chance'){ ?>
                     <?php echo $this->language->get('text_timeleft_last_chance'); ?>
                     <?php } ?>
 
                 </small>
-				<div id="bomba"><div id="pageTimer" >00:00</div></div>
+				<div id="bomba"><a href="./"><div id="pageTimer" >00:00</div></a></div>
 			</div>
 			<div id="kont-central" class="toshow">
-				<small>Masz jakieś pytania lub sugestie?</small><br/>
-				<strong><?php echo $this->config->get('config_telephone'); ?></strong>
+				<small><?php echo $this->language->get('text_pytania'); ?></small><br/>
+				<strong><?php echo $this->config->get('config_email'); ?></strong>
 			</div>
 		</div>		
 		
@@ -309,6 +259,7 @@ DD_belatedPNG.fix('#logo img');
 			<?php echo $cart; ?>    
 		</div>		
 	</div>
+	<div align="center"><img src="/resources/ads/1000-fans_.jpg"></div> 
 
 
 <div id="notification"></div>

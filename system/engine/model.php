@@ -54,7 +54,7 @@ abstract class Model {
         {
             $sql .= $select;
         }
-        else
+        elseif(!$delete)
         {
             $sql .= ' * ';
         }
@@ -66,7 +66,11 @@ abstract class Model {
 
         $q = $this->db->query($sql);
 
-        return $q->rows;
+        if(!$delete)
+        {
+            return $q->rows;
+        }
+
 
     }
 
@@ -321,7 +325,7 @@ abstract class Model {
 
         }
 
-
+     
 
         $this->db->query($sql);
 

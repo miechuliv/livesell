@@ -47,7 +47,7 @@ class Currency {
     	}
   	}
 
-  	public function format($number, $currency = '', $value = '', $format = true, $override = true) {
+  	public function format($number, $currency = '', $value = '', $format = true) {
 		if ($currency && $this->has($currency)) {
       		$symbol_left   = $this->currencies[$currency]['symbol_left'];
       		$symbol_right  = $this->currencies[$currency]['symbol_right'];

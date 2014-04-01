@@ -69,11 +69,10 @@ class ControllerProductGallery extends Controller{
 
 
         // filtracja
+        $this->data['login_action'] = $this->url->link('account/login');
+        $this->data['login_redirect'] = $this->url->link('product/gallery/showList');
 
-        error_reporting(E_ALL);
-        ini_set('display_errors', '1');
-
-        $defaultData = array('sort_date' => 'DESC', 'sort_vote' => 'DESC');
+        $defaultData = array('sort_date' => 'DESC', 'sort_vote' => 'DESC' ,'filter_sell' => 0);
 
         $this->document->setTitle($this->language->get('text_title'));
         $this->document->setDescription($this->language->get('text_description'));
@@ -83,6 +82,7 @@ class ControllerProductGallery extends Controller{
         $this->setFields(array(
 
                 'filter_name',
+                'filter_sell',
                 //'filter_author',
                // 'filter_tag',
                 'sort_date',
@@ -174,7 +174,7 @@ class ControllerProductGallery extends Controller{
             $image = array_shift($images);
 
 
-            $this->data['campaigns'][$key]['image'] = $this->model_tool_image->resize($image['image'],200,200);
+            $this->data['campaigns'][$key]['image'] = $this->model_tool_image->resize($image['image'],180,180);
             $this->data['campaigns'][$key]['author_avatar'] = $this->model_tool_image->resize($campaign['author_avatar'],60,60);
         }
 

@@ -8,6 +8,7 @@ class Session {
 			ini_set('session.use_trans_sid', 'Off');
 			
 			session_set_cookie_params(0, '/'.HTTP_SUB);
+
 			session_start();
 		}
 			

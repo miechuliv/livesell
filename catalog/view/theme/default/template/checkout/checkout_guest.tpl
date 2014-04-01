@@ -1,4 +1,4 @@
-<?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
+<?php echo $header; ?><?php // echo $column_left; ?><?php // echo $column_right; ?>
 <div id="content" class="kasa"><?php echo $content_top; ?>
 <?/*
   <div class="breadcrumb">
@@ -258,16 +258,9 @@ $('#button-register').live('click', function() {
 });
 
 
-
-
-
-
-
-
-
-
-
 //--></script>
+<div class="fff podstr" style="width:70%">
+<div>
 <div id="payment-address">
 <h1><?php echo $this->language->get('text_checkout_payment_address'); ?></h1>
 <?/*
@@ -365,17 +358,17 @@ $('#button-register').live('click', function() {
 
 <div class="left">
     <h2><?php echo $text_your_details; ?></h2>
-	<div class="lab"><span class="required">*</span> <?php echo $entry_firstname; ?></div>
+	<div class="lab"><?php echo $entry_firstname; ?> <span class="required">*</span></div>
     <input id="pol1" type="text" name="firstname" value="<?php echo $firstname; ?>" class="large-field" />
     <br />
 </div>
 <div class="right">	
-    <div class="lab"><span class="required">*</span> <?php echo $entry_lastname; ?></div>
+    <div class="lab"><?php echo $entry_lastname; ?> <span class="required">*</span></div>
     <input id="pol2" type="text" name="lastname" value="<?php echo $lastname; ?>" class="large-field" />
     <br />
 </div>
 <div class="left maxwidth"> 
-    <div class="lab"><span class="required">*</span> Adres: <?php // echo $entry_address_1; ?></div>
+    <div class="lab"><?php echo $entry_address_1; ?> <span class="required">*</span></div>
     <input type="text" name="address_1" value="<?php echo $address_1; ?>" class="large-field" />
     <br />
 </div>
@@ -383,36 +376,52 @@ $('#button-register').live('click', function() {
 	&nbsp;
 </div>
 <div class="left">
-    <div class="lab"><span class="required">*</span> <?php echo $entry_postcode; ?></div>
+    <div class="lab"><?php echo $entry_postcode; ?> <span class="required">*</span></div>
     <input type="text" name="postcode" value="<?php echo $postcode; ?>" class="large-field" />
     <br />
 </div>
 <div class="right">
-	<div class="lab"><span class="required">*</span> <?php echo $entry_city; ?></div>
+	<div class="lab"><?php echo $entry_city; ?> <span class="required">*</span></div>
     <input type="text" name="city" value="<?php echo $city; ?>" class="large-field" />
     <br />
 </div>
 <div class="left">
-	<div class="lab"><span class="required">*</span> <?php echo $entry_email; ?></div>
+	<div class="lab"><?php echo $entry_email; ?> <span class="required">*</span></div>
     <input type="text" name="email" value="<?php echo $email; ?>" class="large-field" />
     <br />
 </div>
 <div class="right">	
-	<div class="lab"><span class="required">*</span> <?php echo $entry_telephone; ?></div>
+	<div class="lab"><?php echo $entry_telephone; ?> <span class="required">*</span></div>
     <input type="text" name="telephone" value="<?php echo $telephone; ?>" class="large-field" />
 	<br />	
 </div>
 <div class="left">		
-    <div class="lab"><?php echo $entry_company; ?> <span style="font-weight:normal; font-size:10px;"><?php echo $this->language->get('text_optional'); ?></span></div>
+    <div class="lab"><?php echo $entry_company; ?></div>
     <input type="text" name="company" value="<?php echo $company; ?>" class="large-field" />
     <br />
 </div>
 <div class="right">
-    <div id="company-id-display"><div class="lab"style="height:auto;"> <?php echo $entry_company_id; ?> <span style="font-weight:normal; font-size:10px;"><?php echo $this->language->get('text_optional'); ?></span> <?php // echo $entry_company_id; ?></div>
+    <div id="company-id-display"><div class="lab"style="height:auto;"> <?php echo $entry_company_id; ?> <?php // echo $entry_company_id; ?></div>
         <input type="text" name="company_id" value="<?php echo $company_id; ?>" class="large-field" />
         <br />
     </div>
 </div>
+
+
+<div class="right">
+	<div class="lab"><?php echo $entry_country; ?> <span class="required">*</span></div>
+    <select name="country_id" class="large-field">
+        <option value=""><?php echo $text_select; ?></option>
+        <?php foreach ($countries as $country) { ?>
+        <?php if ($country['country_id'] == $country_id) { ?>
+        <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
+        <?php } else { ?>
+        <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+        <?php } ?>
+        <?php } ?>
+    </select>
+    <br />
+</div>	
 
 <!-- DISABLE -->
 
@@ -435,21 +444,6 @@ $('#button-register').live('click', function() {
     <input type="text" name="fax" value="<?php echo $fax; ?>" class="large-field" />
     <br />
 	</div>
-
-	<div>
-	<div class="lab"><span class="required">*</span> <?php echo $entry_country; ?></div>
-    <select name="country_id" class="large-field">
-        <option value=""><?php echo $text_select; ?></option>
-        <?php foreach ($countries as $country) { ?>
-        <?php if ($country['country_id'] == $country_id) { ?>
-        <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
-        <?php } else { ?>
-        <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-        <?php } ?>
-        <?php } ?>
-    </select>
-    <br />
-	</div>	
 	
 	<div id="tax-id-display" style="display:none"><div class="lab"><span id="tax-id-required" class="required">*</span> <?php echo $entry_tax_id; ?></div>
     <input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="large-field" />
@@ -460,7 +454,7 @@ $('#button-register').live('click', function() {
     
 
 <?php if ($shipping_required) { ?>
-<div style="float:left; width:100%; margin:20px 0">
+<div style="float:left; margin:5px 15px">
     <?php if ($shipping_address) { ?>
     <input type="checkbox" name="shipping_address" value="1" id="shipping" checked="checked" onchange="toogleShipping()" />
     <?php } else { ?>
@@ -562,37 +556,38 @@ $('#button-register').live('click', function() {
 <?php }else{ ?>
 <div id="shipping-address" >
 <?php } ?>
-<table class="form">
+
+<table class="custer">
     <tr>
-        <td><span class="required">*</span> <?php echo $entry_firstname; ?></td>
+        <td><div class="lab"><?php echo $entry_firstname; ?> <span class="required">*</span></div> </td>
         <td><input type="text" name="shipping_firstname" value="<?php echo $shipping_firstname; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><span class="required">*</span> <?php echo $entry_lastname; ?></td>
+        <td><div class="lab"><?php echo $entry_lastname; ?> <span class="required">*</span></div></td>
         <td><input type="text" name="shipping_lastname" value="<?php echo $shipping_lastname; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><?php echo $entry_company; ?></td>
+        <td><div class="lab"><?php echo $entry_company; ?></td>
         <td><input type="text" name="shipping_company" value="<?php echo $shipping_company; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><span class="required">*</span> <?php echo $entry_address_1; ?></td>
+        <td><div class="lab"><?php echo $entry_address_1; ?> <span class="required">*</span></div></td>
         <td><input type="text" name="shipping_address_1" value="<?php echo $shipping_address_1; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><?php echo $entry_address_2; ?></td>
+         <td><div class="lab"><?php echo $entry_address_2; ?></div></td>
         <td><input type="text" name="shipping_address_2" value="<?php echo $shipping_address_2; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><span class="required">*</span> <?php echo $entry_city; ?></td>
+         <td><div class="lab"><?php echo $entry_city; ?> <span class="required">*</span></div></td>
         <td><input type="text" name="shipping_city" value="<?php echo $shipping_city; ?>" class="large-field" /></td>
     </tr>
     <tr>
-        <td><span id="shipping-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></td>
+         <td><div class="lab"><?php echo $entry_postcode; ?> <span class="required">*</span></div></td>
         <td><input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="large-field" /></td>
     </tr>
     <tr >
-        <td><span class="required">*</span> <?php echo $entry_country; ?></td>
+         <td><div class="lab"><?php echo $entry_country; ?> <span class="required">*</span></div></td>
         <td><select name="shipping_country_id" class="large-field">
                 <option value=""><?php echo $text_select; ?></option>
                 <?php foreach ($countries as $country) { ?>
@@ -736,7 +731,7 @@ $('#button-register').live('click', function() {
         }
 
 
-        $('#payment-address select[name=\'country_id\']').bind('change', function() {
+        $('#payment-address select[name=\'country_id\']').live('change', function() {
             if (this.value == '') return;
 
             var v = this.value;
@@ -749,7 +744,7 @@ $('#button-register').live('click', function() {
 
         });
 
-        $('#shipping-address select[name=\'shipping_country_id\']').bind('change', function() {
+        $('#shipping-address select[name=\'shipping_country_id\']').live('change', function() {
             if (this.value == '') return;
 
             var v = this.value;
@@ -758,7 +753,9 @@ $('#button-register').live('click', function() {
             reloadShipping();
         });
 
-        $('#shipping-calculator select[name=\'country_id\']').bind('change', function() {
+        $('#shipping-calculator  select[name=\'country_id\']').live('change', function() {
+
+            console.log('in');
             if (this.value == '') return;
 
             var v = this.value;
@@ -787,23 +784,24 @@ $('#button-register').live('click', function() {
 
 <p><?php echo $text_shipping_method; ?></p>
 
-    <div id="shipping-calculator" style="margin:10px;">
-             <p><?php echo $this->language->get('text_shipping_calculator'); ?></p>
-        <select name="country_id" class="large-field">
-            <option value=""><?php echo $text_select; ?></option>
-            <?php foreach ($countries as $country) { ?>
-            <?php if ($country['country_id'] == $country_id) { ?>
-            <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
-            <?php } else { ?>
-            <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-            <?php } ?>
-            <?php } ?>
-        </select>
-
+    <div id="shipping-calculator">
+            <p><?php echo $this->language->get('text_shipping_calculator'); ?></p>
+			<p>
+				<select name="country_id" class="large-field"  style="margin:0;">
+				<option value=""><?php echo $text_select; ?></option>
+				<?php foreach ($countries as $country) { ?>
+				<?php if ($country['country_id'] == $country_id) { ?>
+				<option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
+				<?php } else { ?>
+				<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+				<?php } ?>
+				<?php } ?>
+				</select>
+			</p>
 
         </div>
 
-<table class="radio">
+<table class="radio" style="margin:0 10px;">
     <?php foreach ($shipping_methods as $shipping_method) { ?>
     <tr>
         <td colspan="3"><b><?php echo $shipping_method['title']; ?></b></td>
@@ -828,7 +826,7 @@ $('#button-register').live('click', function() {
     <?php } ?>
     <?php } ?>
 </table>
-<br />
+
 </div>
 <?php } ?>
 
@@ -840,11 +838,12 @@ $('#button-register').live('click', function() {
 <div class="warning"><?php echo $error_warning; ?></div>
 <?php } ?>
 <?php if ($payment_methods) { ?>
-<div id="payment-methods">
 <h1><?php echo $this->language->get('text_payment_method_short'); ?></h1>
+<div id="payment-methods">
+
 
 <p><?php echo $text_payment_method; ?></p>
-<table class="radio">
+<table class="radio" style="margin:0 10px;">
     <?php foreach ($payment_methods as $payment_method) { ?>
     <tr class="highlight">
         <td><?php if ($payment_method['code'] == $code || !$code) { ?>
@@ -861,9 +860,9 @@ $('#button-register').live('click', function() {
 </div>
 <?php } ?>
 
-<div class="checkout-product">
-<h1><?php echo $text_comments; ?></h1>
-<textarea name="comment" rows="3" style="width:99%; border:1px solid #ddd; margin:10px auto; display:block;"><?php echo $comment; ?></textarea>
+<div>
+<h1 style="padding:20px !important;"><?php echo $text_comments; ?></h1>
+<textarea name="comment" rows="3" style="width:93%; border:1px solid #ddd; margin:0 20px 30px; display:block;"><?php echo $comment; ?></textarea>
 </div>
 
 <script type="text/javascript"><!--
@@ -911,7 +910,7 @@ $('#button-register').live('click', function() {
 
 <?php if (!isset($redirect)) { ?>
 <div class="checkout-product">
-<h1><?php echo $this->language->get('text_total'); ?></h1>
+<h1><?php echo $this->language->get('text_totals'); ?></h1>
 
     <table>
         <thead>
@@ -958,7 +957,7 @@ $('#button-register').live('click', function() {
         <?php } ?>
         </tfoot>
     </table>
-	
+	<div style="padding:0 20px 20px;">
 				<?php if ($text_agree) { ?>
 
 					<div class="right">
@@ -994,6 +993,7 @@ $('#button-register').live('click', function() {
             <input type="button" onclick="finalize()"  class="button action" value="<?php echo $text_order_confirm ?>"/>
         </div>
     </div>
+	</div>
 </div>
 <div class="payment" style="display:none;"></div>
 <?php } else { ?>
@@ -1167,7 +1167,7 @@ $('#button-register').live('click', function() {
 
                          },
                          error: function(xhr, ajaxOptions, thrownError) {
-                             alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                             console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
                          }
                      }); 
 					 
@@ -1182,11 +1182,15 @@ $('#button-register').live('click', function() {
 
      }
 </script>
+
 <script>
     $(document).ready(function(){
         reloadTotals();
-    })
-</script>
 
+		$('.tohide').hide();
+		$('.toshow').removeClass('toshow');
+	});
+</script>
+</div></div>
 </div>
 <?php echo $footer; ?>

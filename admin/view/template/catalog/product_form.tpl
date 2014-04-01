@@ -156,7 +156,7 @@
               <td><?php echo $entry_quantity; ?></td>
               <td>
                   
-                  <input type="text" name="quantity" value="100000" size="2" />
+                  <input type="text" name="quantity" value="<?php if($quantity!==false){ echo $quantity; }else{ echo '100000';} ?>" size="2" />
 
 
               </td>
@@ -185,15 +185,17 @@
             <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
               <td><?php echo $entry_subtract; ?></td>
               <td><select name="subtract">
-               <?php /*   <?php if ($subtract) { ?>
+               <?php if($full){
+                if($subtract) { ?>
                   <option value="1" selected="selected"><?php echo $text_yes; ?></option>
                   <option value="0"><?php echo $text_no; ?></option>
-                  <?php } else {
+                  <?php } else { ?>
                   <option value="1"><?php echo $text_yes; ?></option>
                   <option value="0" selected="selected"><?php echo $text_no; ?></option>
                   <?php } ?>
-                <?php */ ?>
+                <?php }else{ ?>
                       <option value="0" selected="selected"><?php echo $text_no; ?></option>
+                <?php } ?>
                 </select></td>
             </tr>
             <tr style="<?php if(!$full){ ?> display: none; <?php } ?>">
@@ -757,11 +759,15 @@
             <thead>
               <tr>
                 <td class="left"><?php echo $entry_image; ?></td>
+                  <td>Kombinacja opcji dla której wyświetli się zdjęcie</td>
                 <td class="right"><?php echo $entry_sort_order; ?></td>
+
                 <td></td>
               </tr>
             </thead>
             <?php $image_row = 0; ?>
+              <?php $combination_row = 0 ; ?>
+              <?php  $combination_option_row = 0; ?>
             <?php foreach ($product_images as $product_image) { ?>
             <tbody id="image-row<?php echo $image_row; ?>">
               <tr>
@@ -769,7 +775,40 @@
                     <input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="image<?php echo $image_row; ?>" />
                     <br />
                     <a onclick="image_upload('image<?php echo $image_row; ?>', 'thumb<?php echo $image_row; ?>');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$('#thumb<?php echo $image_row; ?>').attr('src', '<?php echo $no_image; ?>'); $('#image<?php echo $image_row; ?>').attr('value', '');"><?php echo $text_clear; ?></a></div></td>
+                  <td class="left">
+                      <?php $combination_row = 0 ; ?>
+                      <?php if($product_image['product_option_combination']){ ?>
+
+                              <?php foreach($product_image['product_option_combination'] as $combination){ ?>
+                         <?php  $combination_option_row = 0; ?>
+                            <table class="combination">
+                            <tr><td>Kombinacja: <?php echo $combination_row; ?>
+                                <input type="hidden" value="<?php echo $combination['option_combination_id']; ?>" name="product_image[<?php echo $image_row; ?>][option_combination][<?php echo $combination_row; ?>][option_combination_id]" />
+                                </td>
+                            <td onclick="removeCombination(this)" class="combination_remove" >Usuń</td></tr>
+                                <?php foreach($combination['options'] as $option){ ?>
+
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" value="<?php echo $option['option_id']; ?>" name="product_image[<?php echo $image_row; ?>][option_combination][<?php echo $combination_row; ?>][options][<?php echo $combination_option_row; ?>][option_id]" />
+                                            <?php echo $option['option_name']; ?></td>
+                                        <td>
+                                            <input type="hidden" value="<?php echo $option['option_value_id']; ?>" name="product_image[<?php echo $image_row; ?>][option_combination][<?php echo $combination_row; ?>][options][<?php echo $combination_option_row; ?>][option_value_id]" />
+                                            <?php echo $option['option_value_name']; ?></td>
+                                    </tr>
+                                <?php  $combination_option_row++; ?>
+                                <?php } ?>
+
+                            </table>
+                            <?php $combination_row++; ?>
+                            <?php } ?>
+                      <?php } ?>
+
+                      <div class="button" onclick="addCombination(this,<?php echo $image_row; ?>)" class="button action" >Dodaj nową kombinację</div>
+
+                  </td>
                 <td class="right"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" size="2" /></td>
+
                 <td class="left"><a onclick="$('#image-row<?php echo $image_row; ?>').remove();" class="button"><?php echo $button_remove; ?></a></td>
               </tr>
             </tbody>
@@ -778,7 +817,8 @@
             <tfoot>
               <tr>
                 <td colspan="2"></td>
-                <td class="left"><a onclick="addImage();" class="button"><?php echo $button_add_image; ?></a></td>
+                <td></td>
+                <td class="left"><a onclick="addImage();" class="button action"><?php echo $button_add_image; ?></a></td>
               </tr>
             </tfoot>
           </table>
@@ -1491,9 +1531,10 @@ function addImage() {
     html  = '<tbody id="image-row' + image_row + '">';
 	html += '  <tr>';
 	html += '    <td class="left"><div class="image"><img src="<?php echo $no_image; ?>" alt="" id="thumb' + image_row + '" /><input type="hidden" name="product_image[' + image_row + '][image]" value="" id="image' + image_row + '" /><br /><a onclick="image_upload(\'image' + image_row + '\', \'thumb' + image_row + '\');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$(\'#thumb' + image_row + '\').attr(\'src\', \'<?php echo $no_image; ?>\'); $(\'#image' + image_row + '\').attr(\'value\', \'\');"><?php echo $text_clear; ?></a></div></td>';
-	html += '    <td class="right"><input type="text" name="product_image[' + image_row + '][sort_order]" value="" size="2" /></td>';
-	html += '    <td class="left"><a onclick="$(\'#image-row' + image_row  + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
-	html += '  </tr>';
+    html += '<td class="left"><a href="javascript:void(0);" onclick="addCombination(this,'+image_row+')" class="button action">Dodaj kombinacje</a></td>';
+    html += '<td class="right"><input type="text" name="product_image[' + image_row + '][sort_order]" value="" size="2" /></td>';
+	html += '<td class="left"><a onclick="$(\'#image-row' + image_row  + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
+	html += '</tr>';
 	html += '</tbody>';
 	
 	$('#images tfoot').before(html);
@@ -1533,6 +1574,98 @@ $('#vtab-option a').tabs();
     {
         $(elem).parent().remove();
     }
+
+    var combination_row = '<?php echo $combination_row; ?>';
+
+    $(".new-combination").click(function(){
+
+        var elem = this;
+
+        addCombination(elem);
+
+    });
+
+    var hook = false;
+    // ładujemy wartości opcji dla opcji
+    function getOptionValues(elem){
+
+        var value = $(elem).find(':selected').val();
+        hook = $(elem);
+
+        $.ajax({
+            url: 'index.php?route=catalog/option/getoption&token=<?php echo $token; ?>&option_id=' +  encodeURIComponent(value),
+            dataType: 'json',
+            success: function(json) {
+
+                var html = "<option></option>";
+
+                $.each(json,function(key,elem){
+                    $.each(elem.option_value,function(key2,elem2){
+                        html += '<option value="'+elem2.option_value_id+'" >'+elem2.name+'</option>';
+                    })
+                })
+
+
+                $(hook).parent().next().find('select').html(html);
+
+
+            }
+        });
+
+    };
+
+   function addCombination(elem,im_row)
+    {
+        var html = '<table class="combination" >';
+
+        //html += '<tr class="combination-row" ><td>'+combination_row+'</td><td></td></tr>';
+
+        html += '<tr class="option-add"  ><br/><td>Wybierz opcję<br/><select onchange="getOptionValues(this)" class="combination_option"  style="width: 130px;" >';
+        html += '<option></option>';
+                <?php foreach($options as $option){ ?>
+        html += '<option  value="<?php echo $option['option_id']; ?>" ><?php echo $option['name']; ?></option>';
+                <?php } ?>
+        html += '</select></td>';
+        html += '<td>Wybierz wartość opcji<br/><select   class="combination_option_value" ><select><div style="clear:both" ></div></td><td><a href="javascript:void(0);" class="button action" onclick="addCombinationOption(this,'+combination_row+','+im_row+')">Zapisz</a><a onclick="removeCombination(this)" class="combination_remove button" >Usuń</a></td></tr></table>';
+
+       $(elem).before(html);
+
+        combination_row++;
+
+    }
+
+    function removeCombination(elem)
+    {
+        $(elem).parents('.combination').remove();
+
+    }
+
+    var combination_option_row = '<?php echo $combination_option_row; ?>';
+
+    function addCombinationOption(elem,comb_row,im_row)
+    {
+
+        var option_value_id = $(elem).parent().prev().find('select').find(':selected').val();
+        var option_value_name = $(elem).parent().prev().find('select').find(':selected').text();
+        var option_id = $(elem).parent().prev().prev().find('select').find(':selected').val();
+        var option_name = $(elem).parent().prev().prev().find('select').find(':selected').text();
+
+        var html = "";
+        html += '<tr>';
+        html += '      <td>';
+        html += '<input type="hidden" value="'+option_id+'" name="product_image['+im_row+'][option_combination]['+comb_row+'][options]['+combination_option_row+'][option_id]" />';
+        html += '<strong>'+option_name+'</strong></td>';
+        html += '  <td>';
+        html += '<input type="hidden" value="'+option_value_id+'" name="product_image['+im_row+'][option_combination]['+comb_row+'][options]['+combination_option_row+'][option_value_id]" />';
+        html += ' '+option_value_name+'</td>';
+        html += '</tr>';
+
+
+        $(elem).parents('.option-add').before(html);
+
+        combination_option_row++;
+    }
+
 
 
 //--></script> 
